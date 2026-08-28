@@ -1,0 +1,194 @@
+/* Paleta Dark Tech / Cyberpunk */
+:root {
+  --bg-dark: #0a0e17;
+  --bg-card: #161f30;
+  --primary: #00f2fe;
+  --primary-hover: #00b4d8;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border: #1e293b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* Encabezado Principal */
+header {
+  background: linear-gradient(180deg, #111827 0%, var(--bg-dark) 100%);
+  text-align: center;
+  padding: 40px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  color: var(--primary);
+  font-size: 2.2rem;
+  margin-bottom: 5px;
+}
+
+header p {
+  color: var(--text-muted);
+}
+
+.audio-player {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Navegación entre Páginas Independientes */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  background: var(--bg-card);
+  padding: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: var(--text-main);
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+nav a:hover, nav a.active {
+  background: rgba(0, 242, 254, 0.1);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+/* Estructura y Contenedores */
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+h2 {
+  color: var(--primary);
+  font-size: 1.7rem;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #334155;
+  margin: 0 auto 12px;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(0, 242, 254, 0.1);
+  color: var(--primary);
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+/* Enlaces Profesionales (GitHub/LinkedIn) */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-social {
+  text-decoration: none;
+  color: var(--text-main);
+  background: #1e293b;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.btn-social:hover {
+  background: var(--primary);
+  color: #000;
+}
+
+/* Línea de Tiempo */
+.timeline {
+  list-style: none;
+}
+
+.timeline li {
+  background: var(--bg-card);
+  padding: 20px;
+  margin-bottom: 15px;
+  border-left: 4px solid var(--primary);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Contenedor de Video */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+}

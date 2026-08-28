@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anuario | Sistemas CETAL</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .photo-frame {
+      width: 110px; height: 110px; margin: 0 auto 15px auto; border-radius: 50%;
+      border: 3px solid var(--primary); padding: 3px; background: #0d1117;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4); overflow: hidden;
+    }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); background: #161b22; color: #fff; margin-bottom: 25px; outline: none; }
+    .music-btn { background: #00f2fe; color: #0d1117; border: none; padding: 6px 14px; border-radius: 15px; font-weight: bold; cursor: pointer; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; }
+    .modal-card { background: #161b22; border: 1px solid var(--primary); padding: 25px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; position: relative; }
+    .close-btn { position: absolute; top: 10px; right: 15px; color: #ff5f56; font-size: 1.5rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Anuario de la Promoción</h1>
+    <p>Sistemas Informáticos CETAL (Turno Noche)</p>
+    <div style="margin-top: 10px;">
+      <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
+      <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
+    </div>
+  </header>
+
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="anuario.html" class="active">Anuario</a>
+    <a href="actividades.html">Bitácora</a>
+    <a href="proyectos.html">Proyectos</a>
+    <a href="recursos.html">Recursos</a>
+  </nav>
+
+  <main class="container">
+    
+    <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
+
+    <!-- DOCENTE GUÍA -->
+    <h2>👨‍🏫 Docente Guía</h2>
+    <div class="card student-card" style="border: 2px solid var(--primary); text-align: center; margin-bottom: 30px;">
+      <div class="photo-frame">
+        <img src="assets/fotos/docente.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Freddy'" alt="Lic. Freddy Mamani Chuilla">
+      </div>
+      <h3>Lic. Freddy Mamani Chuilla</h3>
+      <span class="badge" style="background: var(--primary); color: #000;">🧙‍♂️ Gran Maestre</span>
+      <p>"Mentor y guía principal en la formación técnica del curso."</p>
+      <button class="btn-social" onclick="openModal('Lic. Freddy Mamani Chuilla', '#', '#', '+591 70000000')">Ficha Técnica</button>
+    </div>
+
+    <hr style="border: 0; height: 1px; background: var(--border); margin: 40px 0;">
+
+    <!-- MESA DIRECTIVA -->
+    <h2>🏛️ Mesa Directiva del Curso</h2>
+    <div class="grid">
+      
+      <div class="card student-card" style="border: 1px solid #ffbd2e; text-align:center;">
+        <div class="photo-frame" style="border-color:#ffbd2e;">
+          <img src="assets/fotos/ivan.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Ivan'" alt="Ivan">
+        </div>
+        <h3>Ivan 👨‍💻</h3>
+        <span class="badge" style="background: #ffbd2e; color: #000;">👑 Presidente del Estado Estudiantil</span>
+        <p>"Liderazgo, desarrollo de scripts y automatización."</p>
+        <button class="btn-social" onclick="openModal('Ivan', '#', '#', '+591 76666666')">Contacto</button>
+      </div>
+
+      <div class="card student-card" style="border: 1px solid #ff79c6; text-align:center;">
+        <div class="photo-frame" style="border-color:#ff79c6;">
+          <img src="assets/fotos/grisel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Grisel'" alt="Grisel">
+        </div>
+        <h3>Grisel</h3>
+        <span class="badge" style="background: #ff79c6; color: #000;">📜 Vicepresidenta del Estado Estudiantil</span>
+        <p>"Coordinación general de proyectos."</p>
+        <button class="btn-social" onclick="openModal('Grisel', '#', '#', '+591 71111111')">Contacto</button>
+      </div>
+
+      <div class="card student-card" style="border: 1px solid #27c93f; text-align:center;">
+        <div class="photo-frame" style="border-color:#27c93f;">
+          <img src="assets/fotos/jimena.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Jimena'" alt="Jimena">
+        </div>
+        <h3>Jimena</h3>
+        <span class="badge" style="background: #27c93f; color: #000;">🏛️ Ministra de Economía y Finanzas</span>
+        <p>"Administración financiera del curso."</p>
+        <button class="btn-social" onclick="openModal('Jimena', '#', '#', '+591 72222222')">Contacto</button>
+      </div>
+
+      <div class="card student-card" style="border: 1px solid #ff5f56; text-align:center;">
+        <div class="photo-frame" style="border-color:#ff5f56;">
+          <img src="assets/fotos/gabriel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Gabriel'" alt="Gabriel">
+        </div>
+        <h3>Gabriel</h3>
+        <span class="badge" style="background: #ff5f56; color: #fff;">⚽ Ministro de Deportes</span>
+        <p>"Coordinador deportivo (Varones)."</p>
+        <button class="btn-social" onclick="openModal('Gabriel', '#', '#', '+591 73333333')">Contacto</button>
+      </div>
+
+      <div class="card student-card" style="border: 1px solid #00f2fe; text-align:center;">
+        <div class="photo-frame" style="border-color:#00f2fe;">
+          <img src="assets/fotos/andrea.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Andrea'" alt="Andrea">
+        </div>
+        <h3>Andrea</h3>
+        <span class="badge" style="background: #00f2fe; color: #000;">🏐 Ministra de Deportes</span>
+        <p>"Coordinadora deportiva (Mujeres)."</p>
+        <button class="btn-social" onclick="openModal('Andrea', '#', '#', '+591 74444444')">Contacto</button>
+      </div>
+
+    </div>
+
+    <hr style="border: 0; height: 1px; background: var(--border); margin: 40px 0;">
+
+    <!-- INTEGRANTES DE LA CLASE -->
+    <h2>💻 Integrantes de la Clase</h2>
+    <div class="grid" id="students-grid">
+      
+      <script>
+        const alumnos = ["Mijael", "Jhamil", "Omar", "Bryan", "Betty", "Subeida", "Jenny", "Alexis", "Vargas Cuchillos"];
+        alumnos.forEach(nombre => {
+          document.write(`
+            <div class="card student-card" style="text-align:center;">
+              <div class="photo-frame">
+                <img src="assets/fotos/${nombre.toLowerCase().replace(' ','_')}.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${nombre}'" alt="${nombre}">
+              </div>
+              <h3>${nombre}</h3>
+              <span class="badge">Sistemas Informáticos</span>
+              <p>"Integrante de la promoción CETAL."</p>
+              <button class="btn-social" onclick="openModal('${nombre}', '#', '#', '+591 70000000')">Contacto</button>
+            </div>
+          `);
+        });
+      </script>
+
+    </div>
+
+  </main>
+
+  <div class="modal-overlay" id="contact-modal">
+    <div class="modal-card">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h3 id="modal-name" style="color: var(--primary); margin-bottom: 15px;">Nombre</h3>
+      <p style="margin-bottom: 10px;"><strong>💼 LinkedIn:</strong> <a id="modal-linkedin" href="#" target="_blank" style="color: #00f2fe;">Ver Perfil</a></p>
+      <p style="margin-bottom: 10px;"><strong>📦 GitHub:</strong> <a id="modal-github" href="#" target="_blank" style="color: #00f2fe;">Ver Repositorios</a></p>
+      <p style="margin-bottom: 10px;"><strong>📱 WhatsApp:</strong> <span id="modal-phone" style="color:#3fb950;">+591 00000000</span></p>
+    </div>
+  </div>
+
+  <footer><p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p></footer>
+
+  <script>
+    document.getElementById('student-search').addEventListener('input', function(e) {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('.student-card').forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(term) ? 'block' : 'none';
+      });
+    });
+
+    function openModal(name, linkedin, github, phone) {
+      document.getElementById('modal-name').innerText = name;
+      document.getElementById('modal-linkedin').href = linkedin;
+      document.getElementById('modal-github').href = github;
+      document.getElementById('modal-phone').innerText = phone;
+      document.getElementById('contact-modal').style.display = 'flex';
+    }
+    function closeModal() { document.getElementById('contact-modal').style.display = 'none'; }
+
+    // Audio persistente
+    const audio = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('btn-toggle-music');
+    if (localStorage.getItem('musicPlaying') === 'true') {
+      audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
+      audio.play();
+    }
+    musicBtn.addEventListener('click', function() {
+      if (audio.paused) { audio.play(); localStorage.setItem('musicPlaying', 'true'); }
+      else { audio.pause(); localStorage.setItem('musicPlaying', 'false'); }
+    });
+    setInterval(() => { if (!audio.paused) localStorage.setItem('musicTime', audio.currentTime); }, 1000);
+  </script>
+</body>
+</html>

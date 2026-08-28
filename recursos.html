@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Linux | Sistemas CETAL</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .terminal-container {
+      background-color: #0d1117; border: 1px solid #238636; border-radius: 8px;
+      padding: 15px; font-family: 'Courier New', Courier, monospace; color: #3fb950;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
+    }
+    .terminal-header {
+      display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #30363d; padding-bottom: 8px;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background-color: #ff5f56; }
+    .dot-yellow { background-color: #ffbd2e; }
+    .dot-green { background-color: #27c93f; }
+    
+    .terminal-body { min-height: 250px; max-height: 400px; overflow-y: auto; margin-bottom: 10px; }
+    .terminal-line { margin-bottom: 6px; white-space: pre-wrap; font-size: 0.95rem; }
+    .prompt { color: #58a6ff; font-weight: bold; }
+    
+    .terminal-input-div { display: flex; align-items: center; width: 100%; }
+    .terminal-input {
+      background: transparent; border: none; color: #3fb950;
+      font-family: 'Courier New', Courier, monospace; font-size: 1rem;
+      flex: 1; outline: none; margin-left: 6px; padding: 0;
+    }
+    .music-btn { background: #00f2fe; color: #0d1117; border: none; padding: 6px 14px; border-radius: 15px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Consola Bash Linux CETAL</h1>
+    <p>Terminal interactiva para exploración de archivos, visualización y reconocimiento OSINT</p>
+    <div style="margin-top: 10px;">
+      <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
+      <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
+    </div>
+  </header>
+
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="anuario.html">Anuario</a>
+    <a href="actividades.html">Bitácora</a>
+    <a href="proyectos.html">Proyectos</a>
+    <a href="recursos.html" class="active">Recursos</a>
+  </nav>
+
+  <main class="container">
+
+    <h2>Terminal GNU/Linux (Bash v5.1)</h2>
+    <div class="terminal-container">
+      <div class="terminal-header">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <small style="color: #8b949e; margin-left: 10px;">cetal@linux-server: ~ (bash)</small>
+      </div>
+
+      <div class="terminal-body" id="terminal-output">
+        <div class="terminal-line">GNU Bash, versión 5.1.16(1)-release (x86_64-pc-linux-gnu)</div>
+        <div class="terminal-line">Servidor de Recursos y Archivos Académicos CETAL.</div>
+        <div class="terminal-line">Escribe <span style="color:#58a6ff;">'help'</span> para comandos o <span style="color:#58a6ff;">'ls'</span> para ver tus archivos reales.</div>
+        <div class="terminal-line">----------------------------------------------------------------------</div>
+      </div>
+
+      <div class="terminal-input-div">
+        <span class="prompt" id="prompt-label">cetal@linux-server:~$</span>
+        <input type="text" id="terminal-input" class="terminal-input" autofocus autocomplete="off">
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p>
+  </footer>
+
+  <script>
+    const input = document.getElementById('terminal-input');
+    const output = document.getElementById('terminal-output');
+    const promptLabel = document.getElementById('prompt-label');
+    let currentDir = '~';
+
+    function getPrompt() { return `cetal@linux-server:${currentDir}$`; }
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const fullCmd = input.value.trim();
+        const args = fullCmd.split(' ').filter(Boolean);
+        const cmd = args[0] ? args[0].toLowerCase() : '';
+        const param = args.slice(1).join(' '); // Captura nombres de archivo completos incluso con guiones
+
+        printLine(`<span class="prompt">${getPrompt()}</span> ${input.value}`);
+        processCommand(cmd, param, args);
+        
+        input.value = '';
+        promptLabel.innerText = getPrompt();
+        output.scrollTop = output.scrollHeight;
+      }
+    });
+
+    function printLine(text) {
+      const line = document.createElement('div');
+      line.className = 'terminal-line';
+      line.innerHTML = text;
+      output.appendChild(line);
+    }
+
+    function processCommand(cmd, param, args) {
+      switch(cmd) {
+        case 'help':
+        case 'ayuda':
+          printLine("Comandos disponibles:\n <span style='color:#58a6ff'>ls</span>          : Listar subcarpetas y documentos reales\n <span style='color:#58a6ff'>view [file]</span> : Abrir/descargar documento (Ejemplo: view reglamento-cetal-2026.docx)\n <span style='color:#58a6ff'>cat [file]</span>  : Leer resumen en consola de los reglamentos\n <span style='color:#58a6ff'>mkdir [dir]</span> : Crear carpeta en escritorio mediante File API\n <span style='color:#58a6ff'>neofetch</span>    : Ver información del sistema CETAL\n <span style='color:#58a6ff'>osint [nom]</span> : Ficha de estudiante (Ej: osint ivan)\n <span style='color:#58a6ff'>matrix</span>      : Activar modo Hacker Matrix\n <span style='color:#58a6ff'>clear</span>       : Limpiar pantalla");
+          break;
+
+        case 'ls':
+          // Listado real coincidente con tu carpeta física
+          printLine("<span style='color:#58a6ff'>Docente/</span>   <span style='color:#58a6ff'>Ivan/</span>   <span style='color:#58a6ff'>Maria/</span>");
+          printLine("guia-practica-reglamento-cetal.docx");
+          printLine("Reglamento_Junta_Directiva_Sistemas_Informaticos.docx");
+          printLine("reglamento-cetal-2026.docx");
+          break;
+
+        case 'neofetch':
+          printLine(`<span style='color:#3fb950;'>
+   .---.        <strong>cetal@sistemas-2026</strong>
+  /     \\       -------------------
+ | () () |      <strong>OS:</strong> Debian GNU/Linux 12 (Bookworm)
+  \\  ==  /      <strong>Host:</strong> CETAL Promoción 2026-2027
+   |||||        <strong>Kernel:</strong> 6.1.0-sys-cetal
+                <strong>Uptime:</strong> 100% Turno Noche
+                <strong>Shell:</strong> bash 5.1.16
+</span>`);
+          break;
+
+        case 'cat':
+          if (param.includes('reglamento')) {
+            printLine("<span style='color:#ffbd2e;'>=== RESUMEN REGLAMENTO CETAL ===\n1. Asistencia puntual al turno noche.\n2. Respeto mutuo y trabajo en equipo.\n3. Entrega a tiempo de prácticas de laboratorio.</span>");
+          } else {
+            printLine(`cat: ${param}: Para abrir archivos de Word (.docx) usa el comando: <span style='color:#00f2fe'>view ${param}</span>`);
+          }
+          break;
+
+        case 'view':
+          if (param) {
+            printLine(`🌐 Abriendo/descargando archivo 'archivos/${param}'...`);
+            window.open(`archivos/${param}`, '_blank');
+          } else {
+            printLine("Uso: view [nombre_archivo.docx]");
+          }
+          break;
+
+        case 'mkdir':
+          if (!param) {
+            printLine("Uso: mkdir [nombre_carpeta]");
+          } else {
+            if ('showDirectoryPicker' in window) {
+              printLine(`⚡ Solicitando acceso para crear '${param}'...`);
+              window.showDirectoryPicker().then(async (dirHandle) => {
+                await dirHandle.getDirectoryHandle(param, { create: true });
+                printLine(`✅ <span style='color:#3fb950;'>¡Éxito! La carpeta '${param}' fue creada.</span>`);
+              }).catch(() => {
+                printLine("⚠️ Operación cancelada.");
+              });
+            } else {
+              printLine(`✅ Carpeta '${param}' creada virtualmente.`);
+            }
+          }
+          break;
+
+        case 'osint':
+          if (param === 'ivan') {
+            printLine("🔍 [OSINT - IVAN]:\n 👤 Rol: Sistemas & Automatización\n 📂 Carpeta: archivos/Ivan/\n 📱 Contacto: CETAL Sistemas");
+          } else if (param === 'maria') {
+            printLine("🔍 [OSINT - MARIA]:\n 👤 Rol: Sistemas & Base de Datos\n 📂 Carpeta: archivos/Maria/");
+          } else {
+            printLine(`🔍 OSINT: Prueba con 'osint ivan' o 'osint maria'`);
+          }
+          break;
+
+        case 'matrix':
+          printLine("<span style='color:#3fb950;'>01010100 01000001 01000011 01010100 01001001 01000011 01010100<br>Matrix Mode Activado.</span>");
+          break;
+
+        case 'clear':
+        case 'cls':
+          output.innerHTML = '';
+          break;
+
+        default:
+          if(cmd !== '') printLine(`bash: comando no encontrado: ${cmd}. Escribe 'help'.`);
+      }
+    }
+
+    const audio = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('btn-toggle-music');
+    
+    if (localStorage.getItem('musicPlaying') === 'true') {
+      audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
+      audio.play();
+    }
+
+    musicBtn.addEventListener('click', function() {
+      if (audio.paused) { audio.play(); localStorage.setItem('musicPlaying', 'true'); }
+      else { audio.pause(); localStorage.setItem('musicPlaying', 'false'); }
+    });
+
+    setInterval(() => {
+      if (!audio.paused) localStorage.setItem('musicTime', audio.currentTime);
+    }, 1000);
+  </script>
+
+</body>
+</html>
