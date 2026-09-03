@@ -6,17 +6,533 @@
   <title>Anuario | Sistemas CETAL</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #111d35 0%, #070a13 70%);
+      --card-bg: rgba(19, 27, 46, 0.9);
+      --border: rgba(0, 242, 254, 0.25);
+      --primary: #00f2fe;
+      --accent: #3fb950;
+      --text-main: #f0f6fc;
+      --text-muted: #919eaf;
+      --shadow: 0 10px 30px -10px rgba(0,0,0,0.7);
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 15px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    header h1 {
+      font-size: 26px;
+      margin: 0 0 8px 0;
+      background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: 0 0 12px 0;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(7, 10, 19, 0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    nav a.active, nav a:hover {
+      color: #fff;
+      background: rgba(0, 242, 254, 0.15);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* DASHBOARD MODERNO TIPO HUD / TELEMETRÍA */
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: rgba(19, 27, 46, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 3px;
+      background: var(--card-glow, var(--primary));
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stat-header p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .stat-badge-num {
+      font-family: monospace;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* BARRA DE PROGRESO MODERNA (HUD) */
+    .hud-progress-wrapper {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 8px;
+    }
+
+    .hud-progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 4px;
+      background: var(--card-glow, var(--primary));
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px var(--card-glow, var(--primary));
+    }
+
+    .hud-footer-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      background: rgba(19, 27, 46, 0.8);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: rgba(0, 242, 254, 0.15);
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    }
+
+    .controls-wrapper {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 45px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: 1px solid var(--border);
+      background: #161b22;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      box-shadow: var(--shadow);
+      transition: border-color 0.3s;
+    }
+    .search-box:focus { border-color: var(--primary); }
+
+    .drive-btn {
+      background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
+      transition: transform 0.2s;
+    }
+    .drive-btn:hover { transform: translateY(-2px); }
+
+    .music-btn {
+      background: #00f2fe;
+      color: #0d1117;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .music-btn:hover { transform: scale(1.05); }
+
+    .section-title {
+      font-size: 19px;
+      color: #fff;
+      margin: 40px 0 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      border-left: 3px solid var(--primary);
+      padding-left: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      justify-content: center;
+    }
+
+    .grid-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 950px) {
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
+    .card-container {
+      perspective: 1000px;
+      width: 100%;
+      max-width: 350px;
+      height: 410px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face, .card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      padding: 18px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      text-align: left;
+      font-size: 13px;
+      color: #e6edf3;
+      overflow-y: auto;
+    }
+
+    .combat-stamp-vertical {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-35deg);
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255, 95, 86, 0.25);
+      border: 4px dashed rgba(255, 95, 86, 0.32);
+      padding: 12px 24px;
+      border-radius: 10px;
+      pointer-events: none;
+      z-index: 10;
+      text-align: center;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .birthday-stamp-vertical {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-35deg);
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255, 189, 46, 0.28);
+      border: 4px dashed rgba(255, 189, 46, 0.35);
+      padding: 12px 24px;
+      border-radius: 10px;
+      pointer-events: none;
+      z-index: 10;
+      text-align: center;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .birthday-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 189, 46, 0.15);
+      color: #ffbd2e;
+      border: 1px solid rgba(255, 189, 46, 0.3);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .combat-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 95, 86, 0.15);
+      color: #ff5f56;
+      border: 1px solid rgba(255, 95, 86, 0.3);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 2;
+    }
+
     .photo-frame {
-      width: 110px; height: 110px; margin: 0 auto 15px auto; border-radius: 50%;
-      border: 3px solid var(--primary); padding: 3px; background: #0d1117;
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4); overflow: hidden;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      padding: 3px;
+      background: #0d1117;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+      overflow: hidden;
+      flex-shrink: 0;
     }
     .photo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-    .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); background: #161b22; color: #fff; margin-bottom: 25px; outline: none; }
-    .music-btn { background: #00f2fe; color: #0d1117; border: none; padding: 6px 14px; border-radius: 15px; font-weight: bold; cursor: pointer; }
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; }
-    .modal-card { background: #161b22; border: 1px solid var(--primary); padding: 25px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; position: relative; }
-    .close-btn { position: absolute; top: 10px; right: 15px; color: #ff5f56; font-size: 1.5rem; cursor: pointer; }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 4px 0;
+      color: #fff;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      margin: 4px auto;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin: 4px 0;
+      text-align: center;
+      font-style: italic;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 4px;
+    }
+
+    .back-content p { margin: 4px 0; font-size: 12px; }
+    .back-content strong { color: #fff; }
+
+    .phone-highlight {
+      color: var(--accent);
+      font-weight: 600;
+      background: rgba(63, 185, 80, 0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .back-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 8px;
+    }
+
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .social-links a {
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .social-links a:hover { text-decoration: underline; }
+
+    .qr-box {
+      width: 85px;
+      height: 85px;
+      background: #fff;
+      padding: 4px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      flex-shrink: 0;
+    }
+    .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+
+    .btn-social {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      width: 100%;
+      text-align: center;
+    }
+    .btn-social:hover {
+      background: rgba(0, 242, 254, 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 40px;
+      background: rgba(7, 10, 19, 0.4);
+    }
   </style>
 </head>
 <body>
@@ -40,146 +556,502 @@
 
   <main class="container">
     
-    <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
-
-    <!-- DOCENTE GUÍA -->
-    <h2>👨‍🏫 Docente Guía</h2>
-    <div class="card student-card" style="border: 2px solid var(--primary); text-align: center; margin-bottom: 30px;">
-      <div class="photo-frame">
-        <img src="assets/fotos/docente.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Freddy'" alt="Lic. Freddy Mamani Chuilla">
+    <!-- DASHBOARD MODERNO SINCRONIZADO (TELEMETRÍA DE CURSO) -->
+    <div class="dashboard-stats">
+      
+      <!-- Sobrevivientes / Activos -->
+      <div class="stat-card" style="--card-glow: #00f2fe;">
+        <div class="stat-header">
+          <p>🛡️ Sobrevivientes Activos</p>
+          <span class="stat-badge-num" id="active-count">0</span>
+        </div>
+        <div>
+          <div class="hud-progress-wrapper">
+            <div id="hud-bar-active" class="hud-progress-bar"></div>
+          </div>
+          <div class="hud-footer-info">
+            <span>Integridad de Clase</span>
+            <span id="hud-pct-active">0%</span>
+          </div>
+        </div>
       </div>
-      <h3>Lic. Freddy Mamani Chuilla</h3>
-      <span class="badge" style="background: var(--primary); color: #000;">🧙‍♂️ Gran Maestre</span>
-      <p>"Mentor y guía principal en la formación técnica del curso."</p>
-      <button class="btn-social" onclick="openModal('Lic. Freddy Mamani Chuilla', '#', '#', '+591 70000000')">Ficha Técnica</button>
+
+      <!-- Cumpleañeros -->
+      <div class="stat-card" style="--card-glow: #ffbd2e;">
+        <div class="stat-header">
+          <p>🎂 Cumpleañeros</p>
+          <span class="stat-badge-num" id="birthday-count">0</span>
+        </div>
+        <div>
+          <div class="hud-progress-wrapper">
+            <div id="hud-bar-bday" class="hud-progress-bar"></div>
+          </div>
+          <div class="hud-footer-info">
+            <span>Ratio del Mes</span>
+            <span id="hud-pct-bday">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caídos en Combate -->
+      <div class="stat-card" style="--card-glow: #ff5f56;">
+        <div class="stat-header">
+          <p>⚔️ Caídos en Combate</p>
+          <span class="stat-badge-num" id="combat-count">0</span>
+        </div>
+        <div>
+          <div class="hud-progress-wrapper">
+            <div id="hud-bar-combat" class="hud-progress-bar"></div>
+          </div>
+          <div class="hud-footer-info">
+            <span>Bajas / Retirados</span>
+            <span id="hud-pct-combat">0%</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <hr style="border: 0; height: 1px; background: var(--border); margin: 40px 0;">
+    <!-- PESTAÑAS / FILTROS RÁPIDOS -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterCategory('all', this)">✨ Mostrar Todo</button>
+      <button class="filter-btn" onclick="filterCategory('docente', this)">🧙‍♂️ Gran Maestre</button>
+      <button class="filter-btn" onclick="filterCategory('directiva', this)">🏛️ Mesa Directiva</button>
+      <button class="filter-btn" onclick="filterCategory('estudiantes', this)">💻 Estudiantes</button>
+    </div>
+
+    <!-- Contenedor dinámico de controles -->
+    <div class="controls-wrapper" id="controls-container">
+      <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
+    </div>
+
+    <!-- GRAN MAESTRE / DOCENTE GUÍA (CENTRADO) -->
+    <div class="section-group" data-group="docente">
+      <h2 class="section-title">🧙‍♂️ Gran Maestre (Docente Guía)</h2>
+      <div class="grid-center">
+        <div class="card-container" data-category="docente">
+          <div class="card-inner">
+            <div class="card-face" style="border: 2px solid var(--primary); text-align: center;">
+              <div class="photo-frame">
+                <img src="assets/fotos/docente.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Freddy'" alt="Lic. Freddy Mamani Chuilla">
+              </div>
+              <h3 class="card-title">Lic. Freddy Mamani Chuilla</h3>
+              <div><span class="badge" style="background: var(--primary); color: #000;">🧙‍♂️ Gran Maestre</span></div>
+              <p class="card-desc">"Mentor y guía principal en la formación técnica del curso."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: var(--primary);">📋 Ficha Técnica - Gran Maestre</div>
+                <div class="back-content">
+                  <p><strong>Cargo:</strong> Docente Guía</p>
+                  <p><strong>Especialidad:</strong> Ingeniería de Sistemas</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 70000000</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=LicFreddyMamani" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- MESA DIRECTIVA -->
-    <h2>🏛️ Mesa Directiva del Curso</h2>
-    <div class="grid">
-      
-      <div class="card student-card" style="border: 1px solid #ffbd2e; text-align:center;">
-        <div class="photo-frame" style="border-color:#ffbd2e;">
-          <img src="assets/fotos/ivan.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Ivan'" alt="Ivan">
+    <div class="section-group" data-group="directiva">
+      <h2 class="section-title">🏛️ Mesa Directiva del Curso</h2>
+      <div class="grid">
+        
+        <!-- Ivan -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="birthday-stamp-vertical">🎂 Cumpleañero del Mes</div>
+            <div class="birthday-badge">🎂 Cumpleaños</div>
+            <div class="card-face" style="border: 1px solid #ffbd2e; text-align:center;">
+              <div class="photo-frame" style="border-color:#ffbd2e;">
+                <img src="assets/fotos/ivan.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Ivan'" alt="Ivan">
+              </div>
+              <h3 class="card-title">Ivan 👨‍💻</h3>
+              <div><span class="badge" style="background: #ffbd2e; color: #000;">👑 Presidente del Estado Estudiantil</span></div>
+              <p class="card-desc">"Liderazgo, desarrollo de scripts y automatización."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="birthday-badge">🎂 Cumpleaños</div>
+                <div class="back-header" style="color: #ffbd2e;">📋 Ficha Técnica - Ivan</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Abogado / PC & Costura</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 76666666</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub (Batman)</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=IvanPaz" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
         </div>
-        <h3>Ivan 👨‍💻</h3>
-        <span class="badge" style="background: #ffbd2e; color: #000;">👑 Presidente del Estado Estudiantil</span>
-        <p>"Liderazgo, desarrollo de scripts y automatización."</p>
-        <button class="btn-social" onclick="openModal('Ivan', '#', '#', '+591 76666666')">Contacto</button>
-      </div>
 
-      <div class="card student-card" style="border: 1px solid #ff79c6; text-align:center;">
-        <div class="photo-frame" style="border-color:#ff79c6;">
-          <img src="assets/fotos/grisel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Grisel'" alt="Grisel">
+        <!-- Grisel -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #ff79c6; text-align:center;">
+              <div class="photo-frame" style="border-color:#ff79c6;">
+                <img src="assets/fotos/grisel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Grisel'" alt="Grisel">
+              </div>
+              <h3 class="card-title">Grisel</h3>
+              <div><span class="badge" style="background: #ff79c6; color: #000;">📜 Vicepresidenta del Estado Estudiantil</span></div>
+              <p class="card-desc">"Coordinación general de proyectos."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #ff79c6;">📋 Ficha Técnica - Grisel</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Estudiante / UMSA</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 71111111</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Grisel" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
         </div>
-        <h3>Grisel</h3>
-        <span class="badge" style="background: #ff79c6; color: #000;">📜 Vicepresidenta del Estado Estudiantil</span>
-        <p>"Coordinación general de proyectos."</p>
-        <button class="btn-social" onclick="openModal('Grisel', '#', '#', '+591 71111111')">Contacto</button>
-      </div>
 
-      <div class="card student-card" style="border: 1px solid #27c93f; text-align:center;">
-        <div class="photo-frame" style="border-color:#27c93f;">
-          <img src="assets/fotos/jimena.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Jimena'" alt="Jimena">
+        <!-- Jimena -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #27c93f; text-align:center;">
+              <div class="photo-frame" style="border-color:#27c93f;">
+                <img src="assets/fotos/jimena.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Jimena'" alt="Jimena">
+              </div>
+              <h3 class="card-title">Jimena</h3>
+              <div><span class="badge" style="background: #27c93f; color: #000;">🏛️ Ministra de Economía y Finanzas</span></div>
+              <p class="card-desc">"Administración financiera del curso."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #27c93f;">📋 Ficha Técnica - Jimena</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Contabilidad / Finanzas</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 72222222</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Jimena" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
         </div>
-        <h3>Jimena</h3>
-        <span class="badge" style="background: #27c93f; color: #000;">🏛️ Ministra de Economía y Finanzas</span>
-        <p>"Administración financiera del curso."</p>
-        <button class="btn-social" onclick="openModal('Jimena', '#', '#', '+591 72222222')">Contacto</button>
-      </div>
 
-      <div class="card student-card" style="border: 1px solid #ff5f56; text-align:center;">
-        <div class="photo-frame" style="border-color:#ff5f56;">
-          <img src="assets/fotos/gabriel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Gabriel'" alt="Gabriel">
+        <!-- Gabriel -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #ff5f56; text-align:center;">
+              <div class="photo-frame" style="border-color:#ff5f56;">
+                <img src="assets/fotos/gabriel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Gabriel'" alt="Gabriel">
+              </div>
+              <h3 class="card-title">Gabriel</h3>
+              <div><span class="badge" style="background: #ff5f56; color: #fff;">⚽ Ministro de Deportes</span></div>
+              <p class="card-desc">"Coordinador deportivo (Varones)."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #ff5f56;">📋 Ficha Técnica - Gabriel</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Atleta / Sistemas</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 73333333</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Gabriel" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
         </div>
-        <h3>Gabriel</h3>
-        <span class="badge" style="background: #ff5f56; color: #fff;">⚽ Ministro de Deportes</span>
-        <p>"Coordinador deportivo (Varones)."</p>
-        <button class="btn-social" onclick="openModal('Gabriel', '#', '#', '+591 73333333')">Contacto</button>
-      </div>
 
-      <div class="card student-card" style="border: 1px solid #00f2fe; text-align:center;">
-        <div class="photo-frame" style="border-color:#00f2fe;">
-          <img src="assets/fotos/andrea.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Andrea'" alt="Andrea">
+        <!-- Andrea -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #00f2fe; text-align:center;">
+              <div class="photo-frame" style="border-color:#00f2fe;">
+                <img src="assets/fotos/andrea.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Andrea'" alt="Andrea">
+              </div>
+              <h3 class="card-title">Andrea</h3>
+              <div><span class="badge" style="background: #00f2fe; color: #000;">🏐 Ministra de Deportes</span></div>
+              <p class="card-desc">"Coordinadora deportiva (Mujeres)."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #00f2fe;">📋 Ficha Técnica - Andrea</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Estudiante / Deporte</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 74444444</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Andrea" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
         </div>
-        <h3>Andrea</h3>
-        <span class="badge" style="background: #00f2fe; color: #000;">🏐 Ministra de Deportes</span>
-        <p>"Coordinadora deportiva (Mujeres)."</p>
-        <button class="btn-social" onclick="openModal('Andrea', '#', '#', '+591 74444444')">Contacto</button>
-      </div>
 
+      </div>
     </div>
 
-    <hr style="border: 0; height: 1px; background: var(--border); margin: 40px 0;">
+    <!-- ESTUDIANTES DE LA CLASE -->
+    <div class="section-group" data-group="estudiantes">
+      <h2 class="section-title">💻 Integrantes de la Clase</h2>
+      <div class="grid" id="students-grid">
+        
+        <script>
+          const estudiantesClase = [
+            "Mijael", "Jhamil", "Omar", "Bryan", "Betty", "Subeida", "Jenny", "Alexis", "Vargas Cuchillos",
+            "Ivan", "Grisel", "Jimena", "Gabriel", "Andrea",
+            "Juan Pérez"
+          ];
 
-    <!-- INTEGRANTES DE LA CLASE -->
-    <h2>💻 Integrantes de la Clase</h2>
-    <div class="grid" id="students-grid">
-      
-      <script>
-        const alumnos = ["Mijael", "Jhamil", "Omar", "Bryan", "Betty", "Subeida", "Jenny", "Alexis", "Vargas Cuchillos"];
-        alumnos.forEach(nombre => {
-          document.write(`
-            <div class="card student-card" style="text-align:center;">
-              <div class="photo-frame">
-                <img src="assets/fotos/${nombre.toLowerCase().replace(' ','_')}.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${nombre}'" alt="${nombre}">
+          const cumpleañerosLista = ["Mijael", "Betty", "Ivan"];
+          const caidosLista = ["Juan Pérez"];
+
+          // Script inteligente para sincronizar los contadores y porcentajes reales del HUD
+          document.addEventListener("DOMContentLoaded", () => {
+            const totalEstudiantes = estudiantesClase.length;
+            const cantidadCaidos = caidosLista.length;
+            const cantidadActivos = totalEstudiantes - cantidadCaidos;
+            const cantidadCumple = cumpleañerosLista.length;
+
+            // Porcentajes reales matemáticamente coherentes
+            const pctActivos = Math.round((cantidadActivos / totalEstudiantes) * 100);
+            const pctCumple = Math.round((cantidadCumple / totalEstudiantes) * 100);
+            const pctCombat = Math.round((cantidadCaidos / totalEstudiantes) * 100);
+
+            // Inyectar valores en los contadores superiores
+            document.getElementById("active-count").innerText = cantidadActivos;
+            document.getElementById("birthday-count").innerText = cantidadCumple;
+            document.getElementById("combat-count").innerText = cantidadCaidos;
+
+            // Inyectar porcentajes y ajustar ancho de barras modernas (HUD)
+            document.getElementById("hud-pct-active").innerText = pctActivos + "%";
+            document.getElementById("hud-bar-active").style.width = pctActivos + "%";
+
+            document.getElementById("hud-pct-bday").innerText = pctCumple + "%";
+            document.getElementById("hud-bar-bday").style.width = pctCumple + "%";
+
+            document.getElementById("hud-pct-combat").innerText = pctCombat + "%";
+            document.getElementById("hud-bar-combat").style.width = pctCombat + "%";
+          });
+
+          estudiantesClase.forEach(nombre => {
+            const esPerdido = caidosLista.includes(nombre);
+            const esCumpleañero = cumpleañerosLista.includes(nombre);
+            
+            let selloHTML = '';
+            let badgeHTML = '';
+            
+            if (esPerdido) {
+              selloHTML = '<div class="combat-stamp-vertical">Caído en Combate</div>';
+              badgeHTML = '<div class="combat-badge">⚔️ Inactivo</div>';
+            } else if (esCumpleañero) {
+              selloHTML = '<div class="birthday-stamp-vertical">🎂 Cumpleañero del Mes</div>';
+              badgeHTML = '<div class="birthday-badge">🎂 Cumpleaños</div>';
+            }
+
+            document.write(`
+              <div class="card-container" data-category="estudiantes">
+                <div class="card-inner">
+                  ${selloHTML}
+                  ${badgeHTML}
+                  <div class="card-face" style="text-align:center;">
+                    <div class="photo-frame" ${esPerdido ? 'style="border-color: #ff5f56; filter: grayscale(80%);"' : (esCumpleañero ? 'style="border-color: #ffbd2e; box-shadow: 0 0 15px rgba(255,189,46,0.4);"' : '')}>
+                      <img src="assets/fotos/${nombre.toLowerCase().replace(' ','_')}.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${nombre}'" alt="${nombre}">
+                    </div>
+                    <h3 class="card-title">${nombre}</h3>
+                    <span class="badge" style="background: rgba(255,255,255,0.06); color: ${esPerdido ? '#ff5f56' : (esCumpleañero ? '#ffbd2e' : 'var(--primary)')};">
+                      ${esPerdido ? 'Ex-Estudiante / Leyenda' : (esCumpleañero ? '🎂 Celebración Activa' : 'Sistemas Informáticos')}
+                    </span>
+                    <p class="card-desc">
+                      ${esPerdido ? '"Dejó huella en el curso, pero emprendió nuevos rumbos profesionales."' : (esCumpleañero ? '"¡De festejo en la promoción CETAL nocturna este mes!"' : '"Integrante activo de la promoción CETAL nocturna."')}
+                    </p>
+                    <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+                  </div>
+                  <div class="card-back">
+                    <div>
+                      <div class="back-header" ${esPerdido ? 'style="color: #ff5f56;"' : (esCumpleañero ? 'style="color: #ffbd2e;"' : '')}>📋 Ficha Técnica - ${nombre}</div>
+                      <div class="back-content">
+                        <p><strong>Carrera:</strong> Sistemas Informáticos</p>
+                        <p><strong>Turno:</strong> Noche</p>
+                        <p><strong>Estado:</strong> ${esPerdido ? '<span style="color:#ff5f56; font-weight:bold;">Caído en Combate (Inactivo)</span>' : (esCumpleañero ? '<span style="color:#ffbd2e; font-weight:bold;">Activo 🎂 (Cumpleaños)</span>' : 'Activo (Sobreviviente)')}</p>
+                        <p><strong>WhatsApp:</strong> <span class="phone-highlight">${esPerdido ? 'N/D (Leyenda)' : '+591 70000000'}</span></p>
+                      </div>
+                    </div>
+                    <div class="back-footer">
+                      <div class="social-links">
+                        <a href="#" target="_blank">💼 LinkedIn</a>
+                        <a href="#" target="_blank">📘 Facebook</a>
+                        <a href="#" target="_blank">🤖 Discord</a>
+                        <a href="#" target="_blank">📦 GitHub</a>
+                      </div>
+                      <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${nombre}" alt="QR"></div>
+                    </div>
+                    <button class="btn-social" onclick="flipCard(this)">Volver</button>
+                  </div>
+                </div>
               </div>
-              <h3>${nombre}</h3>
-              <span class="badge">Sistemas Informáticos</span>
-              <p>"Integrante de la promoción CETAL."</p>
-              <button class="btn-social" onclick="openModal('${nombre}', '#', '#', '+591 70000000')">Contacto</button>
-            </div>
-          `);
-        });
-      </script>
+            `);
+          });
+        </script>
 
+      </div>
     </div>
 
   </main>
 
-  <div class="modal-overlay" id="contact-modal">
-    <div class="modal-card">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <h3 id="modal-name" style="color: var(--primary); margin-bottom: 15px;">Nombre</h3>
-      <p style="margin-bottom: 10px;"><strong>💼 LinkedIn:</strong> <a id="modal-linkedin" href="#" target="_blank" style="color: #00f2fe;">Ver Perfil</a></p>
-      <p style="margin-bottom: 10px;"><strong>📦 GitHub:</strong> <a id="modal-github" href="#" target="_blank" style="color: #00f2fe;">Ver Repositorios</a></p>
-      <p style="margin-bottom: 10px;"><strong>📱 WhatsApp:</strong> <span id="modal-phone" style="color:#3fb950;">+591 00000000</span></p>
-    </div>
-  </div>
-
   <footer><p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p></footer>
 
   <script>
-    document.getElementById('student-search').addEventListener('input', function(e) {
-      const term = e.target.value.toLowerCase();
-      document.querySelectorAll('.student-card').forEach(card => {
-        card.style.display = card.innerText.toLowerCase().includes(term) ? 'block' : 'none';
-      });
-    });
-
-    function openModal(name, linkedin, github, phone) {
-      document.getElementById('modal-name').innerText = name;
-      document.getElementById('modal-linkedin').href = linkedin;
-      document.getElementById('modal-github').href = github;
-      document.getElementById('modal-phone').innerText = phone;
-      document.getElementById('contact-modal').style.display = 'flex';
+    function setupSearch() {
+      const searchInput = document.getElementById('student-search');
+      if (searchInput) {
+        searchInput.removeEventListener('input', searchHandler);
+        searchInput.addEventListener('input', searchHandler);
+      }
     }
-    function closeModal() { document.getElementById('contact-modal').style.display = 'none'; }
 
-    // Audio persistente
+    function searchHandler(e) {
+      const term = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.card-container').forEach(container => {
+        const text = container.innerText.toLowerCase();
+        container.style.display = text.includes(term) ? 'block' : 'none';
+      });
+    }
+
+    setupSearch();
+
+    function filterCategory(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const controlsContainer = document.getElementById('controls-container');
+
+      if (category === 'all') {
+        controlsContainer.style.justifyContent = 'space-between';
+        controlsContainer.innerHTML = `
+          <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
+        `;
+        setupSearch();
+      } else if (category === 'directiva') {
+        controlsContainer.style.justifyContent = 'center';
+        controlsContainer.innerHTML = `
+          <a href="https://drive.google.com" target="_blank" id="drive-report-btn" class="drive-btn" title="Informes públicos de asistencia y aportes">
+            📂 Informes Mesa Directiva (Drive)
+          </a>
+        `;
+      } else if (category === 'docente') {
+        controlsContainer.style.justifyContent = 'space-between';
+        controlsContainer.innerHTML = '';
+      } else if (category === 'estudiantes') {
+        controlsContainer.style.justifyContent = 'space-between';
+        controlsContainer.innerHTML = `
+          <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
+        `;
+        setupSearch();
+      }
+
+      document.querySelectorAll('.section-group').forEach(group => {
+        if (category === 'all') {
+          group.style.display = 'block';
+        } else {
+          const groupType = group.getAttribute('data-group');
+          group.style.display = (groupType === category) ? 'block' : 'none';
+        }
+      });
+    }
+
+    function flipCard(btn) {
+      const currentInner = btn.closest('.card-inner');
+      
+      if (!currentInner.classList.contains('flipped')) {
+        document.querySelectorAll('.card-inner.flipped').forEach(inner => {
+          inner.classList.remove('flipped');
+        });
+      }
+      
+      currentInner.classList.toggle('flipped');
+    }
+
     const audio = document.getElementById('bg-music');
     const musicBtn = document.getElementById('btn-toggle-music');
+    
     if (localStorage.getItem('musicPlaying') === 'true') {
       audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
-      audio.play();
+      audio.play().catch(() => {});
     }
+
     musicBtn.addEventListener('click', function() {
-      if (audio.paused) { audio.play(); localStorage.setItem('musicPlaying', 'true'); }
-      else { audio.pause(); localStorage.setItem('musicPlaying', 'false'); }
+      if (audio.paused) {
+        audio.play();
+        localStorage.setItem('musicPlaying', 'true');
+        musicBtn.textContent = '⏸️ Pausar Música';
+      } else {
+        audio.pause();
+        localStorage.setItem('musicPlaying', 'false');
+        musicBtn.textContent = '🎵 Reproducir / Pausar Música';
+      }
     });
-    setInterval(() => { if (!audio.paused) localStorage.setItem('musicTime', audio.currentTime); }, 1000);
+
+    setInterval(() => {
+      if (!audio.paused) {
+        localStorage.setItem('musicTime', audio.currentTime);
+      }
+    }, 1000);
   </script>
 </body>
 </html>

@@ -24,7 +24,7 @@ body {
 }
 
 /* ==========================================
-   2. ENCABEZADO Y NAVEGACI√ìN
+   2. ENCABEZADO Y NAVEGACI”N
    ========================================== */
 header {
   text-align: center;
@@ -41,7 +41,7 @@ header h1 {
   word-wrap: break-word;
 }
 
-/* Men√∫ de navegaci√≥n flexible */
+/* Men˙ de navegaciÛn flexible */
 nav {
   display: flex;
   flex-wrap: wrap; /* Permite que los botones bajen si no caben */
@@ -94,7 +94,7 @@ nav a:hover, nav a.active {
 }
 
 /* ==========================================
-   4. ADAPTACI√ìN ESPEC√çFICA PARA CELULARES
+   4. ADAPTACI”N ESPECÕFICA PARA CELULARES
    ========================================== */
 @media (max-width: 600px) {
   body {
@@ -106,12 +106,12 @@ nav a:hover, nav a.active {
   }
 
   nav {
-    flex-direction: column; /* Apila los botones verticalmente en m√≥viles */
+    flex-direction: column; /* Apila los botones verticalmente en mÛviles */
     gap: 6px;
   }
 
   nav a {
-    width: 100%; /* Cada bot√≥n ocupa todo el ancho en celular */
+    width: 100%; /* Cada botÛn ocupa todo el ancho en celular */
     padding: 12px;
   }
 
@@ -119,7 +119,7 @@ nav a:hover, nav a.active {
     padding: 10px 5px;
   }
 
-  /* Ajustes para la terminal en pantallas t√°ctiles */
+  /* Ajustes para la terminal en pantallas t·ctiles */
   .terminal-container {
     padding: 10px;
   }

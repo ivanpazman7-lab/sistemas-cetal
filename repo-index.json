@@ -1,0 +1,66 @@
+{
+  "last_update": "03/09/2026 15:24:33",
+  "files": {
+    "01_basico": { 
+      "apuntes": [],
+      "excel_planillas": [],
+      "investigaciones": [],
+      "powerpoint_presentaciones": [],
+      "word_documentos": []
+    },
+    "02_auxiliar": { 
+      "apuntes": [],
+      "excel_planillas": [
+        "08-BasicoExcel.xlsx",
+        "09-BasicoExcel.xlsx",
+        "10-BasicoExcel.xlsx",
+        "11-BasicoExcel.xlsx",
+        "12-BasicoExcel.xlsx",
+        "13-BasicoExcel.xlsx",
+        "14-BasicoExcel.xlsx",
+        "15-BasicoExcel.xlsx",
+        "Excel ejercicios 8-9-10-11.docx",
+        "Impreso_de_los_ejercicios_12-15.docx"
+      ],
+      "investigaciones": [
+        "Sistemas_Operativos_Libres_Ensayo.docx",
+        "Monografia_Linux_Sistemas_Operativos_II.docx",
+        "Herramientas_de_Ofimatica.docx"
+      ],
+      "powerpoint_presentaciones": [],
+      "word_documentos": []
+    },
+    "03_tecnico_medio": { 
+      "apuntes": [],
+      "excel_planillas": [],
+      "investigaciones": [],
+      "powerpoint_presentaciones": [],
+      "word_documentos": []
+    },
+    "04_tecnico_superior": { 
+      "apuntes": [],
+      "excel_planillas": [],
+      "investigaciones": [],
+      "powerpoint_presentaciones": [],
+      "word_documentos": []
+    },
+    "05_directiva_cetal": {
+      "apuntes": [],
+      "excel_planillas": [],
+      "investigaciones": [],
+      "powerpoint_presentaciones": [],
+      "word_documentos": [
+        "guia-practica-reglamento-cetal.docx",
+        "Reglamento_Junta_Directiva_Sistemas_Informaticos.docx",
+        "reglamento-cetal-2026.docx"
+      ]
+    },
+    "Proyectos": {
+      "apuntes": [],
+      "excel_planillas": [],
+      "investigaciones": [],
+      "powerpoint_presentaciones": [],
+      "word_documentos": []
+    }
+  }
+}
