@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -6,75 +6,166 @@
   <title>Bitácora de Actividades | Sistemas CETAL</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .timeline-controls {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
-      background: #161b22; padding: 15px; border-radius: 10px; border: 1px solid var(--border);
-    }
-    .btn-filter {
-      background: #238636; color: #fff; border: none; padding: 10px 18px;
-      border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s;
-    }
-    .btn-filter:hover { background: #2ea043; }
-
-    /* LÍNEA DE ENERGÍA NEÓN ANIMADA */
-    .timeline { position: relative; max-width: 900px; margin: 0 auto; padding: 20px 0; }
-    
-    .timeline::after {
-      content: ''; position: absolute; width: 6px;
-      background: linear-gradient(180deg, #00f2fe, #ff007f, #3fb950, #00f2fe);
-      background-size: 100% 400%;
-      animation: energyFlow 4s linear infinite;
-      top: 0; bottom: 0; left: 50%; margin-left: -3px; border-radius: 4px;
-      box-shadow: 0 0 15px #00f2fe, 0 0 25px #ff007f;
+    /* Panel de Ordenamiento */
+    .filter-container {
+      text-align: center;
+      margin: 20px 0 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    @keyframes energyFlow {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 0% 100%; }
+    .filter-btn {
+      background: #161b22;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .timeline.reverse-flow::after {
-      animation: energyFlowReverse 4s linear infinite;
-    }
-    @keyframes energyFlowReverse {
-      0% { background-position: 0% 100%; }
-      100% { background-position: 0% 0%; }
+    .filter-btn:hover, .filter-btn.active {
+      background: #238636;
+      color: #ffffff;
+      border-color: #3fb950;
+      box-shadow: 0 0 10px rgba(35, 134, 54, 0.5);
     }
 
-    .timeline-container { padding: 10px 40px; position: relative; width: 50%; box-sizing: border-box; }
-    .timeline-container.left { left: 0; }
-    .timeline-container.right { left: 50%; }
-    
-    .timeline-container::after {
-      content: '⚡'; position: absolute; width: 24px; height: 24px; right: -12px;
-      background: #0d1117; border: 2px solid #00f2fe; top: 20px; border-radius: 50%;
-      z-index: 2; text-align: center; font-size: 12px; line-height: 22px;
+    /* Estructura de la Línea de Tiempo Neón */
+    .timeline-wrapper {
+      position: relative;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 10px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Línea vertical central fosforescente */
+    .timeline-wrapper::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      background: #00f2fe;
+      box-shadow: 0 0 12px #00f2fe, 0 0 25px #238636;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -2px;
+    }
+
+    /* Contenedores de eventos alternados */
+    .timeline-item {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+      box-sizing: border-box;
+    }
+
+    /* Nodos circulares neón en el centro */
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      right: -8px;
+      background-color: #0d1117;
+      border: 3px solid #00f2fe;
+      top: 25px;
+      border-radius: 50%;
+      z-index: 1;
       box-shadow: 0 0 10px #00f2fe;
     }
-    .timeline-container.right::after { left: -12px; }
 
+    /* Posicionamiento Izquierda / Derecha */
+    .left { left: 0; }
+    .right { left: 50%; }
+
+    .right::after { left: -8px; }
+
+    /* Estilo de Tarjetas Cyberpunk */
     .timeline-content {
-      padding: 20px; background: #161b22; border: 1px solid #30363d;
-      border-radius: 10px; transition: transform 0.3s ease;
+      padding: 20px;
+      background: #161b22;
+      position: relative;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     }
-    .timeline-content:hover { transform: translateY(-5px); border-color: #00f2fe; }
-    .timeline-content img { width: 100%; border-radius: 6px; margin-top: 10px; border: 1px solid #30363d; }
-    .timeline-date { color: #58a6ff; font-weight: bold; font-family: monospace; font-size: 0.9rem; }
 
-    @media screen and (max-width: 768px) {
-      .timeline::after { left: 31px; }
-      .timeline-container { width: 100%; padding-left: 70px; padding-right: 25px; }
-      .timeline-container.right { left: 0%; }
-      .timeline-container.left::after, .timeline-container.right::after { left: 23px; }
+    .event-date {
+      color: #00f2fe;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
     }
-    .music-btn { background: #00f2fe; color: #0d1117; border: none; padding: 6px 14px; border-radius: 15px; font-weight: bold; cursor: pointer; }
+
+    .event-title {
+      color: #58a6ff;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .event-description {
+      color: #c9d1d9;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .photo-card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 6px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: auto;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .photo-caption {
+      font-size: 0.8rem;
+      color: #8b949e;
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* Adaptación Responsiva para Celulares */
+    @media screen and (max-width: 768px) {
+      .timeline-wrapper::after { left: 20px; }
+      .timeline-item { width: 100%; padding-left: 50px; padding-right: 15px; }
+      .timeline-item::after { left: 12px; }
+      .right { left: 0%; }
+    }
+
+    .music-btn {
+      background: #00f2fe;
+      color: #0d1117;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Bitácora de Campo & Cronología CETAL</h1>
-    <p>Historial cronológico de proyectos, prácticas y eventos destacados</p>
+    <h1>Bitácora de Actividades y Eventos</h1>
+    <p>Línea de Tiempo Histórica - Carrera de Sistemas Informáticos CETAL</p>
     <div style="margin-top: 10px;">
       <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
       <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
@@ -91,37 +182,60 @@
 
   <main class="container">
 
-    <div class="timeline-controls">
-      <span><strong>Línea de Energía y Cronología:</strong></span>
-      <button class="btn-filter" id="btn-order" onclick="toggleOrder()">⚡ Flujo: Ver desde el Inicio (Primeros Días)</button>
+    <!-- Botones para alternar el orden -->
+    <div class="filter-container">
+      <button class="filter-btn active" id="btn-asc" onclick="sortTimeline('asc')">⬇️ Antiguo a Reciente (Cronológico)</button>
+      <button class="filter-btn" id="btn-desc" onclick="sortTimeline('desc')">⬆️ Reciente a Antiguo (Inverso)</button>
     </div>
 
-    <div class="timeline" id="timeline-wrapper">
-      
-      <div class="timeline-container left">
+    <div class="timeline-wrapper" id="timeline-wrapper">
+
+      <!-- 1. EVENTO: Febrero 2026 -->
+      <div class="timeline-item left" data-date="2026-02-01">
         <div class="timeline-content">
-          <span class="timeline-date">📌 Febrero 2026</span>
-          <h3 style="color: var(--primary); margin-top: 5px;">Inicio de Gestión Académica CETAL</h3>
-          <p>Inicio oficial de clases del Turno Noche. Conformación del grupo de Sistemas Informáticos, asignación de laboratorios y estructuración del plan de estudios.</p>
-          <img src="assets/bitacora/2026-02-inicio_clases.jpg" alt="Inicio de clases" onerror="this.src='https://via.placeholder.com/400x200?text=Foto+Laboratorio+CETAL'">
+          <div class="event-date">📅 Febrero de 2026 | ⏰ Turno Noche</div>
+          <h3 class="event-title">Inicio de Actividades Académicas 2026</h3>
+          <p class="event-description">
+            Apertura oficial de la gestión académica para la carrera de Sistemas Informáticos en el Turno Noche del Centro CETAL.
+          </p>
+          <div class="photo-card">
+            <img src="assets/inicio-clases.jpg" alt="Inicio de Clases CETAL 2026" onerror="this.src='https://via.placeholder.com/300x180?text=Inicio+de+Clases+2026'">
+            <span class="photo-caption">Primer día de clases y bienvenida a los estudiantes</span>
+          </div>
         </div>
       </div>
 
-      <div class="timeline-container right">
+      <!-- 2. EVENTO: 5 de Agosto de 2026 -->
+      <div class="timeline-item right" data-date="2026-08-05">
         <div class="timeline-content">
-          <span class="timeline-date">📌 Abril 2026</span>
-          <h3 style="color: var(--primary); margin-top: 5px;">Configuración de Servidores & Terminal Bash</h3>
-          <p>Prácticas intensivas de comandos Linux, automatización con scripts Shell/Batch y despliegue de copias de seguridad.</p>
-          <img src="assets/bitacora/2026-03-laboratorio_redes.jpg" alt="Prácticas Linux" onerror="this.src='https://via.placeholder.com/400x200?text=Practicas+Linux+y+Terminal'">
+          <div class="event-date">📅 Miércoles, 5 de Agosto de 2026 | ⏰ 14:00 hrs</div>
+          <h3 class="event-title">Desfile Cívico - Representación CETAL</h3>
+          <p class="event-description">
+            Participación de la delegación del Turno Noche. Encabezando la marcha estuvo el bloque especial de Sistemas Informáticos junto al plantel docente.
+          </p>
+          <div class="photo-card">
+            <img src="assets/desfile-01.jpg" alt="Desfile General CETAL" onerror="this.src='https://via.placeholder.com/300x180?text=Foto+Desfile'">
+            <span class="photo-caption">Delegación del Turno Noche en marcha</span>
+          </div>
+          <div class="photo-card">
+            <img src="assets/desfile-estudiantes.jpg" alt="Bloque Sistemas" onerror="this.src='https://via.placeholder.com/300x180?text=Bloque+Sistemas'">
+            <span class="photo-caption">Bloque de Sistemas Informáticos y Docentes</span>
+          </div>
         </div>
       </div>
 
-      <div class="timeline-container left">
+      <!-- 3. EVENTO: 28 de Agosto de 2026 -->
+      <div class="timeline-item left" data-date="2026-08-28">
         <div class="timeline-content">
-          <span class="timeline-date">📌 Mayo 2026</span>
-          <h3 style="color: var(--primary); margin-top: 5px;">Confraternización y Torneos Deportivos</h3>
-          <p>Participación de los equipos del curso en los torneos institucionales de Fútbol y Wally representando a Sistemas CETAL.</p>
-          <img src="assets/bitacora/2026-04-campeonato_deportes.jpg" alt="Torneo Deportivo" onerror="this.src='https://via.placeholder.com/400x200?text=Torneo+Deportivo+CETAL'">
+          <div class="event-date">📅 Viernes, 28 de Agosto de 2026 | ⏰ 19:00 hrs</div>
+          <h3 class="event-title">Entrega de Maletas por la Alcaldía</h3>
+          <p class="event-description">
+            Acto oficial de entrega de maletas equipadas por parte de la Alcaldía al Centro CETAL para su distribución a los estudiantes.
+          </p>
+          <div class="photo-card">
+            <img src="assets/maletas-alcaldia.jpg" alt="Entrega de Maletas Alcaldia" onerror="this.src='https://via.placeholder.com/300x180?text=Entrega+Maletas'">
+            <span class="photo-caption">Entrega formal de maletas institucionales</span>
+          </div>
         </div>
       </div>
 
@@ -134,28 +248,32 @@
   </footer>
 
   <script>
-    let isAscending = false;
-
-    function toggleOrder() {
+    /* Función para ordenar la línea de tiempo */
+    function sortTimeline(order) {
       const wrapper = document.getElementById('timeline-wrapper');
-      const items = Array.from(wrapper.getElementsByClassName('timeline-container'));
-      const btn = document.getElementById('btn-order');
-      
-      items.reverse();
-      wrapper.innerHTML = '';
-      
-      items.forEach((item, idx) => {
-        item.classList.remove('left', 'right');
-        item.classList.add(idx % 2 === 0 ? 'left' : 'right');
-        wrapper.appendChild(item);
+      const items = Array.from(wrapper.getElementsByClassName('timeline-item'));
+
+      document.getElementById('btn-asc').classList.toggle('active', order === 'asc');
+      document.getElementById('btn-desc').classList.toggle('active', order === 'desc');
+
+      items.sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-date'));
+        const dateB = new Date(b.getAttribute('data-date'));
+        return order === 'asc' ? dateA - dateB : dateB - dateA;
       });
 
-      wrapper.classList.toggle('reverse-flow');
-
-      isAscending = !isAscending;
-      btn.innerText = isAscending ? "⚡ Flujo: Ver desde el Final (Más Reciente)" : "⚡ Flujo: Ver desde el Inicio (Primeros Días)";
+      items.forEach((item, index) => {
+        item.classList.remove('left', 'right');
+        if (index % 2 === 0) {
+          item.classList.add('left');
+        } else {
+          item.classList.add('right');
+        }
+        wrapper.appendChild(item);
+      });
     }
 
+    /* Control de Audio */
     const audio = document.getElementById('bg-music');
     const musicBtn = document.getElementById('btn-toggle-music');
     
