@@ -6,21 +6,173 @@
   <title>Inicio | Sistemas Informáticos CETAL</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #111d35 0%, #070a13 70%);
+      --card-bg: rgba(19, 27, 46, 0.9);
+      --border: rgba(0, 242, 254, 0.25);
+      --primary: #00f2fe;
+      --accent: #3fb950;
+      --text-main: #f0f6fc;
+      --text-muted: #919eaf;
+      --shadow: 0 10px 30px -10px rgba(0,0,0,0.7);
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 15px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    header h1 {
+      font-size: 26px;
+      margin: 0 0 8px 0;
+      background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: 0 0 12px 0;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(7, 10, 19, 0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    nav a.active, nav a:hover {
+      color: #fff;
+      background: rgba(0, 242, 254, 0.15);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
     .music-btn {
       background: #00f2fe; color: #0d1117; border: none;
-      padding: 10px 20px; font-weight: bold; border-radius: 20px;
-      cursor: pointer; font-size: 0.95rem; transition: all 0.3s ease;
+      padding: 8px 16px; font-weight: bold; border-radius: 20px;
+      cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease;
       display: inline-flex; align-items: center; gap: 8px;
     }
     .music-btn:hover { background: #3fb950; transform: scale(1.03); }
     
     .status-banner {
-      background: #0d1117; border: 1px solid #00f2fe;
-      border-radius: 10px; padding: 20px; margin-top: 20px; text-align: center;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px; margin-bottom: 25px; text-align: center;
+      box-shadow: var(--shadow); backdrop-filter: blur(10px);
+      position: relative; overflow: hidden;
     }
-    .clock-display { font-family: 'Courier New', monospace; color: #00f2fe; font-size: 1.2rem; font-weight: bold; text-shadow: 0 0 5px #00f2fe; }
-    .day-message { font-size: 1.1rem; margin-top: 8px; color: #ffbd2e; font-weight: 600; }
+    .status-banner::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .clock-display { font-family: 'Courier New', monospace; color: #fff; font-size: 1.15rem; font-weight: bold; margin-top: 10px; }
+    .day-message { font-size: 1rem; margin-top: 8px; color: #ffbd2e; font-weight: 600; font-style: italic; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    .hero-card h2 {
+      font-size: 20px;
+      margin-top: 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-card p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 22px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+    }
+    .stat-card h3 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin: 0 0 6px 0;
+      font-family: monospace;
+    }
+    .stat-card p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin: 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 40px;
+      background: rgba(7, 10, 19, 0.4);
+    }
   </style>
 </head>
 <body>
@@ -29,8 +181,8 @@
     <h1>Sistemas Informáticos</h1>
     <p>El equipo de sistemas CETAL te da la bienvenida a su página web oficial (Promoción 2026 - 2027)</p>
     
-    <div style="margin-top: 15px;">
-      <button id="btn-toggle-music" class="music-btn">▶️ Reproducir / Pausar Música del Curso</button>
+    <div style="margin-top: 12px;">
+      <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
       <audio id="bg-music" loop preload="auto">
         <source src="assets/audio.mp3" type="audio/mpeg">
       </audio>
@@ -47,33 +199,35 @@
 
   <main class="container">
     
-    <!-- ENCABEZADO Y RELOJ LINUX DINÁMICO -->
+    <!-- BANNER DE TELEMETRÍA Y ESTADO DE RED -->
     <div class="status-banner">
-      <div style="font-family:'Courier New', monospace; color:#3fb950; font-weight:bold; font-size:1.1rem;">
+      <div style="font-family:'Courier New', monospace; color:#3fb950; font-weight:bold; font-size:0.95rem; letter-spacing: 1px;">
         [SYSTEM_STATUS: <span style="color:#00f2fe;">ONLINE</span>] <span id="loading-bar">[░░░░░░░░░░░░] 0%</span>
       </div>
-      <div class="clock-display" id="clock" style="margin-top:8px;">
+      <div class="clock-display" id="clock">
         Iniciando conexión con el servidor CETAL...
       </div>
       <div class="day-message" id="day-message"></div>
     </div>
 
-    <section class="card" style="margin-top: 25px;">
+    <!-- TARJETA PRINCIPAL DE BIENVENIDA -->
+    <section class="card hero-card">
       <h2>A las Ingenieras e Ingenieros de la Vida 🌟</h2>
       <p>Gracias por ser nuestra fuente de energía y por el esfuerzo inmenso de superarse cada día en CETAL. Esta plataforma conmemorativa registra nuestro paso, avances y momentos destacados durante la formación técnica.</p>
     </section>
 
-    <div class="grid" style="margin-top: 20px;">
-      <div class="card" style="text-align: center;">
-        <h3 style="color: var(--primary); font-size: 2rem;">21</h3>
+    <!-- TARJETAS DE ESTADÍSTICAS / MÉTRICAS -->
+    <div class="grid">
+      <div class="card stat-card">
+        <h3>21</h3>
         <p>Integrantes (20 Estudiantes + 1 Docente)</p>
       </div>
-      <div class="card" style="text-align: center;">
-        <h3 style="color: var(--primary); font-size: 2rem;">2026 - 2027</h3>
+      <div class="card stat-card">
+        <h3>2026-2027</h3>
         <p>Gestión Académica</p>
       </div>
-      <div class="card" style="text-align: center;">
-        <h3 style="color: var(--primary); font-size: 2rem;">Turno Noche</h3>
+      <div class="card stat-card">
+        <h3 style="font-size: 1.5rem; margin-top: 10px; margin-bottom: 12px;">Turno Noche</h3>
         <p>Sistemas Informáticos</p>
       </div>
     </div>
@@ -85,22 +239,25 @@
   </footer>
 
   <script>
-    // Reproductor de Música Continuo
+    // Reproductor de Música Continuo Sincronizado
     const audio = document.getElementById('bg-music');
     const musicBtn = document.getElementById('btn-toggle-music');
     
     if (localStorage.getItem('musicPlaying') === 'true') {
       audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
-      audio.play();
+      audio.play().catch(() => {});
+      musicBtn.textContent = '⏸️ Pausar Música';
     }
 
     musicBtn.addEventListener('click', function() {
       if (audio.paused) {
         audio.play();
         localStorage.setItem('musicPlaying', 'true');
+        musicBtn.textContent = '⏸️ Pausar Música';
       } else {
         audio.pause();
         localStorage.setItem('musicPlaying', 'false');
+        musicBtn.textContent = '🎵 Reproducir / Pausar Música';
       }
     });
 
@@ -110,7 +267,7 @@
       }
     }, 1000);
 
-    // Barra y Reloj Estilo Linux Dinámico
+    // Barra de Carga Estilo Linux Dinámica
     let progress = 0;
     function animateBar() {
       if (progress <= 100) {
@@ -118,7 +275,7 @@
         const bar = '█'.repeat(dots) + '░'.repeat(10 - dots);
         document.getElementById('loading-bar').innerText = `[${bar}] ${progress}%`;
         progress += 10;
-        setTimeout(animateBar, 80);
+        setTimeout(animateBar, 70);
       } else {
         document.getElementById('loading-bar').innerText = `[██████████] 100% OK`;
       }
@@ -130,7 +287,7 @@
       const dateStr = now.toLocaleDateString('es-ES', options);
       const timeStr = now.toLocaleTimeString('es-ES');
       
-      document.getElementById('clock').innerHTML = `📅 <strong>${dateStr.toUpperCase()}</strong> | ⏰ <strong>${timeStr}</strong> <br><span style="color:#8b949e; font-size:0.95rem;">📍 La Paz, Bolivia 🌤️ 14°C</span>`;
+      document.getElementById('clock').innerHTML = `📅 <strong>${dateStr.toUpperCase()}</strong> | ⏰ <strong>${timeStr}</strong> <br><span style="color:var(--text-muted); font-size:0.9rem; font-weight:normal;">📍 La Paz, Bolivia 🌤️ 14°C</span>`;
       
       const day = now.getDay();
       let msg = "";
