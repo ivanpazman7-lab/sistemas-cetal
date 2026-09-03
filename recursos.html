@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -209,14 +209,14 @@
     <div class="modal-box">
       <div class="modal-header">
         <div class="modal-title" id="modal-file-title">documento.docx</div>
-        <button class="modal-close" onclick="closeModal()">✕</button>
+        <button class="modal-close" onclick="closeModal()">?</button>
       </div>
       <div class="modal-content" id="modal-file-desc">
         Cargando metadatos del archivo y resumen académico del repositorio CETAL...
       </div>
       <div class="modal-actions">
         <button class="btn-action" onclick="closeModal()">Cerrar Ventana</button>
-        <button class="btn-action download" id="btn-download-action">📥 Descargar a la PC</button>
+        <button class="btn-action download" id="btn-download-action">?? Descargar a la PC</button>
       </div>
     </div>
   </div>
@@ -261,8 +261,8 @@
     <!-- Tablero de Ayuda Extendido (Básicos, Avanzados y Herramientas con Indicadores LED) -->
     <section class="cheat-sheet-section">
       <h3 class="section-title">
-        <span>🛠️ Tablero de Ayuda y Comandos Linux / Ciberseguridad (Estado LED Activo)</span>
-        <span style="font-size: 0.72rem; color: var(--text-green);">🟢 Activo / 🔴 Desactivado</span>
+        <span>??? Tablero de Ayuda y Comandos Linux / Ciberseguridad (Estado LED Activo)</span>
+        <span style="font-size: 0.72rem; color: var(--text-green);">?? Activo / ?? Desactivado</span>
       </h3>
       <div id="cmd-cheat-container">
         <!-- Se inyectará dinámicamente mediante JS -->
@@ -279,17 +279,17 @@
 
     // Base de datos completa de estudiantes, directiva y docente guía del CETAL
     const studentOsintDb = [
-      { name: "ivan", fullname: "Ivan (Abogado / SysAdmin)", phone: "+591 71234567", flag: "🇧🇴", reg: "CETAL-2026-084", role: "Sistemas Informáticos / Batman Mode / Automatización" },
-      { name: "freddy mamani", fullname: "Lic. Freddy Mamani Chuilla", phone: "+591 71500111", flag: "🇧🇴", reg: "CETAL-DOC-01", role: "Docente Guía de la Carrera" },
-      { name: "mijael", fullname: "Mijael", phone: "+591 72345678", flag: "🇧🇴", reg: "CETAL-2026-002", role: "Estudiante / Promoción Turno Noche" },
-      { name: "jhamil", fullname: "Jhamil", phone: "+591 73456789", flag: "🇧🇴", reg: "CETAL-2026-003", role: "Estudiante / Promoción Turno Noche" },
-      { name: "omar", fullname: "Omar", phone: "+591 74567890", flag: "🇧🇴", reg: "CETAL-2026-004", role: "Estudiante / Promoción Turno Noche" },
-      { name: "bryan", fullname: "Bryan", phone: "+591 75678901", flag: "🇧🇴", reg: "CETAL-2026-005", role: "Estudiante / Promoción Turno Noche" },
-      { name: "betty", fullname: "Betty", phone: "+591 76789012", flag: "🇧🇴", reg: "CETAL-2026-006", role: "Estudiante / Promoción Turno Noche" },
-      { name: "subeida", fullname: "Subeida", phone: "+591 77890123", flag: "🇧🇴", reg: "CETAL-2026-007", role: "Estudiante / Promoción Turno Noche" },
-      { name: "jenny", fullname: "Jenny", phone: "+591 78901234", flag: "🇧🇴", reg: "CETAL-2026-008", role: "Estudiante / Promoción Turno Noche" },
-      { name: "alexis", fullname: "Alexis", phone: "+591 79012345", flag: "🇧🇴", reg: "CETAL-2026-009", role: "Estudiante / Promoción Turno Noche" },
-      { name: "vargas cuchillos", fullname: "Vargas Cuchillos", phone: "+591 70123456", flag: "🇧🇴", reg: "CETAL-2026-010", role: "Estudiante / Promoción Turno Noche" }
+      { name: "ivan", fullname: "Ivan (Abogado / SysAdmin)", phone: "+591 71234567", flag: "????", reg: "CETAL-2026-084", role: "Sistemas Informáticos / Batman Mode / Automatización" },
+      { name: "freddy mamani", fullname: "Lic. Freddy Mamani Chuilla", phone: "+591 71500111", flag: "????", reg: "CETAL-DOC-01", role: "Docente Guía de la Carrera" },
+      { name: "mijael", fullname: "Mijael", phone: "+591 72345678", flag: "????", reg: "CETAL-2026-002", role: "Estudiante / Promoción Turno Noche" },
+      { name: "jhamil", fullname: "Jhamil", phone: "+591 73456789", flag: "????", reg: "CETAL-2026-003", role: "Estudiante / Promoción Turno Noche" },
+      { name: "omar", fullname: "Omar", phone: "+591 74567890", flag: "????", reg: "CETAL-2026-004", role: "Estudiante / Promoción Turno Noche" },
+      { name: "bryan", fullname: "Bryan", phone: "+591 75678901", flag: "????", reg: "CETAL-2026-005", role: "Estudiante / Promoción Turno Noche" },
+      { name: "betty", fullname: "Betty", phone: "+591 76789012", flag: "????", reg: "CETAL-2026-006", role: "Estudiante / Promoción Turno Noche" },
+      { name: "subeida", fullname: "Subeida", phone: "+591 77890123", flag: "????", reg: "CETAL-2026-007", role: "Estudiante / Promoción Turno Noche" },
+      { name: "jenny", fullname: "Jenny", phone: "+591 78901234", flag: "????", reg: "CETAL-2026-008", role: "Estudiante / Promoción Turno Noche" },
+      { name: "alexis", fullname: "Alexis", phone: "+591 79012345", flag: "????", reg: "CETAL-2026-009", role: "Estudiante / Promoción Turno Noche" },
+      { name: "vargas cuchillos", fullname: "Vargas Cuchillos", phone: "+591 70123456", flag: "????", reg: "CETAL-2026-010", role: "Estudiante / Promoción Turno Noche" }
     ];
 
     // Lista estructurada dividida en Básicos, Avanzados y Herramientas (con estado activo/desactivado LED)
@@ -330,7 +330,9 @@
         { cmd: "crontab", desc: "Programa tareas automáticas en segundo plano.", active: true },
         { cmd: "systemctl", desc: "Controla servicios y daemons del sistema.", active: false },
         { cmd: "awk", desc: "Procesador y filtrado avanzado de texto.", active: true },
-        { cmd: "sed", desc: "Editor de flujos de texto en línea.", active: true }
+        { cmd: "sed", desc: "Editor de flujos de texto en línea.", active: true },
+        { cmd: "update", desc: "Actualiza listas de paquetes (apt update).", active: true },
+        { cmd: "upgrade", desc: "Actualiza paquetes instalados (apt upgrade).", active: true }
       ],
       herramientas: [
         { cmd: "mrholmes", desc: "Herramienta OSINT para rastreo de identidades y datos.", active: true },
@@ -356,7 +358,7 @@
       let html = '';
 
       // Categoría Básicos
-      html += `<div class="category-title">📂 Comandos Básicos (Funcionales)</div>`;
+      html += `<div class="category-title">?? Comandos Básicos (Funcionales)</div>`;
       html += `<div class="cmd-grid">`;
       categorizedCommands.basicos.forEach(item => {
         html += generateCardHtml(item);
@@ -364,7 +366,7 @@
       html += `</div>`;
 
       // Categoría Avanzados
-      html += `<div class="category-title">⚡ Comandos Avanzados (Mixtos / Funcionales y Desactivados)</div>`;
+      html += `<div class="category-title">? Comandos Avanzados (Mixtos / Funcionales y Desactivados)</div>`;
       html += `<div class="cmd-grid">`;
       categorizedCommands.avanzados.forEach(item => {
         html += generateCardHtml(item);
@@ -372,7 +374,7 @@
       html += `</div>`;
 
       // Categoría Herramientas Ciberseguridad
-      html += `<div class="category-title">🛠️ Herramientas OSINT & Ciberseguridad (Estado LED)</div>`;
+      html += `<div class="category-title">??? Herramientas OSINT & Ciberseguridad (Estado LED)</div>`;
       html += `<div class="cmd-grid">`;
       categorizedCommands.herramientas.forEach(item => {
         html += generateCardHtml(item);
@@ -484,6 +486,7 @@
     let cmdHistory = [];
     let historyIndex = -1;
     let awaitingNethunterPassword = false;
+    let awaitingAptUpgradeConfirm = false;
 
     const cliInput = document.getElementById('cli-input');
     const outputDiv = document.getElementById('terminal-body');
@@ -535,7 +538,7 @@
       document.body.removeChild(link);
 
       setTimeout(() => {
-        printLine(`<span style="color:var(--text-green); font-weight:bold;">[✓] Archivo '${filename}' guardado con éxito en tu PC.</span>`);
+        printLine(`<span style="color:var(--text-green); font-weight:bold;">[?] Archivo '${filename}' guardado con éxito en tu PC.</span>`);
         outputDiv.scrollTop = outputDiv.scrollHeight;
         closeModal();
       }, 800);
@@ -564,16 +567,34 @@
         cmdHistory.push(fullCmd);
         printLine(`<span class="prompt"><span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path">${currentPath}</span>#</span> ${fullCmd}`);
         
+        if (awaitingAptUpgradeConfirm) {
+          awaitingAptUpgradeConfirm = false;
+          if (fullCmd.toLowerCase() === 'y' || fullCmd === '') {
+            printLine(`<span style="color:var(--text-yellow)">[+] Procesando actualización y curando paquetes bad...</span>`);
+            setTimeout(() => {
+              printLine(`<span style="color:var(--text-green)">Get:1 http://repo.cetal.edu/kali rolling/main amd64 packages [fixed]</span>`);
+              printLine(`<span style="color:var(--text-green)">Reading package lists... Done</span>`);
+              printLine(`<span style="color:var(--text-green)">Building dependency tree... Done</span>`);
+              printLine(`<span style="color:var(--text-green)">Calculating upgrade... Done</span>`);
+              printLine(`<span style="color:var(--text-green); font-weight:bold;">[+] 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded. Todos los paquetes bad han sido curados y actualizados con éxito.</span>`);
+              outputDiv.scrollTop = outputDiv.scrollHeight;
+            }, 600);
+          } else {
+            printLine(`<span style="color:var(--text-red)">Abortado por el usuario (n).</span>`);
+          }
+          outputDiv.scrollTop = outputDiv.scrollHeight;
+          return;
+        }
+
         if (awaitingNethunterPassword) {
           awaitingNethunterPassword = false;
           if (fullCmd === '767') {
             printLine(`<span style="color:var(--text-green)">[+] Contraseña correcta. Desplegando Kali NetHunter rootfs completo en arquitectura arm64...</span>`);
-            printLine(`<span style="color:var(--text-cyan)">[✓] Entorno chroot configurado exitosamente. Bienvenido al kernel móvil.</span>`);
+            printLine(`<span style="color:var(--text-cyan)">[?] Entorno chroot configurado exitosamente. Bienvenido al kernel móvil.</span>`);
           } else {
             printLine(`<span style="color:var(--text-red)">[-] Contraseña incorrecta. Acceso denegado.</span>`);
             printLine(`<span style="color:var(--text-yellow)">[*] Analizando conexiones remotas e interfaz de red en busca de intrusos...</span>`);
             
-            // Conteo de 5 segundos con reporte de ubicación simulada
             let count = 5;
             let interval = setInterval(() => {
               if (count > 0) {
@@ -581,7 +602,7 @@
                 count--;
               } else {
                 clearInterval(interval);
-                printLine(`<span style="color:var(--text-red); font-weight:bold; font-size:1.05rem;">[!] UBICACIÓN DETECTADA: Bolivia 🇧🇴 (La Paz) - IP Pública Registrada.</span>`);
+                printLine(`<span style="color:var(--text-red); font-weight:bold; font-size:1.05rem;">[!] UBICACIÓN DETECTADA: Bolivia ???? (La Paz) - IP Pública Registrada.</span>`);
                 printLine(`<span style="color:var(--text-green); font-weight:bold; font-size:1.1rem; text-shadow:0 0 10px #00ff66;">¡Te la creíste! xD Volviendo al comando principal...</span>`);
                 outputDiv.scrollTop = outputDiv.scrollHeight;
               }
@@ -597,19 +618,19 @@
         if (cmd === 'ls') {
           let res = [];
           if (currentPath === "/archivos") {
-            res.push(`<span class="tool-item" onclick="runToolQuick('mrholmes')">🛠️ mrholmes</span>`);
-            res.push(`<span class="tool-item" onclick="runToolQuick('iptracer')">🛠️ ip-tracer</span>`);
-            res.push(`<span class="tool-item" onclick="runToolQuick('phoneinfoga')">🛠️ phoneinfoga</span>`);
-            res.push(`<span class="tool-item" onclick="runToolQuick('john')">🛠️ john</span>`);
+            res.push(`<span class="tool-item" onclick="runToolQuick('mrholmes')">??? mrholmes</span>`);
+            res.push(`<span class="tool-item" onclick="runToolQuick('iptracer')">??? ip-tracer</span>`);
+            res.push(`<span class="tool-item" onclick="runToolQuick('phoneinfoga')">??? phoneinfoga</span>`);
+            res.push(`<span class="tool-item" onclick="runToolQuick('john')">??? john</span>`);
           }
           let node = getNodeAtPath(currentPath);
           if (node && node.children) {
             for (let k in node.children) {
               let item = node.children[k];
               if (item.type === 'dir') {
-                res.push(`<span class="dir-item" onclick="executeCdFromPrompt('${k}')">📂 ${k}/</span>`);
+                res.push(`<span class="dir-item" onclick="executeCdFromPrompt('${k}')">?? ${k}/</span>`);
               } else {
-                res.push(`<span class="file-item" onclick="openPreviewModal('${k}')">📄 ${k}</span>`);
+                res.push(`<span class="file-item" onclick="openPreviewModal('${k}')">?? ${k}</span>`);
               }
             }
           }
@@ -617,11 +638,13 @@
         } 
         else if (cmd === 'cd') {
           let target = args[1];
-          if (target === '..') {
+          if (!target || target === '~') {
+            currentPath = "/archivos";
+          } else if (target === '..') {
             if (currentPath !== "/archivos") {
               let parts = currentPath.split("/"); parts.pop(); currentPath = parts.join("/");
             }
-          } else if (target) {
+          } else {
             let clean = target.replace("/", "").toLowerCase();
             let node = getNodeAtPath(currentPath);
             let foundKey = null;
@@ -637,7 +660,89 @@
             }
           }
           pathDisplay.innerText = currentPath;
-        } 
+        }
+        else if (cmd === 'pwd') {
+          printLine(currentPath);
+        }
+        else if (cmd === 'whoami') {
+          printLine("root");
+        }
+        else if (cmd === 'date') {
+          printLine(new Date().toString());
+        }
+        else if (cmd === 'cal') {
+          printLine(`<pre style="color:var(--text-cyan)">     September 2026\nSu Mo Tu We Th Fr Sa\n       1  2  3  4  5\n 6  7  8  9 10 11 12\n13 14 15 16 17 18 19\n20 21 22 23 24 25 26\n27 28 29 30</pre>`);
+        }
+        else if (cmd === 'history') {
+          printLine(cmdHistory.map((c, i) => `  ${i+1}  ${c}`).join("<br>"));
+        }
+        else if (cmd === 'echo') {
+          printLine(args.slice(1).join(" "));
+        }
+        else if (cmd === 'touch') {
+          let filename = args[1];
+          if (filename) {
+            let node = getNodeAtPath(currentPath);
+            if (node && node.children) {
+              node.children[filename] = { type: "file" };
+              printLine(`<span style="color:var(--text-green)">Archivo '${filename}' creado exitosamente.</span>`);
+            }
+          } else {
+            printLine(`<span style="color:var(--text-red)">touch: falta el nombre del archivo</span>`);
+          }
+        }
+        else if (cmd === 'mkdir') {
+          let dirname = args[1];
+          if (dirname) {
+            let node = getNodeAtPath(currentPath);
+            if (node && node.children) {
+              node.children[dirname] = { type: "dir", children: {} };
+              printLine(`<span style="color:var(--text-green)">Directorio '${dirname}' creado exitosamente.</span>`);
+            }
+          } else {
+            printLine(`<span style="color:var(--text-red)">mkdir: falta el nombre del directorio</span>`);
+          }
+        }
+        else if (cmd === 'cat') {
+          let filename = args[1];
+          if (filename) {
+            let node = getNodeAtPath(currentPath);
+            if (node && node.children && node.children[filename]) {
+              printLine(`--- Contenido de ${filename} ---\n[Archivo verificado del repositorio CETAL Sistemas Informáticos 2026]`);
+            } else {
+              printLine(`<span style="color:var(--text-red)">cat: ${filename}: No existe el archivo</span>`);
+            }
+          } else {
+            printLine(`<span style="color:var(--text-red)">cat: falta el archivo</span>`);
+          }
+        }
+        else if (cmd === 'update' || fullCmd.includes('apt update')) {
+          printLine(`<span style="color:var(--text-yellow)">Ign:1 http://http.kali.org/kali kali-rolling InRelease</span>`);
+          printLine(`<span style="color:var(--text-yellow)">Get:2 http://security.kali.org kali-security InRelease [24.6 kB]</span>`);
+          printLine(`<span style="color:var(--text-red)">Hit:3 http://repo.cetal.edu/kali main bad</span>`);
+          printLine(`<span style="color:var(--text-red)">Err:4 http://repo.cetal.edu/sistemas corrupt package lists [bad]</span>`);
+          printLine(`<span style="color:var(--text-green)">Reading package lists... Done</span>`);
+          printLine(`<span style="color:var(--text-red); font-weight:bold;">E: Some index files failed to download. They have been ignored, or old ones used instead. [bad]</span>`);
+        }
+        else if (cmd === 'upgrade' || fullCmd.includes('apt upgrade')) {
+          let hasY = fullCmd.includes('-y');
+          printLine(`<span style="color:var(--text-yellow)">Reading package lists... Done</span>`);
+          printLine(`<span style="color:var(--text-yellow)">Building dependency tree... Done</span>`);
+          printLine(`<span style="color:var(--text-yellow)">Calculating upgrade... Done</span>`);
+          printLine(`<span style="color:var(--text-main)">0 upgraded, 0 newly installed, 2 to remove and 0 not upgraded. [bad]</span>`);
+          
+          if (hasY) {
+            printLine(`<span style="color:var(--text-green)">[+] Flag -y detectada. Curando paquetes bad y actualizando automáticamente...</span>`);
+            setTimeout(() => {
+              printLine(`<span style="color:var(--text-green)">Setting up security-fix (2026.2-1) ... [fixed]</span>`);
+              printLine(`<span style="color:var(--text-green); font-weight:bold;">[+] Sistema actualizado y curado correctamente.</span>`);
+              outputDiv.scrollTop = outputDiv.scrollHeight;
+            }, 500);
+          } else {
+            printLine(`<span style="color:var(--text-yellow); font-weight:bold;">Do you want to continue? [Y/n] </span>`);
+            awaitingAptUpgradeConfirm = true;
+          }
+        }
         else if (cmd === 'wget') {
           let file = args[1];
           let node = getNodeAtPath(currentPath);
@@ -666,7 +771,7 @@
         else if (fullCmd.includes('kali-nethunter-rootfs-full-arm64.tar.xz')) {
           runNetHunterExtract();
         }
-        else if (cmd === 'hydra' || cmd === 'sqlmap' || cmd === 'metasploit') {
+        else if (cmd === 'hydra' || cmd === 'sqlmap' || cmd === 'metasploit' || cmd === 'iptables' || cmd === 'systemctl') {
           printLine(`<span style="color:var(--text-red)">[!] ${cmd}: Herramienta desactivada (Luz roja). Verifique el tablero de recursos.</span>`);
         }
         else if (cmd === 'clear') {
@@ -678,7 +783,7 @@
             <div class="clean-kali-banner">> KALI LINUX OSINT_</div>
           `;
         } else {
-          printLine(`<span style="color:var(--text-red)">Comando desconocido. Revisa el tablero de ayuda inferior o prueba 'mrholmes [nombre/cel]', 'ip-tracer', 'phoneinfoga', 'john'.</span>`);
+          printLine(`<span style="color:var(--text-red)">Comando desconocido. Revisa el tablero de ayuda inferior o prueba 'update', 'upgrade', 'mrholmes', 'ip-tracer', 'phoneinfoga', 'john'.</span>`);
         }
       }
     });
@@ -718,9 +823,9 @@
           results.forEach(student => {
             printLine(`<div style="background:#04070d; border:1px solid #1b283b; padding:8px; border-radius:4px; margin-top:5px;">
               <span style="color:var(--text-cyan); font-weight:bold;">[+] TARGET ENCONTRADO:</span> ${student.fullname}<br>
-              <span style="color:var(--text-green);">📱 Teléfono:</span> ${student.phone} ${student.flag}<br>
-              <span style="color:var(--text-yellow);">🆔 Registro:</span> ${student.reg}<br>
-              <span style="color:var(--text-muted);">📌 Rol/Perfil:</span> ${student.role}
+              <span style="color:var(--text-green);">?? Teléfono:</span> ${student.phone} ${student.flag}<br>
+              <span style="color:var(--text-yellow);">?? Registro:</span> ${student.reg}<br>
+              <span style="color:var(--text-muted);">?? Rol/Perfil:</span> ${student.role}
             </div>`);
           });
         }
@@ -733,9 +838,9 @@
       setTimeout(() => {
         printLine(`<div style="background:#04070d; border:1px solid #1b283b; padding:8px; border-radius:4px; margin-top:5px;">
           <span style="color:var(--text-cyan); font-weight:bold;">[+] IP Analizada:</span> ${ip}<br>
-          <span style="color:var(--text-green);">🌍 País:</span> Bolivia 🇧🇴<br>
-          <span style="color:var(--text-yellow);">🏙️ Ciudad:</span> La Paz<br>
-          <span style="color:var(--text-muted);">🏢 ISP:</span> Entel / AXS Bolivia
+          <span style="color:var(--text-green);">?? País:</span> Bolivia ????<br>
+          <span style="color:var(--text-yellow);">??? Ciudad:</span> La Paz<br>
+          <span style="color:var(--text-muted);">?? ISP:</span> Entel / AXS Bolivia
         </div>`);
         outputDiv.scrollTop = outputDiv.scrollHeight;
       }, 500);
@@ -747,10 +852,10 @@
         let match = studentOsintDb.find(s => s.phone.includes(phone));
         let ownerInfo = match ? `${match.fullname} (${match.role})` : "Sujeto no listado / Activo en red";
         printLine(`<div style="background:#04070d; border:1px solid #1b283b; padding:8px; border-radius:4px; margin-top:5px;">
-          <span style="color:var(--text-cyan); font-weight:bold;">[+] Número:</span> ${phone} 🇧🇴<br>
-          <span style="color:var(--text-green);">👤 Titular / Registro:</span> ${ownerInfo}<br>
-          <span style="color:var(--text-yellow);">📋 Formato internacional válido:</span> Sí (+591)<br>
-          <span style="color:var(--text-muted);">🔍 Estado en base CETAL:</span> Verificado
+          <span style="color:var(--text-cyan); font-weight:bold;">[+] Número:</span> ${phone} ????<br>
+          <span style="color:var(--text-green);">?? Titular / Registro:</span> ${ownerInfo}<br>
+          <span style="color:var(--text-yellow);">?? Formato internacional válido:</span> Sí (+591)<br>
+          <span style="color:var(--text-muted);">?? Estado en base CETAL:</span> Verificado
         </div>`);
         outputDiv.scrollTop = outputDiv.scrollHeight;
       }, 500);
