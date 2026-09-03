@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio | Sistemas Informáticos CETAL</title>
+  <title>Anuario | Sistemas CETAL</title>
   <link rel="stylesheet" href="style.css">
   <style>
     :root {
@@ -85,83 +85,443 @@
       padding: 30px 20px;
     }
 
-    .music-btn {
-      background: #00f2fe; color: #0d1117; border: none;
-      padding: 8px 16px; font-weight: bold; border-radius: 20px;
-      cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease;
-      display: inline-flex; align-items: center; gap: 8px;
+    /* DASHBOARD MODERNO TIPO HUD / TELEMETRÍA */
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
     }
-    .music-btn:hover { background: #3fb950; transform: scale(1.03); }
-    
-    .status-banner {
-      background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 14px; padding: 22px; margin-bottom: 25px; text-align: center;
-      box-shadow: var(--shadow); backdrop-filter: blur(10px);
-      position: relative; overflow: hidden;
-    }
-    .status-banner::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-    }
-    .clock-display { font-family: 'Courier New', monospace; color: #fff; font-size: 1.15rem; font-weight: bold; margin-top: 10px; }
-    .day-message { font-size: 1rem; margin-top: 8px; color: #ffbd2e; font-weight: 600; font-style: italic; }
 
-    .card {
-      background: var(--card-bg);
+    .stat-card {
+      background: rgba(19, 27, 46, 0.85);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 24px;
-      box-shadow: var(--shadow);
+      padding: 18px;
       backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .hero-card {
-      margin-bottom: 25px;
-      position: relative;
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 3px;
+      background: var(--card-glow, var(--primary));
     }
-    .hero-card h2 {
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stat-header p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .stat-badge-num {
+      font-family: monospace;
       font-size: 20px;
-      margin-top: 0;
+      font-weight: 800;
       color: #fff;
+    }
+
+    /* BARRA DE PROGRESO MODERNA (HUD) */
+    .hud-progress-wrapper {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 8px;
+    }
+
+    .hud-progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 4px;
+      background: var(--card-glow, var(--primary));
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px var(--card-glow, var(--primary));
+    }
+
+    .hud-footer-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      background: rgba(19, 27, 46, 0.8);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: rgba(0, 242, 254, 0.15);
+      color: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    }
+
+    .controls-wrapper {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 45px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: 1px solid var(--border);
+      background: #161b22;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      box-shadow: var(--shadow);
+      transition: border-color 0.3s;
+    }
+    .search-box:focus { border-color: var(--primary); }
+
+    .drive-btn {
+      background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
+      transition: transform 0.2s;
+    }
+    .drive-btn:hover { transform: translateY(-2px); }
+
+    .music-btn {
+      background: #00f2fe;
+      color: #0d1117;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .music-btn:hover { transform: scale(1.05); }
+
+    .section-title {
+      font-size: 19px;
+      color: #fff;
+      margin: 40px 0 20px 0;
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-    .hero-card p {
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 0;
-      font-size: 14px;
+      font-weight: 700;
+      border-left: 3px solid var(--primary);
+      padding-left: 10px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      justify-content: center;
     }
 
-    .stat-card {
-      text-align: center;
-      padding: 22px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+    .grid-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .stat-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--primary);
+
+    @media (max-width: 950px) {
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
     }
-    .stat-card h3 {
-      color: var(--primary);
-      font-size: 2rem;
-      margin: 0 0 6px 0;
-      font-family: monospace;
+
+    .card-container {
+      perspective: 1000px;
+      width: 100%;
+      max-width: 350px;
+      height: 410px;
+      margin: 0 auto;
+      position: relative;
     }
-    .stat-card p {
-      color: var(--text-muted);
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face, .card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      padding: 18px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      text-align: left;
       font-size: 13px;
-      margin: 0;
-      font-weight: 600;
+      color: #e6edf3;
+      overflow-y: auto;
+    }
+
+    .combat-stamp-vertical {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-35deg);
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255, 95, 86, 0.25);
+      border: 4px dashed rgba(255, 95, 86, 0.32);
+      padding: 12px 24px;
+      border-radius: 10px;
+      pointer-events: none;
+      z-index: 10;
+      text-align: center;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .birthday-stamp-vertical {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-35deg);
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(255, 189, 46, 0.28);
+      border: 4px dashed rgba(255, 189, 46, 0.35);
+      padding: 12px 24px;
+      border-radius: 10px;
+      pointer-events: none;
+      z-index: 10;
+      text-align: center;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .birthday-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 189, 46, 0.15);
+      color: #ffbd2e;
+      border: 1px solid rgba(255, 189, 46, 0.3);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .combat-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 95, 86, 0.15);
+      color: #ff5f56;
+      border: 1px solid rgba(255, 95, 86, 0.3);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .photo-frame {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      padding: 3px;
+      background: #0d1117;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 4px 0;
+      color: #fff;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      text-align: center;
+      margin: 4px auto;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin: 4px 0;
+      text-align: center;
+      font-style: italic;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 4px;
+    }
+
+    .back-content p { margin: 4px 0; font-size: 12px; }
+    .back-content strong { color: #fff; }
+
+    .phone-highlight {
+      color: var(--accent);
+      font-weight: 600;
+      background: rgba(63, 185, 80, 0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .back-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 8px;
+    }
+
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .social-links a {
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .social-links a:hover { text-decoration: underline; }
+
+    .qr-box {
+      width: 85px;
+      height: 85px;
+      background: #fff;
+      padding: 4px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      flex-shrink: 0;
+    }
+    .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+
+    .btn-social {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      width: 100%;
+      text-align: center;
+    }
+    .btn-social:hover {
+      background: rgba(0, 242, 254, 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
     }
 
     footer {
@@ -178,20 +538,17 @@
 <body>
 
   <header>
-    <h1>Sistemas Informáticos</h1>
-    <p>El equipo de sistemas CETAL te da la bienvenida a su página web oficial (Promoción 2026 - 2027)</p>
-    
-    <div style="margin-top: 12px;">
+    <h1>Anuario de la Promoción</h1>
+    <p>Sistemas Informáticos CETAL (Turno Noche)</p>
+    <div style="margin-top: 10px;">
       <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
-      <audio id="bg-music" loop preload="auto">
-        <source src="assets/audio.mp3" type="audio/mpeg">
-      </audio>
+      <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
     </div>
   </header>
 
   <nav>
-    <a href="index.html" class="active">Inicio</a>
-    <a href="anuario.html">Anuario</a>
+    <a href="index.html">Inicio</a>
+    <a href="anuario.html" class="active">Anuario</a>
     <a href="actividades.html">Bitácora</a>
     <a href="proyectos.html">Proyectos</a>
     <a href="recursos.html">Recursos</a>
@@ -199,54 +556,483 @@
 
   <main class="container">
     
-    <!-- BANNER DE TELEMETRÍA Y ESTADO DE RED -->
-    <div class="status-banner">
-      <div style="font-family:'Courier New', monospace; color:#3fb950; font-weight:bold; font-size:0.95rem; letter-spacing: 1px;">
-        [SYSTEM_STATUS: <span style="color:#00f2fe;">ONLINE</span>] <span id="loading-bar">[░░░░░░░░░░░░] 0%</span>
+    <!-- DASHBOARD MODERNO SINCRONIZADO (TELEMETRÍA DE CURSO) -->
+    <div class="dashboard-stats">
+      
+      <!-- Sobrevivientes / Activos -->
+      <div class="stat-card" style="--card-glow: #00f2fe;">
+        <div class="stat-header">
+          <p>🛡️ Sobrevivientes Activos</p>
+          <span class="stat-badge-num" id="active-count">0</span>
+        </div>
+        <div>
+          <div class="hud-progress-wrapper">
+            <div id="hud-bar-active" class="hud-progress-bar"></div>
+          </div>
+          <div class="hud-footer-info">
+            <span>Integridad de Clase</span>
+            <span id="hud-pct-active">0%</span>
+          </div>
+        </div>
       </div>
-      <div class="clock-display" id="clock">
-        Iniciando conexión con el servidor CETAL...
+
+      <!-- Cumpleañeros -->
+      <div class="stat-card" style="--card-glow: #ffbd2e;">
+        <div class="stat-header">
+          <p>🎂 Cumpleañeros</p>
+          <span class="stat-badge-num" id="birthday-count">0</span>
+        </div>
+        <div>
+          <div class="hud-progress-wrapper">
+            <div id="hud-bar-bday" class="hud-progress-bar"></div>
+          </div>
+          <div class="hud-footer-info">
+            <span>Ratio del Mes</span>
+            <span id="hud-pct-bday">0%</span>
+          </div>
+        </div>
       </div>
-      <div class="day-message" id="day-message"></div>
+
+      <!-- Caídos en Combate -->
+      <div class="stat-card" style="--card-glow: #ff5f56;">
+        <div class="stat-header">
+          <p>⚔️ Caídos en Combate</p>
+          <span class="stat-badge-num" id="combat-count">0</span>
+        </div>
+        <div>
+          <div class="hud-progress-wrapper">
+            <div id="hud-bar-combat" class="hud-progress-bar"></div>
+          </div>
+          <div class="hud-footer-info">
+            <span>Bajas / Retirados</span>
+            <span id="hud-pct-combat">0%</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- TARJETA PRINCIPAL DE BIENVENIDA -->
-    <section class="card hero-card">
-      <h2>A las Ingenieras e Ingenieros de la Vida 🌟</h2>
-      <p>Gracias por ser nuestra fuente de energía y por el esfuerzo inmenso de superarse cada día en CETAL. Esta plataforma conmemorativa registra nuestro paso, avances y momentos destacados durante la formación técnica.</p>
-    </section>
+    <!-- PESTAÑAS / FILTROS RÁPIDOS -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterCategory('all', this)">✨ Mostrar Todo</button>
+      <button class="filter-btn" onclick="filterCategory('docente', this)">🧙‍♂️ Gran Maestre</button>
+      <button class="filter-btn" onclick="filterCategory('directiva', this)">🏛️ Mesa Directiva</button>
+      <button class="filter-btn" onclick="filterCategory('estudiantes', this)">💻 Estudiantes</button>
+    </div>
 
-    <!-- TARJETAS DE ESTADÍSTICAS / MÉTRICAS -->
-    <div class="grid">
-      <div class="card stat-card">
-        <h3>21</h3>
-        <p>Integrantes (20 Estudiantes + 1 Docente)</p>
+    <!-- Contenedor dinámico de controles -->
+    <div class="controls-wrapper" id="controls-container">
+      <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
+    </div>
+
+    <!-- GRAN MAESTRE / DOCENTE GUÍA (CENTRADO) -->
+    <div class="section-group" data-group="docente">
+      <h2 class="section-title">🧙‍♂️ Gran Maestre (Docente Guía)</h2>
+      <div class="grid-center">
+        <div class="card-container" data-category="docente">
+          <div class="card-inner">
+            <div class="card-face" style="border: 2px solid var(--primary); text-align: center;">
+              <div class="photo-frame">
+                <img src="assets/fotos/docente.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Freddy'" alt="Lic. Freddy Mamani Chuilla">
+              </div>
+              <h3 class="card-title">Lic. Freddy Mamani Chuilla</h3>
+              <div><span class="badge" style="background: var(--primary); color: #000;">🧙‍♂️ Gran Maestre</span></div>
+              <p class="card-desc">"Mentor y guía principal en la formación técnica del curso."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: var(--primary);">📋 Ficha Técnica - Gran Maestre</div>
+                <div class="back-content">
+                  <p><strong>Cargo:</strong> Docente Guía</p>
+                  <p><strong>Especialidad:</strong> Ingeniería de Sistemas</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 70000000</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=LicFreddyMamani" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card stat-card">
-        <h3>2026-2027</h3>
-        <p>Gestión Académica</p>
+    </div>
+
+    <!-- MESA DIRECTIVA -->
+    <div class="section-group" data-group="directiva">
+      <h2 class="section-title">🏛️ Mesa Directiva del Curso</h2>
+      <div class="grid">
+        
+        <!-- Ivan -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="birthday-stamp-vertical">🎂 Cumpleañero del Mes</div>
+            <div class="birthday-badge">🎂 Cumpleaños</div>
+            <div class="card-face" style="border: 1px solid #ffbd2e; text-align:center;">
+              <div class="photo-frame" style="border-color:#ffbd2e;">
+                <img src="assets/fotos/ivan.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Ivan'" alt="Ivan">
+              </div>
+              <h3 class="card-title">Ivan 👨‍💻</h3>
+              <div><span class="badge" style="background: #ffbd2e; color: #000;">👑 Presidente del Estado Estudiantil</span></div>
+              <p class="card-desc">"Liderazgo, desarrollo de scripts y automatización."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="birthday-badge">🎂 Cumpleaños</div>
+                <div class="back-header" style="color: #ffbd2e;">📋 Ficha Técnica - Ivan</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Abogado / PC & Costura</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 76666666</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub (Batman)</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=IvanPaz" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grisel -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #ff79c6; text-align:center;">
+              <div class="photo-frame" style="border-color:#ff79c6;">
+                <img src="assets/fotos/grisel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Grisel'" alt="Grisel">
+              </div>
+              <h3 class="card-title">Grisel</h3>
+              <div><span class="badge" style="background: #ff79c6; color: #000;">📜 Vicepresidenta del Estado Estudiantil</span></div>
+              <p class="card-desc">"Coordinación general de proyectos."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #ff79c6;">📋 Ficha Técnica - Grisel</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Estudiante / UMSA</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 71111111</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Grisel" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jimena -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #27c93f; text-align:center;">
+              <div class="photo-frame" style="border-color:#27c93f;">
+                <img src="assets/fotos/jimena.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Jimena'" alt="Jimena">
+              </div>
+              <h3 class="card-title">Jimena</h3>
+              <div><span class="badge" style="background: #27c93f; color: #000;">🏛️ Ministra de Economía y Finanzas</span></div>
+              <p class="card-desc">"Administración financiera del curso."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #27c93f;">📋 Ficha Técnica - Jimena</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Contabilidad / Finanzas</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 72222222</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Jimena" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gabriel -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #ff5f56; text-align:center;">
+              <div class="photo-frame" style="border-color:#ff5f56;">
+                <img src="assets/fotos/gabriel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Gabriel'" alt="Gabriel">
+              </div>
+              <h3 class="card-title">Gabriel</h3>
+              <div><span class="badge" style="background: #ff5f56; color: #fff;">⚽ Ministro de Deportes</span></div>
+              <p class="card-desc">"Coordinador deportivo (Varones)."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #ff5f56;">📋 Ficha Técnica - Gabriel</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Atleta / Sistemas</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 73333333</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Gabriel" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Andrea -->
+        <div class="card-container" data-category="directiva">
+          <div class="card-inner">
+            <div class="card-face" style="border: 1px solid #00f2fe; text-align:center;">
+              <div class="photo-frame" style="border-color:#00f2fe;">
+                <img src="assets/fotos/andrea.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Andrea'" alt="Andrea">
+              </div>
+              <h3 class="card-title">Andrea</h3>
+              <div><span class="badge" style="background: #00f2fe; color: #000;">🏐 Ministra de Deportes</span></div>
+              <p class="card-desc">"Coordinadora deportiva (Mujeres)."</p>
+              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+            </div>
+            <div class="card-back">
+              <div>
+                <div class="back-header" style="color: #00f2fe;">📋 Ficha Técnica - Andrea</div>
+                <div class="back-content">
+                  <p><strong>Ocupación:</strong> Estudiante / Deporte</p>
+                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 74444444</span></p>
+                </div>
+              </div>
+              <div class="back-footer">
+                <div class="social-links">
+                  <a href="#" target="_blank">💼 LinkedIn</a>
+                  <a href="#" target="_blank">📘 Facebook</a>
+                  <a href="#" target="_blank">🤖 Discord</a>
+                  <a href="#" target="_blank">📦 GitHub</a>
+                </div>
+                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Andrea" alt="QR"></div>
+              </div>
+              <button class="btn-social" onclick="flipCard(this)">Volver</button>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="card stat-card">
-        <h3 style="font-size: 1.5rem; margin-top: 10px; margin-bottom: 12px;">Turno Noche</h3>
-        <p>Sistemas Informáticos</p>
+    </div>
+
+    <!-- ESTUDIANTES DE LA CLASE -->
+    <div class="section-group" data-group="estudiantes">
+      <h2 class="section-title">💻 Integrantes de la Clase</h2>
+      <div class="grid" id="students-grid">
+        
+        <script>
+          const estudiantesClase = [
+            "Mijael", "Jhamil", "Omar", "Bryan", "Betty", "Subeida", "Jenny", "Alexis", "Vargas Cuchillos",
+            "Ivan", "Grisel", "Jimena", "Gabriel", "Andrea",
+            "Juan Pérez"
+          ];
+
+          const cumpleañerosLista = ["Mijael", "Betty", "Ivan"];
+          const caidosLista = ["Juan Pérez"];
+
+          // Script inteligente para sincronizar los contadores y porcentajes reales del HUD
+          document.addEventListener("DOMContentLoaded", () => {
+            const totalEstudiantes = estudiantesClase.length;
+            const cantidadCaidos = caidosLista.length;
+            const cantidadActivos = totalEstudiantes - cantidadCaidos;
+            const cantidadCumple = cumpleañerosLista.length;
+
+            // Porcentajes reales matemáticamente coherentes
+            const pctActivos = Math.round((cantidadActivos / totalEstudiantes) * 100);
+            const pctCumple = Math.round((cantidadCumple / totalEstudiantes) * 100);
+            const pctCombat = Math.round((cantidadCaidos / totalEstudiantes) * 100);
+
+            // Inyectar valores en los contadores superiores
+            document.getElementById("active-count").innerText = cantidadActivos;
+            document.getElementById("birthday-count").innerText = cantidadCumple;
+            document.getElementById("combat-count").innerText = cantidadCaidos;
+
+            // Inyectar porcentajes y ajustar ancho de barras modernas (HUD)
+            document.getElementById("hud-pct-active").innerText = pctActivos + "%";
+            document.getElementById("hud-bar-active").style.width = pctActivos + "%";
+
+            document.getElementById("hud-pct-bday").innerText = pctCumple + "%";
+            document.getElementById("hud-bar-bday").style.width = pctCumple + "%";
+
+            document.getElementById("hud-pct-combat").innerText = pctCombat + "%";
+            document.getElementById("hud-bar-combat").style.width = pctCombat + "%";
+          });
+
+          estudiantesClase.forEach(nombre => {
+            const esPerdido = caidosLista.includes(nombre);
+            const esCumpleañero = cumpleañerosLista.includes(nombre);
+            
+            let selloHTML = '';
+            let badgeHTML = '';
+            
+            if (esPerdido) {
+              selloHTML = '<div class="combat-stamp-vertical">Caído en Combate</div>';
+              badgeHTML = '<div class="combat-badge">⚔️ Inactivo</div>';
+            } else if (esCumpleañero) {
+              selloHTML = '<div class="birthday-stamp-vertical">🎂 Cumpleañero del Mes</div>';
+              badgeHTML = '<div class="birthday-badge">🎂 Cumpleaños</div>';
+            }
+
+            document.write(`
+              <div class="card-container" data-category="estudiantes">
+                <div class="card-inner">
+                  ${selloHTML}
+                  ${badgeHTML}
+                  <div class="card-face" style="text-align:center;">
+                    <div class="photo-frame" ${esPerdido ? 'style="border-color: #ff5f56; filter: grayscale(80%);"' : (esCumpleañero ? 'style="border-color: #ffbd2e; box-shadow: 0 0 15px rgba(255,189,46,0.4);"' : '')}>
+                      <img src="assets/fotos/${nombre.toLowerCase().replace(' ','_')}.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${nombre}'" alt="${nombre}">
+                    </div>
+                    <h3 class="card-title">${nombre}</h3>
+                    <span class="badge" style="background: rgba(255,255,255,0.06); color: ${esPerdido ? '#ff5f56' : (esCumpleañero ? '#ffbd2e' : 'var(--primary)')};">
+                      ${esPerdido ? 'Ex-Estudiante / Leyenda' : (esCumpleañero ? '🎂 Celebración Activa' : 'Sistemas Informáticos')}
+                    </span>
+                    <p class="card-desc">
+                      ${esPerdido ? '"Dejó huella en el curso, pero emprendió nuevos rumbos profesionales."' : (esCumpleañero ? '"¡De festejo en la promoción CETAL nocturna este mes!"' : '"Integrante activo de la promoción CETAL nocturna."')}
+                    </p>
+                    <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+                  </div>
+                  <div class="card-back">
+                    <div>
+                      <div class="back-header" ${esPerdido ? 'style="color: #ff5f56;"' : (esCumpleañero ? 'style="color: #ffbd2e;"' : '')}>📋 Ficha Técnica - ${nombre}</div>
+                      <div class="back-content">
+                        <p><strong>Carrera:</strong> Sistemas Informáticos</p>
+                        <p><strong>Turno:</strong> Noche</p>
+                        <p><strong>Estado:</strong> ${esPerdido ? '<span style="color:#ff5f56; font-weight:bold;">Caído en Combate (Inactivo)</span>' : (esCumpleañero ? '<span style="color:#ffbd2e; font-weight:bold;">Activo 🎂 (Cumpleaños)</span>' : 'Activo (Sobreviviente)')}</p>
+                        <p><strong>WhatsApp:</strong> <span class="phone-highlight">${esPerdido ? 'N/D (Leyenda)' : '+591 70000000'}</span></p>
+                      </div>
+                    </div>
+                    <div class="back-footer">
+                      <div class="social-links">
+                        <a href="#" target="_blank">💼 LinkedIn</a>
+                        <a href="#" target="_blank">📘 Facebook</a>
+                        <a href="#" target="_blank">🤖 Discord</a>
+                        <a href="#" target="_blank">📦 GitHub</a>
+                      </div>
+                      <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${nombre}" alt="QR"></div>
+                    </div>
+                    <button class="btn-social" onclick="flipCard(this)">Volver</button>
+                  </div>
+                </div>
+              </div>
+            `);
+          });
+        </script>
+
       </div>
     </div>
 
   </main>
 
-  <footer>
-    <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p>
-  </footer>
+  <footer><p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p></footer>
 
   <script>
-    // Reproductor de Música Continuo Sincronizado
+    function setupSearch() {
+      const searchInput = document.getElementById('student-search');
+      if (searchInput) {
+        searchInput.removeEventListener('input', searchHandler);
+        searchInput.addEventListener('input', searchHandler);
+      }
+    }
+
+    function searchHandler(e) {
+      const term = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.card-container').forEach(container => {
+        const text = container.innerText.toLowerCase();
+        container.style.display = text.includes(term) ? 'block' : 'none';
+      });
+    }
+
+    setupSearch();
+
+    function filterCategory(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const controlsContainer = document.getElementById('controls-container');
+
+      if (category === 'all') {
+        controlsContainer.style.justifyContent = 'space-between';
+        controlsContainer.innerHTML = `
+          <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
+        `;
+        setupSearch();
+      } else if (category === 'directiva') {
+        controlsContainer.style.justifyContent = 'center';
+        controlsContainer.innerHTML = `
+          <a href="https://drive.google.com" target="_blank" id="drive-report-btn" class="drive-btn" title="Informes públicos de asistencia y aportes">
+            📂 Informes Mesa Directiva (Drive)
+          </a>
+        `;
+      } else if (category === 'docente') {
+        controlsContainer.style.justifyContent = 'space-between';
+        controlsContainer.innerHTML = '';
+      } else if (category === 'estudiantes') {
+        controlsContainer.style.justifyContent = 'space-between';
+        controlsContainer.innerHTML = `
+          <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
+        `;
+        setupSearch();
+      }
+
+      document.querySelectorAll('.section-group').forEach(group => {
+        if (category === 'all') {
+          group.style.display = 'block';
+        } else {
+          const groupType = group.getAttribute('data-group');
+          group.style.display = (groupType === category) ? 'block' : 'none';
+        }
+      });
+    }
+
+    function flipCard(btn) {
+      const currentInner = btn.closest('.card-inner');
+      
+      if (!currentInner.classList.contains('flipped')) {
+        document.querySelectorAll('.card-inner.flipped').forEach(inner => {
+          inner.classList.remove('flipped');
+        });
+      }
+      
+      currentInner.classList.toggle('flipped');
+    }
+
     const audio = document.getElementById('bg-music');
     const musicBtn = document.getElementById('btn-toggle-music');
     
     if (localStorage.getItem('musicPlaying') === 'true') {
       audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
       audio.play().catch(() => {});
-      musicBtn.textContent = '⏸️ Pausar Música';
     }
 
     musicBtn.addEventListener('click', function() {
@@ -266,44 +1052,6 @@
         localStorage.setItem('musicTime', audio.currentTime);
       }
     }, 1000);
-
-    // Barra de Carga Estilo Linux Dinámica
-    let progress = 0;
-    function animateBar() {
-      if (progress <= 100) {
-        const dots = Math.floor(progress / 10);
-        const bar = '█'.repeat(dots) + '░'.repeat(10 - dots);
-        document.getElementById('loading-bar').innerText = `[${bar}] ${progress}%`;
-        progress += 10;
-        setTimeout(animateBar, 70);
-      } else {
-        document.getElementById('loading-bar').innerText = `[██████████] 100% OK`;
-      }
-    }
-
-    function updateClock() {
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateStr = now.toLocaleDateString('es-ES', options);
-      const timeStr = now.toLocaleTimeString('es-ES');
-      
-      document.getElementById('clock').innerHTML = `📅 <strong>${dateStr.toUpperCase()}</strong> | ⏰ <strong>${timeStr}</strong> <br><span style="color:var(--text-muted); font-size:0.9rem; font-weight:normal;">📍 La Paz, Bolivia 🌤️ 14°C</span>`;
-      
-      const day = now.getDay();
-      let msg = "";
-      switch(day) {
-        case 0: msg = "☀️ Domingo en familia: recarga de energías para la semana académica."; break;
-        case 1: case 2: case 3: case 4: msg = "💻 Clases CETAL (Turno Noche): A programar y compilar ideas."; break;
-        case 5: msg = "🎉 ¡Es viernes y el cuerpo lo sabe! Pero primero se entrega el código."; break;
-        case 6: msg = "🛋️ Sábado de descanso y estudio autónomo."; break;
-      }
-      document.getElementById('day-message').innerText = msg;
-    }
-    
-    animateBar();
-    setInterval(updateClock, 1000);
-    updateClock();
   </script>
-
 </body>
 </html>
