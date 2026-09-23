@@ -1,148 +1,176 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bitácora de Actividades | Sistemas CETAL</title>
-  <link rel="stylesheet" href="style.css">
   <style>
-    /* Panel de Ordenamiento */
+    :root {
+      --bg-main: #030712;
+      --bg-sidebar: #070d19;
+      --card-bg: #09101d;
+      --card-hover: #0e172a;
+      --border-color: #1e293b;
+      --primary: #00f2fe;
+      --accent: #3fb950;
+      --accent-gold: #ffb700;
+      --accent-purple: #b537f2;
+      --accent-orange: #ff7b00;
+      --text-main: #f0f6fc;
+      --text-muted: #64748b;
+      --shadow: 0 10px 30px -10px rgba(0,0,0,0.9);
+      --font-mono: 'Courier New', Courier, monospace;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    [data-theme="light"] {
+      --bg-main: #cbd5e1;
+      --bg-sidebar: #94a3b8;
+      --card-bg: #f1f5f9;
+      --card-hover: #ffffff;
+      --border-color: #64748b;
+      --primary: #0284c7;
+      --accent: #15803d;
+      --accent-gold: #b45309;
+      --accent-purple: #7e22ce;
+      --accent-orange: #c2410c;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+    
+    html, body { 
+      background-color: var(--bg-main); 
+      color: var(--text-main); 
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body { display: flex; flex-direction: column; }
+
+    /* ASIDE BARRA LATERAL */
+    aside {
+      width: 280px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; height: 100vh; position: fixed; top: 0; left: 0;
+      overflow-y: auto; scrollbar-width: none; box-shadow: 5px 0 20px rgba(0,0,0,0.15); 
+      transition: width 0.3s ease, transform 0.3s ease; z-index: 1001;
+    }
+    aside::-webkit-scrollbar { display: none; }
+    aside.collapsed { width: 0px; transform: translateX(-280px); overflow: hidden; }
+
+    .toggle-sidebar-btn {
+      position: fixed; left: 250px; top: 12px; z-index: 1005;
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
+      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.2); transition: left 0.3s ease, transform 0.2s;
+    }
+    .toggle-sidebar-btn:hover { transform: scale(1.1); background: var(--card-hover); }
+    body.menu-hidden .toggle-sidebar-btn { left: 15px; }
+
+    .sidebar-user { padding: 20px 16px; border-bottom: 1px solid var(--border-color); background: rgba(255,183,0,0.02); display: flex; align-items: center; gap: 14px; }
+    .user-avatar-img {
+      width: 52px; height: 52px; object-fit: cover; border-radius: 50%;
+      border: 2px solid var(--accent-gold); box-shadow: 0 0 14px rgba(255,183,0,0.3);
+      background: rgba(255,183,0,0.1); flex-shrink: 0;
+    }
+    .user-info .name { font-size: 0.9rem; font-weight: bold; color: var(--text-main); font-family: var(--font-mono); }
+    .user-info .role { font-size: 0.72rem; color: var(--accent); font-family: var(--font-mono); }
+
+    .nav-group { padding: 14px 16px; border-bottom: 1px solid rgba(30,41,59,0.15); }
+    .nav-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--font-mono); font-weight: 700; }
+    
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-muted);
+      text-decoration: none; font-size: 0.85rem; border-radius: 6px; transition: all 0.2s; cursor: pointer; font-weight: 600;
+    }
+    .nav-item:hover { background-color: var(--card-hover); color: var(--text-main); }
+    .nav-item.active { background-color: var(--card-hover); color: var(--text-main); font-weight: 700; }
+    .nav-item.c-cyan.active { color: var(--primary); }
+    .nav-item.c-green.active { color: var(--accent); }
+    .nav-item.c-yellow.active { color: var(--accent-gold); }
+    .nav-item.c-purple.active { color: var(--accent-purple); }
+    .nav-item.c-orange.active { color: var(--accent-orange); }
+
+    .cyber-node { background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 6px; padding: 10px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
+    .cyber-node span { color: var(--accent); }
+
+    /* MAIN CONTENT */
+    main { 
+      margin-left: 280px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 280px);
+      transition: margin-left 0.3s ease, width 0.3s ease;
+    }
+    body.menu-hidden main { margin-left: 0; width: 100%; }
+
+    header-top {
+      background-color: var(--bg-sidebar); border-bottom: 1px solid var(--border-color); padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 10px;
+    }
+    .topbar-left { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--accent-gold); margin-left: 35px; }
+    .topbar-right-widgets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .theme-toggle-btn {
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
+      padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold;
+    }
+    .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.05); }
+
+    .music-btn {
+      background: var(--accent-gold); color: #030712; border: none; padding: 7px 16px; font-weight: 800; border-radius: 20px;
+      cursor: pointer; font-size: 0.85rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;
+      box-shadow: 0 0 15px rgba(255,183,0,0.2);
+    }
+    .music-btn:hover { opacity: 0.9; transform: scale(1.03); }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 24px; width: 100%; box-sizing: border-box; flex: 1; }
+
+    /* Filtros de orden */
     .filter-container {
-      text-align: center;
-      margin: 20px 0 10px 0;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      text-align: center; margin: 15px 0 25px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
     }
-
     .filter-btn {
-      background: #161b22;
-      color: #c9d1d9;
-      border: 1px solid #30363d;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color);
+      padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
     }
+    .filter-btn.active, .filter-btn:hover { background: var(--card-hover); color: var(--accent-gold); border-color: var(--accent-gold); }
 
-    .filter-btn:hover, .filter-btn.active {
-      background: #238636;
-      color: #ffffff;
-      border-color: #3fb950;
-      box-shadow: 0 0 10px rgba(35, 134, 54, 0.5);
-    }
-
-    /* Estructura de la Línea de Tiempo Neón */
+    /* Línea de Tiempo */
     .timeline-wrapper {
-      position: relative;
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 10px 0;
-      display: flex;
-      flex-direction: column;
+      position: relative; max-width: 900px; margin: 0 auto; padding: 10px 0; display: flex; flex-direction: column;
     }
-
-    /* Línea vertical central fosforescente */
     .timeline-wrapper::after {
-      content: '';
-      position: absolute;
-      width: 4px;
-      background: #00f2fe;
-      box-shadow: 0 0 12px #00f2fe, 0 0 25px #238636;
-      top: 0;
-      bottom: 0;
-      left: 50%;
-      margin-left: -2px;
+      content: ''; position: absolute; width: 4px; background: var(--accent-gold);
+      box-shadow: 0 0 12px rgba(255,183,0,0.5); top: 0; bottom: 0; left: 50%; margin-left: -2px;
     }
 
-    /* Contenedores de eventos alternados */
-    .timeline-item {
-      padding: 10px 40px;
-      position: relative;
-      background-color: inherit;
-      width: 50%;
-      box-sizing: border-box;
-    }
-
-    /* Nodos circulares neón en el centro */
+    .timeline-item { padding: 10px 40px; position: relative; background-color: inherit; width: 50%; box-sizing: border-box; }
     .timeline-item::after {
-      content: '';
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      right: -8px;
-      background-color: #0d1117;
-      border: 3px solid #00f2fe;
-      top: 25px;
-      border-radius: 50%;
-      z-index: 1;
-      box-shadow: 0 0 10px #00f2fe;
+      content: ''; position: absolute; width: 16px; height: 16px; right: -8px; background-color: var(--card-bg);
+      border: 3px solid var(--accent-gold); top: 25px; border-radius: 50%; z-index: 1; box-shadow: 0 0 10px var(--accent-gold);
     }
 
-    /* Posicionamiento Izquierda / Derecha */
     .left { left: 0; }
     .right { left: 50%; }
-
     .right::after { left: -8px; }
 
-    /* Estilo de Tarjetas Cyberpunk */
     .timeline-content {
-      padding: 20px;
-      background: #161b22;
-      position: relative;
-      border-radius: 8px;
-      border: 1px solid #30363d;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      padding: 20px; background: var(--card-bg); position: relative; border-radius: 12px;
+      border: 1px solid var(--border-color); box-shadow: var(--shadow);
     }
 
-    .event-date {
-      color: #00f2fe;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-
-    .event-title {
-      color: #58a6ff;
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-    }
-
-    .event-description {
-      color: #c9d1d9;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
+    .event-date { color: var(--accent-gold); font-weight: 800; font-size: 0.85rem; margin-bottom: 8px; font-family: var(--font-mono); }
+    .event-title { color: var(--text-main); margin-bottom: 10px; font-size: 1.15rem; font-weight: 800; }
+    .event-description { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 12px; font-weight: 600; }
 
     .photo-card {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 6px;
-      text-align: center;
-      margin-top: 10px;
+      background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; text-align: center; margin-top: 10px;
     }
+    .photo-card img { width: 100%; height: auto; max-height: 220px; object-fit: cover; border-radius: 6px; }
+    .photo-caption { font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 5px; font-family: var(--font-mono); font-weight: 700; }
 
-    .photo-card img {
-      width: 100%;
-      height: auto;
-      max-height: 220px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-
-    .photo-caption {
-      font-size: 0.8rem;
-      color: #8b949e;
-      display: block;
-      margin-top: 4px;
-    }
-
-    /* Adaptación Responsiva para Celulares */
     @media screen and (max-width: 768px) {
       .timeline-wrapper::after { left: 20px; }
       .timeline-item { width: 100%; padding-left: 50px; padding-right: 15px; }
@@ -150,104 +178,180 @@
       .right { left: 0%; }
     }
 
-    .music-btn {
-      background: #00f2fe;
-      color: #0d1117;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 15px;
-      font-weight: bold;
-      cursor: pointer;
+    footer {
+      text-align: center; padding: 20px; color: var(--text-muted); font-size: 11.5px; font-weight: 700;
+      border-top: 1px solid var(--border-color); margin-top: 40px; background: var(--bg-sidebar); font-family: var(--font-mono);
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Bitácora de Actividades y Eventos</h1>
-    <p>Línea de Tiempo Histórica - Carrera de Sistemas Informáticos CETAL</p>
-    <div style="margin-top: 10px;">
-      <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
-      <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
+  <button class="toggle-sidebar-btn" id="toggleMenuBtn" title="Ocultar / Mostrar Menú">≡</button>
+
+  <aside id="sidebar">
+    <div class="sidebar-user">
+      <img src="assets/logo.png" alt="Logo CETAL" class="user-avatar-img">
+      <div class="user-info">
+        <div class="name">CETAL Noche</div>
+        <div class="role">Sistemas Informáticos</div>
+      </div>
     </div>
-  </header>
-
-  <nav>
-    <a href="index.html">Inicio</a>
-    <a href="anuario.html">Anuario</a>
-    <a href="actividades.html" class="active">Bitácora</a>
-    <a href="proyectos.html">Proyectos</a>
-    <a href="recursos.html">Recursos</a>
-  </nav>
-
-  <main class="container">
-
-    <!-- Botones para alternar el orden -->
-    <div class="filter-container">
-      <button class="filter-btn active" id="btn-asc" onclick="sortTimeline('asc')">⬇️ Antiguo a Reciente (Cronológico)</button>
-      <button class="filter-btn" id="btn-desc" onclick="sortTimeline('desc')">⬆️ Reciente a Antiguo (Inverso)</button>
+    
+    <div class="nav-group">
+      <div class="nav-title">Navegación Oficial</div>
+      <a href="index.html" class="nav-item c-cyan">⚡ Inicio</a>
+      <a href="anuario.html" class="nav-item c-green">👥 Anuario</a>
+      <a href="actividades.html" class="nav-item c-yellow active">📋 Bitácora</a>
+      <a href="proyectos.html" class="nav-item c-purple">🚀 Proyectos</a>
+      <a href="recursos.html" class="nav-item c-orange">🛠️ Recursos</a>
     </div>
 
-    <div class="timeline-wrapper" id="timeline-wrapper">
+    <div class="nav-group">
+      <div class="nav-title">Estado del Sistema</div>
+      <div class="cyber-node">
+        <div>CORE: <span>ONLINE</span></div>
+        <div>NODE: <span>LA PAZ - BO</span></div>
+        <div>SEC_LVL: <span>ALPHA-1</span></div>
+      </div>
+    </div>
+  </aside>
 
-      <!-- 1. EVENTO: Febrero 2026 -->
-      <div class="timeline-item left" data-date="2026-02-01">
-        <div class="timeline-content">
-          <div class="event-date">📅 Febrero de 2026 | ⏰ Turno Noche</div>
-          <h3 class="event-title">Inicio de Actividades Académicas 2026</h3>
-          <p class="event-description">
-            Apertura oficial de la gestión académica para la carrera de Sistemas Informáticos en el Turno Noche del Centro CETAL.
-          </p>
-          <div class="photo-card">
-            <img src="assets/inicio-clases.jpg" alt="Inicio de Clases CETAL 2026" onerror="this.src='https://via.placeholder.com/300x180?text=Inicio+de+Clases+2026'">
-            <span class="photo-caption">Primer día de clases y bienvenida a los estudiantes</span>
-          </div>
-        </div>
+  <main>
+    <header-top>
+      <div class="topbar-left">
+        <span>// BITACORA_ACTIVIDADES_2026</span>
+      </div>
+      <div class="topbar-right-widgets">
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Cambiar Tema Diurno / Nocturno">🌙</button>
+        <button id="btn-toggle-music" class="music-btn">🎵 Música</button>
+        <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
+      </div>
+    </header-top>
+
+    <div class="container">
+      
+      <div style="margin-bottom: 25px; text-align: center;">
+        <h1 style="font-size: 24px; margin: 0 0 4px 0; color: var(--text-main); font-weight: 800;">Bitácora de Actividades y Eventos</h1>
+        <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; font-weight: 700;">Línea de Tiempo Histórica - Carrera de Sistemas Informáticos CETAL</p>
       </div>
 
-      <!-- 2. EVENTO: 5 de Agosto de 2026 -->
-      <div class="timeline-item right" data-date="2026-08-05">
-        <div class="timeline-content">
-          <div class="event-date">📅 Miércoles, 5 de Agosto de 2026 | ⏰ 14:00 hrs</div>
-          <h3 class="event-title">Desfile Cívico - Representación CETAL</h3>
-          <p class="event-description">
-            Participación de la delegación del Turno Noche. Encabezando la marcha estuvo el bloque especial de Sistemas Informáticos junto al plantel docente.
-          </p>
-          <div class="photo-card">
-            <img src="assets/desfile-01.jpg" alt="Desfile General CETAL" onerror="this.src='https://via.placeholder.com/300x180?text=Foto+Desfile'">
-            <span class="photo-caption">Delegación del Turno Noche en marcha</span>
-          </div>
-          <div class="photo-card">
-            <img src="assets/desfile-estudiantes.jpg" alt="Bloque Sistemas" onerror="this.src='https://via.placeholder.com/300x180?text=Bloque+Sistemas'">
-            <span class="photo-caption">Bloque de Sistemas Informáticos y Docentes</span>
-          </div>
-        </div>
+      <!-- Botones para alternar el orden -->
+      <div class="filter-container">
+        <button class="filter-btn active" id="btn-asc" onclick="sortTimeline('asc')">⬇️ Cronológico (Antiguo a Reciente)</button>
+        <button class="filter-btn" id="btn-desc" onclick="sortTimeline('desc')">⬆️ Inverso (Reciente a Antiguo)</button>
       </div>
 
-      <!-- 3. EVENTO: 28 de Agosto de 2026 -->
-      <div class="timeline-item left" data-date="2026-08-28">
-        <div class="timeline-content">
-          <div class="event-date">📅 Viernes, 28 de Agosto de 2026 | ⏰ 19:00 hrs</div>
-          <h3 class="event-title">Entrega de Maletas por la Alcaldía</h3>
-          <p class="event-description">
-            Acto oficial de entrega de maletas equipadas por parte de la Alcaldía al Centro CETAL para su distribución a los estudiantes.
-          </p>
-          <div class="photo-card">
-            <img src="assets/maletas-alcaldia.jpg" alt="Entrega de Maletas Alcaldia" onerror="this.src='https://via.placeholder.com/300x180?text=Entrega+Maletas'">
-            <span class="photo-caption">Entrega formal de maletas institucionales</span>
+      <div class="timeline-wrapper" id="timeline-wrapper">
+
+        <!-- 1. EVENTO: Febrero 2026 -->
+        <div class="timeline-item left" data-date="2026-02-18">
+          <div class="timeline-content">
+            <div class="event-date">📅 Febrero de 2026 | ⏰ Turno Noche</div>
+            <h3 class="event-title">Inicio de Actividades Académicas 2026</h3>
+            <p class="event-description">
+              Apertura oficial de la gestión académica para la carrera de Sistemas Informáticos en el Turno Noche del Centro CETAL.
+            </p>
+            <div class="photo-card">
+              <img src="assets/bitacora/2026-02-inicio_clases.jpg" alt="Inicio de Clases CETAL 2026" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=InicioClases2026'">
+              <span class="photo-caption">Primer día de clases y bienvenida a los estudiantes</span>
+            </div>
           </div>
         </div>
+
+        <!-- 2. EVENTO: 5 de Agosto de 2026 -->
+        <div class="timeline-item right" data-date="2026-08-05">
+          <div class="timeline-content">
+            <div class="event-date">📅 Miércoles, 5 de Agosto de 2026 | ⏰ 14:00 hrs</div>
+            <h3 class="event-title">Desfile Cívico - Representación CETAL</h3>
+            <p class="event-description">
+              Participación de la delegación del Turno Noche. Encabezando la marcha estuvo el bloque especial de Sistemas Informáticos junto al plantel docente.
+            </p>
+            <div class="photo-card">
+              <img src="assets/bitacora/2026-08-desfile-01.jpg" alt="Desfile General CETAL" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=DesfileCETAL'">
+              <span class="photo-caption">Delegación del Turno Noche en marcha</span>
+            </div>
+            <div class="photo-card" style="margin-top: 8px;">
+              <img src="assets/bitacora/2026-08-desfile-estudiantes.jpg" alt="Bloque Sistemas" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=BloqueSistemas'">
+              <span class="photo-caption">Bloque de Sistemas Informáticos y Docentes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. EVENTO: 28 de Agosto de 2026 -->
+        <div class="timeline-item left" data-date="2026-08-28">
+          <div class="timeline-content">
+            <div class="event-date">📅 Viernes, 28 de Agosto de 2026 | ⏰ 19:00 hrs</div>
+            <h3 class="event-title">Entrega de Maletas por la Alcaldía</h3>
+            <p class="event-description">
+              Acto oficial de entrega de maletas equipadas por parte de la Alcaldía al Centro CETAL para su distribución a los estudiantes.
+            </p>
+            <div class="photo-card">
+              <img src="assets/bitacora/2026-08-maletas-alcaldia.jpg" alt="Entrega de Maletas Alcaldia" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=MaletasAlcaldia'">
+              <span class="photo-caption">Entrega formal de maletas institucionales</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. EVENTO: 21 de Septiembre de 2026 -->
+        <div class="timeline-item right" data-date="2026-09-21">
+          <div class="timeline-content">
+            <div class="event-date">📅 Lunes, 21 de Septiembre de 2026 | ⏰ Turno Noche</div>
+            <h3 class="event-title">Festejo del Día del Estudiante & Concurso de Baile</h3>
+            <p class="event-description">
+              Gran compartimiento y fiesta organizada por los docentes para los estudiantes del turno noche. Hubo concurso de baile, confraternización, entrega de regalos y sorteo de canastones especiales.
+            </p>
+            <div class="photo-card">
+              <img src="assets/bitacora/2026-09-festejo-baile.jpg" alt="Concurso de Baile 21 de Septiembre" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=BaileSeptiembre21'">
+              <span class="photo-caption">Concurso de baile y participación de estudiantes</span>
+            </div>
+            <div class="photo-card" style="margin-top: 8px;">
+              <img src="assets/bitacora/2026-09-festejo-canastones.jpg" alt="Entrega de Canastones" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=CanastonesCETAL'">
+              <span class="photo-caption">Entrega de regalos y canastones organizados por los docentes</span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
 
+    <footer>
+      <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL. [Secure Terminal v4.4 Sync]</p>
+    </footer>
   </main>
 
-  <footer>
-    <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p>
-  </footer>
-
   <script>
+    /* Control de Sidebar */
+    const sidebar = document.getElementById('sidebar');
+    const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+    
+    toggleMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      document.body.classList.toggle('menu-hidden');
+    });
+
+    /* Control de Tema Día / Noche */
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const htmlElement = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light') {
+      htmlElement.setAttribute('data-theme', 'light');
+      themeBtn.textContent = '☀️';
+    }
+
+    themeBtn.addEventListener('click', () => {
+      if (htmlElement.getAttribute('data-theme') === 'dark') {
+        htmlElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeBtn.textContent = '☀️';
+      } else {
+        htmlElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeBtn.textContent = '🌙';
+      }
+    });
+
     /* Función para ordenar la línea de tiempo */
     function sortTimeline(order) {
       const wrapper = document.getElementById('timeline-wrapper');
@@ -279,16 +383,26 @@
     
     if (localStorage.getItem('musicPlaying') === 'true') {
       audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
-      audio.play();
+      audio.play().catch(() => {});
+      musicBtn.textContent = '⏸️ Pausar Música';
     }
 
     musicBtn.addEventListener('click', function() {
-      if (audio.paused) { audio.play(); localStorage.setItem('musicPlaying', 'true'); }
-      else { audio.pause(); localStorage.setItem('musicPlaying', 'false'); }
+      if (audio.paused) {
+        audio.play();
+        localStorage.setItem('musicPlaying', 'true');
+        musicBtn.textContent = '⏸️ Pausar Música';
+      } else {
+        audio.pause();
+        localStorage.setItem('musicPlaying', 'false');
+        musicBtn.textContent = '🎵 Música';
+      }
     });
 
     setInterval(() => {
-      if (!audio.paused) localStorage.setItem('musicTime', audio.currentTime);
+      if (!audio.paused) {
+        localStorage.setItem('musicTime', audio.currentTime);
+      }
     }, 1000);
   </script>
 

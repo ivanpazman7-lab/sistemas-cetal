@@ -1,1031 +1,934 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anuario | Sistemas CETAL</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Anuario | Sistemas Informáticos CETAL</title>
   <style>
     :root {
-      --bg-gradient: radial-gradient(circle at 50% 0%, #111d35 0%, #070a13 70%);
-      --card-bg: rgba(19, 27, 46, 0.9);
-      --border: rgba(0, 242, 254, 0.25);
+      --bg-main: #030712;
+      --bg-sidebar: #070d19;
+      --card-bg: #09101d;
+      --card-hover: #0e172a;
+      --border-color: #1e293b;
       --primary: #00f2fe;
       --accent: #3fb950;
+      --accent-gold: #ffb700;
+      --accent-purple: #b537f2;
+      --accent-orange: #ff7b00;
       --text-main: #f0f6fc;
-      --text-muted: #919eaf;
-      --shadow: 0 10px 30px -10px rgba(0,0,0,0.7);
+      --text-muted: #64748b;
+      --shadow: 0 10px 30px -10px rgba(0,0,0,0.9);
+      --font-mono: 'Courier New', Courier, monospace;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    body {
-      background: var(--bg-gradient);
-      background-attachment: fixed;
-      color: var(--text-main);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      margin: 0;
-      padding: 0;
+    [data-theme="light"] {
+      --bg-main: #cbd5e1;
+      --bg-sidebar: #94a3b8;
+      --card-bg: #f1f5f9;
+      --card-hover: #ffffff;
+      --border-color: #64748b;
+      --primary: #0284c7;
+      --accent: #15803d;
+      --accent-gold: #b45309;
+      --accent-purple: #7e22ce;
+      --accent-orange: #c2410c;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+    
+    html, body { 
+      background-color: var(--bg-main); 
+      color: var(--text-main); 
+      font-family: var(--font-sans);
       min-height: 100vh;
-    }
-
-    header {
-      text-align: center;
-      padding: 30px 20px 15px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-    }
-
-    header h1 {
-      font-size: 26px;
-      margin: 0 0 8px 0;
-      background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
-    }
-
-    header p {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin: 0 0 12px 0;
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px;
-      background: rgba(7, 10, 19, 0.7);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(8px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      flex-wrap: wrap;
-    }
-
-    nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 20px;
-      transition: all 0.2s ease;
-    }
-
-    nav a.active, nav a:hover {
-      color: #fff;
-      background: rgba(0, 242, 254, 0.15);
-      border: 1px solid rgba(0, 242, 254, 0.3);
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 30px 20px;
-    }
-
-    /* DASHBOARD MODERNO TIPO HUD / TELEMETRÍA */
-    .dashboard-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 25px;
-    }
-
-    .stat-card {
-      background: rgba(19, 27, 46, 0.85);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 3px;
-      background: var(--card-glow, var(--primary));
-    }
-
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .stat-header p {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-    }
-
-    .stat-badge-num {
-      font-family: monospace;
-      font-size: 20px;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    /* BARRA DE PROGRESO MODERNA (HUD) */
-    .hud-progress-wrapper {
       width: 100%;
-      background: rgba(255, 255, 255, 0.06);
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
-      margin-top: 8px;
+      overflow-x: hidden;
     }
 
-    .hud-progress-bar {
-      height: 100%;
-      width: 0%;
-      border-radius: 4px;
-      background: var(--card-glow, var(--primary));
-      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 10px var(--card-glow, var(--primary));
-    }
+    body { display: flex; flex-direction: column; }
 
-    .hud-footer-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-      font-family: monospace;
+    aside {
+      width: 280px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; height: 100vh; position: fixed; top: 0; left: 0;
+      overflow-y: auto; scrollbar-width: none; box-shadow: 5px 0 20px rgba(0,0,0,0.15); 
+      transition: width 0.3s ease, transform 0.3s ease; z-index: 1001;
     }
+    aside::-webkit-scrollbar { display: none; }
+    aside.collapsed { width: 0px; transform: translateX(-280px); overflow: hidden; }
 
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .toggle-sidebar-btn {
+      position: fixed; left: 250px; top: 12px; z-index: 1005;
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
+      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.2); transition: left 0.3s ease, transform 0.2s;
     }
+    .toggle-sidebar-btn:hover { transform: scale(1.1); background: var(--card-hover); }
+    body.menu-hidden .toggle-sidebar-btn { left: 15px; }
 
-    .filter-btn {
-      background: rgba(19, 27, 46, 0.8);
-      color: var(--text-muted);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s;
+    .sidebar-user { padding: 20px 16px; border-bottom: 1px solid var(--border-color); background: rgba(255,183,0,0.02); display: flex; align-items: center; gap: 14px; }
+    .user-avatar-img {
+      width: 52px; height: 52px; object-fit: cover; border-radius: 50%;
+      border: 2px solid var(--accent-gold); box-shadow: 0 0 14px rgba(255,183,0,0.3);
+      background: rgba(255,183,0,0.1); flex-shrink: 0;
     }
+    .user-info .name { font-size: 0.9rem; font-weight: bold; color: var(--text-main); font-family: var(--font-mono); }
+    .user-info .role { font-size: 0.72rem; color: var(--accent); font-family: var(--font-mono); }
 
-    .filter-btn.active, .filter-btn:hover {
-      background: rgba(0, 242, 254, 0.15);
-      color: var(--primary);
-      border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    .nav-group { padding: 14px 16px; border-bottom: 1px solid rgba(30,41,59,0.15); }
+    .nav-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--font-mono); font-weight: 700; }
+    
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-muted);
+      text-decoration: none; font-size: 0.85rem; border-radius: 6px; transition: all 0.2s; cursor: pointer; font-weight: 600;
     }
+    .nav-item:hover { background-color: var(--card-hover); color: var(--text-main); }
+    .nav-item.active { background-color: var(--card-hover); color: var(--text-main); font-weight: 700; }
+    .nav-item.c-cyan.active { color: var(--primary); }
+    .nav-item.c-green.active { color: var(--accent); }
+    .nav-item.c-yellow.active { color: var(--accent-gold); }
+    .nav-item.c-purple.active { color: var(--accent-purple); }
+    .nav-item.c-orange.active { color: var(--accent-orange); }
 
-    .controls-wrapper {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 45px;
-    }
+    .cyber-node { background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 6px; padding: 10px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
+    .cyber-node span { color: var(--accent); }
 
-    .search-box {
-      flex: 1;
-      min-width: 260px;
-      padding: 12px 20px;
-      border-radius: 25px;
-      border: 1px solid var(--border);
-      background: #161b22;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      box-shadow: var(--shadow);
-      transition: border-color 0.3s;
+    main { 
+      margin-left: 280px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 280px);
+      transition: margin-left 0.3s ease, width 0.3s ease;
     }
-    .search-box:focus { border-color: var(--primary); }
+    body.menu-hidden main { margin-left: 0; width: 100%; }
 
-    .drive-btn {
-      background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 25px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      font-size: 13px;
-      box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
-      transition: transform 0.2s;
+    header-top {
+      background-color: var(--bg-sidebar); border-bottom: 1px solid var(--border-color); padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 10px;
     }
-    .drive-btn:hover { transform: translateY(-2px); }
+    .topbar-left { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-left: 35px; }
+    .topbar-right-widgets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .flip-clock { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); }
+    .flip-group { display: flex; align-items: center; gap: 2px; }
+    .flip-card {
+      background: var(--card-bg); border: 1px solid var(--primary); border-radius: 4px; width: 24px; height: 30px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 800; color: var(--text-main);
+      box-shadow: 0 0 6px rgba(0,242,254,0.2);
+    }
+    .flip-colon { color: var(--primary); font-weight: bold; font-size: 0.85rem; }
+    
+    .theme-toggle-btn {
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
+      padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold;
+    }
+    .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.05); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; box-sizing: border-box; flex: 1; }
 
     .music-btn {
-      background: #00f2fe;
-      color: #0d1117;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
+      background: var(--primary); color: #030712; border: none; padding: 7px 16px; font-weight: 800; border-radius: 20px;
+      cursor: pointer; font-size: 0.85rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;
+      box-shadow: 0 0 15px rgba(0,242,254,0.2);
     }
-    .music-btn:hover { transform: scale(1.05); }
+    .music-btn:hover { opacity: 0.9; transform: scale(1.03); }
 
-    .section-title {
-      font-size: 19px;
-      color: #fff;
-      margin: 40px 0 20px 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      border-left: 3px solid var(--primary);
-      padding-left: 10px;
+    /* Dashboard Estadístico Interactivo */
+    .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s, border-color 0.2s; }
+    .stat-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+    .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .stat-header p { font-size: 12px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; font-family: var(--font-mono); }
+    .stat-badge-num { font-family: var(--font-mono); font-size: 22px; font-weight: 900; color: var(--text-main); }
+    .stat-progress-bg { width: 100%; height: 7px; background: rgba(128,128,128,0.25); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+    .stat-progress-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.8s ease; }
+    .stat-footer-text { font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 700; }
+
+    /* BUSCADOR Y FILTROS */
+    .search-filter-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; align-items: center; }
+    .search-input {
+      width: 100%; max-width: 500px; background: var(--card-bg); border: 1px solid var(--border-color);
+      padding: 10px 18px; border-radius: 20px; color: var(--text-main); font-size: 13px; font-family: var(--font-mono);
+      outline: none; box-shadow: var(--shadow);
     }
+    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,242,254,0.2); }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
-      justify-content: center;
+    .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .filter-btn {
+      background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color);
+      padding: 8px 18px; border-radius: 20px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;
     }
+    .filter-btn.active, .filter-btn:hover { background: var(--card-hover); color: var(--primary); border-color: var(--primary); }
 
-    .grid-center {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .section-title-wrapper {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin: 35px 0 20px 0; border-left: 4px solid var(--primary); padding-left: 12px;
     }
+    .section-title { font-size: 19px; color: var(--text-main); font-weight: 800; margin: 0; }
 
-    @media (max-width: 950px) {
-      .grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      }
-    }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+    .grid-center { display: flex; justify-content: center; }
 
+    @media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+    /* TARJETAS CON GIRO */
     .card-container {
-      perspective: 1000px;
-      width: 100%;
-      max-width: 350px;
-      height: 410px;
-      margin: 0 auto;
-      position: relative;
+      perspective: 1000px; width: 100%; max-width: 340px; height: 440px; margin: 0 auto; cursor: pointer;
     }
-
     .card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-      transform-style: preserve-3d;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+      position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d; border-radius: 14px; box-shadow: var(--shadow);
     }
-
-    .card-inner.flipped {
-      transform: rotateY(180deg);
-    }
+    .card-inner.flipped { transform: rotateY(180deg); }
 
     .card-face, .card-back {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      background: var(--card-bg);
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      padding: 18px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color);
+      padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;
       overflow: hidden;
     }
+    .card-back { transform: rotateY(180deg); text-align: left; }
 
-    .card-back {
-      transform: rotateY(180deg);
-      text-align: left;
-      font-size: 13px;
-      color: #e6edf3;
-      overflow-y: auto;
+    .stamp-badge {
+      position: absolute; top: 42%; left: -15%; width: 130%; transform: rotate(-30deg);
+      text-align: center; font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+      padding: 6px 0; z-index: 10; pointer-events: none; font-family: var(--font-mono);
+      border: 2px dashed rgba(255,183,0,0.8); background: rgba(255, 183, 0, 0.12); color: var(--accent-gold);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4); backdrop-filter: blur(2px); display: none;
+    }
+    .stamp-combat {
+      border: 2px dashed rgba(241,39,17,0.8); background: rgba(241, 39, 17, 0.15); color: #f12711;
     }
 
-    .combat-stamp-vertical {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-35deg);
-      font-size: 22px;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: rgba(255, 95, 86, 0.25);
-      border: 4px dashed rgba(255, 95, 86, 0.32);
-      padding: 12px 24px;
-      border-radius: 10px;
-      pointer-events: none;
-      z-index: 10;
-      text-align: center;
-      letter-spacing: 2px;
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .birthday-stamp-vertical {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-35deg);
-      font-size: 22px;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: rgba(255, 189, 46, 0.28);
-      border: 4px dashed rgba(255, 189, 46, 0.35);
-      padding: 12px 24px;
-      border-radius: 10px;
-      pointer-events: none;
-      z-index: 10;
-      text-align: center;
-      letter-spacing: 2px;
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .birthday-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(255, 189, 46, 0.15);
-      color: #ffbd2e;
-      border: 1px solid rgba(255, 189, 46, 0.3);
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      z-index: 2;
-    }
-
-    .combat-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(255, 95, 86, 0.15);
-      color: #ff5f56;
-      border: 1px solid rgba(255, 95, 86, 0.3);
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      z-index: 2;
+    .bday-top-tag {
+      position: absolute; top: 10px; right: 12px; background: rgba(255,183,0,0.15); border: 1px solid var(--accent-gold);
+      color: var(--accent-gold); font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 8px; font-family: var(--font-mono);
+      display: none; align-items: center; gap: 4px;
     }
 
     .photo-frame {
-      width: 110px;
-      height: 110px;
-      margin: 0 auto 10px auto;
-      border-radius: 50%;
-      border: 3px solid var(--primary);
-      padding: 3px;
-      background: #0d1117;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
-      overflow: hidden;
-      flex-shrink: 0;
+      width: 88px; height: 88px; margin: 0 auto 4px auto; border-radius: 50%;
+      border: 3px solid var(--primary); padding: 2px; background: var(--bg-main); overflow: hidden; flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(0,242,254,0.15);
     }
     .photo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
-    .card-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin: 4px 0;
-      color: #fff;
-      text-align: center;
+    .card-title { font-size: 16px; font-weight: 800; margin: 2px 0; color: var(--text-main); text-align: center; }
+    
+    .directiva-role-title {
+      font-size: 11px; font-weight: 800; text-transform: uppercase; text-align: center; margin: 2px auto;
+      padding: 3px 8px; border-radius: 8px; display: inline-block;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 15px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      text-align: center;
-      margin: 4px auto;
+    .student-sub-role {
+      font-size: 10px; font-weight: 700; color: var(--text-muted); text-align: center; text-transform: uppercase; margin-bottom: 2px;
+      font-family: var(--font-mono);
     }
 
-    .card-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
-      margin: 4px 0;
-      text-align: center;
-      font-style: italic;
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .card-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.35; text-align: center; font-style: italic; margin: 2px 0; font-weight: 600; }
+
+    .btn-ficha-tecnica {
+      background: transparent; color: var(--text-muted); border: 1px solid var(--border-color);
+      padding: 5px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 2px;
+      font-family: var(--font-mono);
     }
+    .btn-ficha-tecnica:hover { background: var(--card-hover); color: var(--primary); border-color: var(--primary); }
 
     .back-header {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 6px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 4px;
+      font-size: 12px; font-weight: 800; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 4px;
+      font-family: var(--font-mono); display: flex; justify-content: space-between; align-items: center;
     }
+    .back-header .student-id-code { font-size: 9.5px; background: rgba(0,242,254,0.12); border: 1px solid var(--primary); padding: 1px 5px; border-radius: 4px; color: var(--primary); }
 
-    .back-content p { margin: 4px 0; font-size: 12px; }
-    .back-content strong { color: #fff; }
+    .back-top-meta {
+      display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; background: rgba(255,183,0,0.06); border: 1px solid rgba(255,183,0,0.2); padding: 3px 6px; border-radius: 4px; margin-bottom: 4px;
+    }
+    .back-top-meta span { color: var(--accent-gold); font-weight: 700; }
 
-    .phone-highlight {
-      color: var(--accent);
-      font-weight: 600;
-      background: rgba(63, 185, 80, 0.12);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
+    .back-body-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex: 1; }
+    .back-info-col { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .back-content p { margin: 1px 0; font-size: 10.5px; color: var(--text-muted); font-weight: 600; word-break: break-all; }
+    .back-content strong { color: var(--text-main); font-weight: 800; }
 
-    .back-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: auto;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      padding-top: 8px;
+    .github-project-badge {
+      background: rgba(0,242,254,0.08); border: 1px dashed var(--primary); border-radius: 5px; padding: 4px 6px; margin-top: 2px;
     }
+    .github-project-badge span { font-size: 9.5px; color: var(--primary); font-family: var(--font-mono); font-weight: 700; display: block; margin-bottom: 1px; }
+    .github-project-badge a { font-size: 10px; color: var(--text-main); text-decoration: none; font-weight: 700; }
+    .github-project-badge a:hover { text-decoration: underline; color: var(--primary); }
 
-    .social-links {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .social-links a {
-      color: #58a6ff;
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 600;
-    }
+    .social-links { display: flex; gap: 8px; margin-top: 2px; font-size: 10.5px; font-family: var(--font-mono); }
+    .social-links a { color: var(--primary); text-decoration: none; font-weight: 700; }
     .social-links a:hover { text-decoration: underline; }
 
-    .qr-box {
-      width: 85px;
-      height: 85px;
-      background: #fff;
-      padding: 4px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-      flex-shrink: 0;
-    }
-    .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+    .whatsapp-contact { color: var(--accent); font-weight: 800; font-size: 11px; }
 
-    .btn-social {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-main);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 7px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      width: 100%;
-      text-align: center;
+    .qr-container-back { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; text-align: center; }
+    .qr-box-large { width: 84px; height: 84px; background: #fff; padding: 3px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 2px; }
+    .qr-box-large img { width: 100%; height: 100%; object-fit: contain; }
+
+    .btn-volver {
+      background: var(--card-hover); color: var(--text-main); border: 1px solid var(--border-color);
+      padding: 5px; border-radius: 6px; font-size: 10.5px; font-weight: 800; cursor: pointer; text-align: center; margin-top: 3px; width: 100%;
     }
-    .btn-social:hover {
-      background: rgba(0, 242, 254, 0.15);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
+    .btn-volver:hover { background: var(--border-color); }
 
     footer {
-      text-align: center;
-      padding: 30px;
-      color: var(--text-muted);
-      font-size: 12px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      margin-top: 40px;
-      background: rgba(7, 10, 19, 0.4);
+      text-align: center; padding: 20px; color: var(--text-muted); font-size: 11.5px; font-weight: 700;
+      border-top: 1px solid var(--border-color); margin-top: 40px; background: var(--bg-sidebar); font-family: var(--font-mono);
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Anuario de la Promoción</h1>
-    <p>Sistemas Informáticos CETAL (Turno Noche)</p>
-    <div style="margin-top: 10px;">
-      <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
-      <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
+  <button class="toggle-sidebar-btn" id="toggleMenuBtn" title="Ocultar / Mostrar Menú">≡</button>
+
+  <aside id="sidebar">
+    <div class="sidebar-user">
+      <img src="assets/logo.png" alt="Logo CETAL" class="user-avatar-img">
+      <div class="user-info">
+        <div class="name">CETAL Noche</div>
+        <div class="role">Sistemas Informáticos</div>
+      </div>
     </div>
-  </header>
-
-  <nav>
-    <a href="index.html">Inicio</a>
-    <a href="anuario.html" class="active">Anuario</a>
-    <a href="actividades.html">Bitácora</a>
-    <a href="proyectos.html">Proyectos</a>
-    <a href="recursos.html">Recursos</a>
-  </nav>
-
-  <main class="container">
     
-    <!-- DASHBOARD MODERNO SINCRONIZADO (TELEMETRÍA DE CURSO) -->
-    <div class="dashboard-stats">
+    <div class="nav-group">
+      <div class="nav-title">Navegación Oficial</div>
+      <a href="index.html" class="nav-item c-cyan">⚡ Inicio</a>
+      <a href="anuario.html" class="nav-item c-green active">👥 Anuario</a>
+      <a href="actividades.html" class="nav-item c-yellow">📋 Bitácora</a>
+      <a href="proyectos.html" class="nav-item c-purple">🚀 Proyectos</a>
+      <a href="recursos.html" class="nav-item c-orange">🛠️ Recursos</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-title">Estado del Sistema</div>
+      <div class="cyber-node">
+        <div>CORE: <span>ONLINE</span></div>
+        <div>NODE: <span>LA PAZ - BO</span></div>
+        <div>SEC_LVL: <span>ALPHA-1</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <header-top>
+      <div class="topbar-left">
+        <span>// ANUARIO_OFICIAL_2026</span>
+      </div>
+      <div class="topbar-right-widgets">
+        <div class="flip-clock">
+          <div class="flip-group"><div class="flip-card" id="f-h1">0</div><div class="flip-card" id="f-h2">0</div></div>
+          <span class="flip-colon">:</span>
+          <div class="flip-group"><div class="flip-card" id="f-m1">0</div><div class="flip-card" id="f-m2">0</div></div>
+          <span class="flip-colon">:</span>
+          <div class="flip-group"><div class="flip-card" id="f-s1">0</div><div class="flip-card" id="f-s2">0</div></div>
+        </div>
+
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Cambiar Tema Diurno / Nocturno">🌙</button>
+        <button id="btn-toggle-music" class="music-btn">🎵 Música</button>
+        <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
+      </div>
+    </header-top>
+
+    <div class="container">
       
-      <!-- Sobrevivientes / Activos -->
-      <div class="stat-card" style="--card-glow: #00f2fe;">
-        <div class="stat-header">
-          <p>🛡️ Sobrevivientes Activos</p>
-          <span class="stat-badge-num" id="active-count">0</span>
+      <div style="margin-bottom: 20px;">
+        <h1 style="font-size: 24px; margin: 0 0 4px 0; color: var(--text-main); font-weight: 800;">Anuario de la Promoción</h1>
+        <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; font-weight: 700;">Sistemas Informáticos CETAL (Turno Noche) — Gestión 2026-2027</p>
+      </div>
+
+      <!-- DASHBOARD ESTADÍSTICO INTERACTIVO -->
+      <div class="dashboard-stats">
+        <div class="stat-card" onclick="filterByStat('active')">
+          <div class="stat-header">
+            <p>🛡️ Sobrevivientes Activos</p>
+            <span class="stat-badge-num" id="active-count">0</span>
+          </div>
+          <div class="stat-progress-bg"><div class="stat-progress-fill" id="active-bar" style="width: 0%;"></div></div>
+          <div class="stat-footer-text"><span>Integridad de Clase</span><span id="active-val-label">0%</span></div>
         </div>
-        <div>
-          <div class="hud-progress-wrapper">
-            <div id="hud-bar-active" class="hud-progress-bar"></div>
+        <div class="stat-card" onclick="filterByStat('birthday')">
+          <div class="stat-header">
+            <p>🎂 Cumpleañeros del Mes</p>
+            <span class="stat-badge-num" id="birthday-count">0</span>
           </div>
-          <div class="hud-footer-info">
-            <span>Integridad de Clase</span>
-            <span id="hud-pct-active">0%</span>
+          <div class="stat-progress-bg"><div class="stat-progress-fill" id="birthday-bar" style="background: var(--accent-gold); width: 0%;"></div></div>
+          <div class="stat-footer-text"><span>Ratio del Periodo</span><span id="birthday-val-label">0%</span></div>
+        </div>
+        <div class="stat-card" onclick="filterByStat('combat')">
+          <div class="stat-header">
+            <p>⚔️ Caídos en Acción</p>
+            <span class="stat-badge-num" id="combat-count">0</span>
           </div>
+          <div class="stat-progress-bg"><div class="stat-progress-fill" id="combat-bar" style="background: #f12711; width: 0%;"></div></div>
+          <div class="stat-footer-text"><span>Bajas / Retirados</span><span id="combat-val-label">0%</span></div>
         </div>
       </div>
 
-      <!-- Cumpleañeros -->
-      <div class="stat-card" style="--card-glow: #ffbd2e;">
-        <div class="stat-header">
-          <p>🎂 Cumpleañeros</p>
-          <span class="stat-badge-num" id="birthday-count">0</span>
-        </div>
-        <div>
-          <div class="hud-progress-wrapper">
-            <div id="hud-bar-bday" class="hud-progress-bar"></div>
-          </div>
-          <div class="hud-footer-info">
-            <span>Ratio del Mes</span>
-            <span id="hud-pct-bday">0%</span>
-          </div>
+      <!-- BUSCADOR Y FILTROS -->
+      <div class="search-filter-wrapper">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por nombre, apellido u ocupación..." oninput="filterCards()">
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterCategory('all', this)">✨ Mostrar Todo</button>
+          <button class="filter-btn" onclick="filterCategory('docente', this)">🧙‍♂️ Gran Maestre</button>
+          <button class="filter-btn" onclick="filterCategory('directiva', this)">🏛️ Mesa Directiva</button>
+          <button class="filter-btn" onclick="filterCategory('estudiantes', this)">💻 Estudiantes</button>
         </div>
       </div>
 
-      <!-- Caídos en Combate -->
-      <div class="stat-card" style="--card-glow: #ff5f56;">
-        <div class="stat-header">
-          <p>⚔️ Caídos en Combate</p>
-          <span class="stat-badge-num" id="combat-count">0</span>
-        </div>
-        <div>
-          <div class="hud-progress-wrapper">
-            <div id="hud-bar-combat" class="hud-progress-bar"></div>
-          </div>
-          <div class="hud-footer-info">
-            <span>Bajas / Retirados</span>
-            <span id="hud-pct-combat">0%</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- PESTAÑAS / FILTROS RÁPIDOS -->
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterCategory('all', this)">✨ Mostrar Todo</button>
-      <button class="filter-btn" onclick="filterCategory('docente', this)">🧙‍♂️ Gran Maestre</button>
-      <button class="filter-btn" onclick="filterCategory('directiva', this)">🏛️ Mesa Directiva</button>
-      <button class="filter-btn" onclick="filterCategory('estudiantes', this)">💻 Estudiantes</button>
-    </div>
-
-    <!-- Contenedor dinámico de controles -->
-    <div class="controls-wrapper" id="controls-container">
-      <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
-    </div>
-
-    <!-- GRAN MAESTRE / DOCENTE GUÍA (CENTRADO) -->
-    <div class="section-group" data-group="docente">
-      <h2 class="section-title">🧙‍♂️ Gran Maestre (Docente Guía)</h2>
-      <div class="grid-center">
-        <div class="card-container" data-category="docente">
-          <div class="card-inner">
-            <div class="card-face" style="border: 2px solid var(--primary); text-align: center;">
-              <div class="photo-frame">
-                <img src="assets/fotos/docente.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Freddy'" alt="Lic. Freddy Mamani Chuilla">
+      <!-- GRAN MAESTRE -->
+      <div class="section-group" data-group="docente">
+        <div class="section-title-wrapper"><span class="section-title">🧙‍♂️ Gran Maestre (Docente Guía)</span></div>
+        <div class="grid-center">
+          <div class="card-container" data-category="docente" data-status="activo" data-birthday="1980-05-15" data-name="Lic. Freddy Mamani Chuilla" data-occ="Docente Titular" onclick="flipCard(this)">
+            <div class="card-inner">
+              <div class="card-face">
+                <div class="photo-frame"><img src="assets/fotos/docente.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Freddy'" alt="Docente"></div>
+                <h3 class="card-title">Lic. Freddy Mamani Chuilla</h3>
+                <div style="text-align:center;"><span class="directiva-role-title" style="background: var(--primary); color: #030712;">🧙‍♂️ Gran Maestre Titular</span></div>
+                <p class="card-desc">"Mentor y guía principal en la formación técnica del curso."</p>
+                <button class="btn-ficha-tecnica">Ficha Técnica</button>
               </div>
-              <h3 class="card-title">Lic. Freddy Mamani Chuilla</h3>
-              <div><span class="badge" style="background: var(--primary); color: #000;">🧙‍♂️ Gran Maestre</span></div>
-              <p class="card-desc">"Mentor y guía principal en la formación técnica del curso."</p>
-              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
-            </div>
-            <div class="card-back">
-              <div>
-                <div class="back-header" style="color: var(--primary);">📋 Ficha Técnica - Gran Maestre</div>
-                <div class="back-content">
-                  <p><strong>Cargo:</strong> Docente Guía</p>
-                  <p><strong>Especialidad:</strong> Ingeniería de Sistemas</p>
-                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 70000000</span></p>
+              <div class="card-back" onclick="event.stopPropagation()">
+                <div class="back-header">
+                  <span>📋 Ficha Técnica</span>
+                  <span class="student-id-code">DOC-01</span>
                 </div>
-              </div>
-              <div class="back-footer">
-                <div class="social-links">
-                  <a href="#" target="_blank">💼 LinkedIn</a>
-                  <a href="#" target="_blank">📘 Facebook</a>
-                  <a href="#" target="_blank">🤖 Discord</a>
-                  <a href="#" target="_blank">📦 GitHub</a>
+                <div class="back-top-meta">
+                  <span>🏆 Licenciado Maestre</span>
+                  <span>⭐ 100 Pts</span>
                 </div>
-                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=LicFreddyMamani" alt="QR"></div>
-              </div>
-              <button class="btn-social" onclick="flipCard(this)">Volver</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MESA DIRECTIVA -->
-    <div class="section-group" data-group="directiva">
-      <h2 class="section-title">🏛️ Mesa Directiva del Curso</h2>
-      <div class="grid">
-        
-        <!-- Ivan -->
-        <div class="card-container" data-category="directiva">
-          <div class="card-inner">
-            <div class="birthday-stamp-vertical">🎂 Cumpleañero del Mes</div>
-            <div class="birthday-badge">🎂 Cumpleaños</div>
-            <div class="card-face" style="border: 1px solid #ffbd2e; text-align:center;">
-              <div class="photo-frame" style="border-color:#ffbd2e;">
-                <img src="assets/fotos/ivan.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Ivan'" alt="Ivan">
-              </div>
-              <h3 class="card-title">Ivan 👨‍💻</h3>
-              <div><span class="badge" style="background: #ffbd2e; color: #000;">👑 Presidente del Estado Estudiantil</span></div>
-              <p class="card-desc">"Liderazgo, desarrollo de scripts y automatización."</p>
-              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
-            </div>
-            <div class="card-back">
-              <div>
-                <div class="birthday-badge">🎂 Cumpleaños</div>
-                <div class="back-header" style="color: #ffbd2e;">📋 Ficha Técnica - Ivan</div>
-                <div class="back-content">
-                  <p><strong>Ocupación:</strong> Abogado / PC & Costura</p>
-                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 76666666</span></p>
-                </div>
-              </div>
-              <div class="back-footer">
-                <div class="social-links">
-                  <a href="#" target="_blank">💼 LinkedIn</a>
-                  <a href="#" target="_blank">📘 Facebook</a>
-                  <a href="#" target="_blank">🤖 Discord</a>
-                  <a href="#" target="_blank">📦 GitHub (Batman)</a>
-                </div>
-                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=IvanPaz" alt="QR"></div>
-              </div>
-              <button class="btn-social" onclick="flipCard(this)">Volver</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Grisel -->
-        <div class="card-container" data-category="directiva">
-          <div class="card-inner">
-            <div class="card-face" style="border: 1px solid #ff79c6; text-align:center;">
-              <div class="photo-frame" style="border-color:#ff79c6;">
-                <img src="assets/fotos/grisel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Grisel'" alt="Grisel">
-              </div>
-              <h3 class="card-title">Grisel</h3>
-              <div><span class="badge" style="background: #ff79c6; color: #000;">📜 Vicepresidenta del Estado Estudiantil</span></div>
-              <p class="card-desc">"Coordinación general de proyectos."</p>
-              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
-            </div>
-            <div class="card-back">
-              <div>
-                <div class="back-header" style="color: #ff79c6;">📋 Ficha Técnica - Grisel</div>
-                <div class="back-content">
-                  <p><strong>Ocupación:</strong> Estudiante / UMSA</p>
-                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 71111111</span></p>
-                </div>
-              </div>
-              <div class="back-footer">
-                <div class="social-links">
-                  <a href="#" target="_blank">💼 LinkedIn</a>
-                  <a href="#" target="_blank">📘 Facebook</a>
-                  <a href="#" target="_blank">🤖 Discord</a>
-                  <a href="#" target="_blank">📦 GitHub</a>
-                </div>
-                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Grisel" alt="QR"></div>
-              </div>
-              <button class="btn-social" onclick="flipCard(this)">Volver</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Jimena -->
-        <div class="card-container" data-category="directiva">
-          <div class="card-inner">
-            <div class="card-face" style="border: 1px solid #27c93f; text-align:center;">
-              <div class="photo-frame" style="border-color:#27c93f;">
-                <img src="assets/fotos/jimena.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Jimena'" alt="Jimena">
-              </div>
-              <h3 class="card-title">Jimena</h3>
-              <div><span class="badge" style="background: #27c93f; color: #000;">🏛️ Ministra de Economía y Finanzas</span></div>
-              <p class="card-desc">"Administración financiera del curso."</p>
-              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
-            </div>
-            <div class="card-back">
-              <div>
-                <div class="back-header" style="color: #27c93f;">📋 Ficha Técnica - Jimena</div>
-                <div class="back-content">
-                  <p><strong>Ocupación:</strong> Contabilidad / Finanzas</p>
-                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 72222222</span></p>
-                </div>
-              </div>
-              <div class="back-footer">
-                <div class="social-links">
-                  <a href="#" target="_blank">💼 LinkedIn</a>
-                  <a href="#" target="_blank">📘 Facebook</a>
-                  <a href="#" target="_blank">🤖 Discord</a>
-                  <a href="#" target="_blank">📦 GitHub</a>
-                </div>
-                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Jimena" alt="QR"></div>
-              </div>
-              <button class="btn-social" onclick="flipCard(this)">Volver</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Gabriel -->
-        <div class="card-container" data-category="directiva">
-          <div class="card-inner">
-            <div class="card-face" style="border: 1px solid #ff5f56; text-align:center;">
-              <div class="photo-frame" style="border-color:#ff5f56;">
-                <img src="assets/fotos/gabriel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Gabriel'" alt="Gabriel">
-              </div>
-              <h3 class="card-title">Gabriel</h3>
-              <div><span class="badge" style="background: #ff5f56; color: #fff;">⚽ Ministro de Deportes</span></div>
-              <p class="card-desc">"Coordinador deportivo (Varones)."</p>
-              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
-            </div>
-            <div class="card-back">
-              <div>
-                <div class="back-header" style="color: #ff5f56;">📋 Ficha Técnica - Gabriel</div>
-                <div class="back-content">
-                  <p><strong>Ocupación:</strong> Atleta / Sistemas</p>
-                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 73333333</span></p>
-                </div>
-              </div>
-              <div class="back-footer">
-                <div class="social-links">
-                  <a href="#" target="_blank">💼 LinkedIn</a>
-                  <a href="#" target="_blank">📘 Facebook</a>
-                  <a href="#" target="_blank">🤖 Discord</a>
-                  <a href="#" target="_blank">📦 GitHub</a>
-                </div>
-                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Gabriel" alt="QR"></div>
-              </div>
-              <button class="btn-social" onclick="flipCard(this)">Volver</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Andrea -->
-        <div class="card-container" data-category="directiva">
-          <div class="card-inner">
-            <div class="card-face" style="border: 1px solid #00f2fe; text-align:center;">
-              <div class="photo-frame" style="border-color:#00f2fe;">
-                <img src="assets/fotos/andrea.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Andrea'" alt="Andrea">
-              </div>
-              <h3 class="card-title">Andrea</h3>
-              <div><span class="badge" style="background: #00f2fe; color: #000;">🏐 Ministra de Deportes</span></div>
-              <p class="card-desc">"Coordinadora deportiva (Mujeres)."</p>
-              <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
-            </div>
-            <div class="card-back">
-              <div>
-                <div class="back-header" style="color: #00f2fe;">📋 Ficha Técnica - Andrea</div>
-                <div class="back-content">
-                  <p><strong>Ocupación:</strong> Estudiante / Deporte</p>
-                  <p><strong>WhatsApp:</strong> <span class="phone-highlight">+591 74444444</span></p>
-                </div>
-              </div>
-              <div class="back-footer">
-                <div class="social-links">
-                  <a href="#" target="_blank">💼 LinkedIn</a>
-                  <a href="#" target="_blank">📘 Facebook</a>
-                  <a href="#" target="_blank">🤖 Discord</a>
-                  <a href="#" target="_blank">📦 GitHub</a>
-                </div>
-                <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Andrea" alt="QR"></div>
-              </div>
-              <button class="btn-social" onclick="flipCard(this)">Volver</button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ESTUDIANTES DE LA CLASE -->
-    <div class="section-group" data-group="estudiantes">
-      <h2 class="section-title">💻 Integrantes de la Clase</h2>
-      <div class="grid" id="students-grid">
-        
-        <script>
-          const estudiantesClase = [
-            "Mijael", "Jhamil", "Omar", "Bryan", "Betty", "Subeida", "Jenny", "Alexis", "Vargas Cuchillos",
-            "Ivan", "Grisel", "Jimena", "Gabriel", "Andrea",
-            "Juan Pérez"
-          ];
-
-          const cumpleañerosLista = ["Mijael", "Betty", "Ivan"];
-          const caidosLista = ["Juan Pérez"];
-
-          // Script inteligente para sincronizar los contadores y porcentajes reales del HUD
-          document.addEventListener("DOMContentLoaded", () => {
-            const totalEstudiantes = estudiantesClase.length;
-            const cantidadCaidos = caidosLista.length;
-            const cantidadActivos = totalEstudiantes - cantidadCaidos;
-            const cantidadCumple = cumpleañerosLista.length;
-
-            // Porcentajes reales matemáticamente coherentes
-            const pctActivos = Math.round((cantidadActivos / totalEstudiantes) * 100);
-            const pctCumple = Math.round((cantidadCumple / totalEstudiantes) * 100);
-            const pctCombat = Math.round((cantidadCaidos / totalEstudiantes) * 100);
-
-            // Inyectar valores en los contadores superiores
-            document.getElementById("active-count").innerText = cantidadActivos;
-            document.getElementById("birthday-count").innerText = cantidadCumple;
-            document.getElementById("combat-count").innerText = cantidadCaidos;
-
-            // Inyectar porcentajes y ajustar ancho de barras modernas (HUD)
-            document.getElementById("hud-pct-active").innerText = pctActivos + "%";
-            document.getElementById("hud-bar-active").style.width = pctActivos + "%";
-
-            document.getElementById("hud-pct-bday").innerText = pctCumple + "%";
-            document.getElementById("hud-bar-bday").style.width = pctCumple + "%";
-
-            document.getElementById("hud-pct-combat").innerText = pctCombat + "%";
-            document.getElementById("hud-bar-combat").style.width = pctCombat + "%";
-          });
-
-          estudiantesClase.forEach(nombre => {
-            const esPerdido = caidosLista.includes(nombre);
-            const esCumpleañero = cumpleañerosLista.includes(nombre);
-            
-            let selloHTML = '';
-            let badgeHTML = '';
-            
-            if (esPerdido) {
-              selloHTML = '<div class="combat-stamp-vertical">Caído en Combate</div>';
-              badgeHTML = '<div class="combat-badge">⚔️ Inactivo</div>';
-            } else if (esCumpleañero) {
-              selloHTML = '<div class="birthday-stamp-vertical">🎂 Cumpleañero del Mes</div>';
-              badgeHTML = '<div class="birthday-badge">🎂 Cumpleaños</div>';
-            }
-
-            document.write(`
-              <div class="card-container" data-category="estudiantes">
-                <div class="card-inner">
-                  ${selloHTML}
-                  ${badgeHTML}
-                  <div class="card-face" style="text-align:center;">
-                    <div class="photo-frame" ${esPerdido ? 'style="border-color: #ff5f56; filter: grayscale(80%);"' : (esCumpleañero ? 'style="border-color: #ffbd2e; box-shadow: 0 0 15px rgba(255,189,46,0.4);"' : '')}>
-                      <img src="assets/fotos/${nombre.toLowerCase().replace(' ','_')}.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${nombre}'" alt="${nombre}">
+                <div class="back-body-grid">
+                  <div class="back-info-col back-content">
+                    <p><strong>Ocupación:</strong> Docente Titular</p>
+                    <p><strong>WhatsApp:</strong> <span class="whatsapp-contact">+591 70000000</span></p>
+                    <div class="github-project-badge">
+                      <span>⚡ Script / Proyecto GitHub:</span>
+                      <a href="https://github.com/freddymamani" target="_blank">Guía-Cetal-2026.sh ↗</a>
                     </div>
-                    <h3 class="card-title">${nombre}</h3>
-                    <span class="badge" style="background: rgba(255,255,255,0.06); color: ${esPerdido ? '#ff5f56' : (esCumpleañero ? '#ffbd2e' : 'var(--primary)')};">
-                      ${esPerdido ? 'Ex-Estudiante / Leyenda' : (esCumpleañero ? '🎂 Celebración Activa' : 'Sistemas Informáticos')}
-                    </span>
-                    <p class="card-desc">
-                      ${esPerdido ? '"Dejó huella en el curso, pero emprendió nuevos rumbos profesionales."' : (esCumpleañero ? '"¡De festejo en la promoción CETAL nocturna este mes!"' : '"Integrante activo de la promoción CETAL nocturna."')}
-                    </p>
-                    <button class="btn-social" onclick="flipCard(this)">Ficha Técnica</button>
+                    <div class="social-links">
+                      <a href="https://linkedin.com" target="_blank">💼 LinkedIn</a>
+                    </div>
                   </div>
-                  <div class="card-back">
-                    <div>
-                      <div class="back-header" ${esPerdido ? 'style="color: #ff5f56;"' : (esCumpleañero ? 'style="color: #ffbd2e;"' : '')}>📋 Ficha Técnica - ${nombre}</div>
-                      <div class="back-content">
-                        <p><strong>Carrera:</strong> Sistemas Informáticos</p>
-                        <p><strong>Turno:</strong> Noche</p>
-                        <p><strong>Estado:</strong> ${esPerdido ? '<span style="color:#ff5f56; font-weight:bold;">Caído en Combate (Inactivo)</span>' : (esCumpleañero ? '<span style="color:#ffbd2e; font-weight:bold;">Activo 🎂 (Cumpleaños)</span>' : 'Activo (Sobreviviente)')}</p>
-                        <p><strong>WhatsApp:</strong> <span class="phone-highlight">${esPerdido ? 'N/D (Leyenda)' : '+591 70000000'}</span></p>
-                      </div>
-                    </div>
-                    <div class="back-footer">
-                      <div class="social-links">
-                        <a href="#" target="_blank">💼 LinkedIn</a>
-                        <a href="#" target="_blank">📘 Facebook</a>
-                        <a href="#" target="_blank">🤖 Discord</a>
-                        <a href="#" target="_blank">📦 GitHub</a>
-                      </div>
-                      <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${nombre}" alt="QR"></div>
-                    </div>
-                    <button class="btn-social" onclick="flipCard(this)">Volver</button>
+                  <div class="qr-container-back">
+                    <div class="qr-box-large"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=LicFreddyMamani" alt="QR"></div>
+                    <span style="font-size:8.5px; font-weight:800; color:var(--accent-gold);">ESCANEAR ID</span>
                   </div>
                 </div>
+                <button class="btn-volver" onclick="flipCard(this.closest('.card-container'))">Volver</button>
               </div>
-            `);
-          });
-        </script>
-
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- MESA DIRECTIVA -->
+      <div class="section-group" data-group="directiva">
+        <div class="section-title-wrapper"><span class="section-title">🏛️ Mesa Directiva del Curso</span></div>
+        <div class="grid">
+          
+          <!-- Ivan (Presidente) -->
+          <div class="card-container" data-category="directiva" data-status="activo" data-birthday="1993-10-18" data-name="Ivan Grover Paz Mancilla" data-occ="Independiente" onclick="flipCard(this)">
+            <div class="card-inner">
+              <div class="card-face">
+                <div class="bday-top-tag" id="top-tag-ivan">🎂 Cumpleaños</div>
+                <div class="stamp-badge" data-bday="1993-10-18">CUMPLEAÑEROS DEL MES</div>
+                <div class="photo-frame" style="border-color:var(--accent-gold);"><img src="assets/fotos/ivan.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Ivan'" alt="Ivan"></div>
+                <h3 class="card-title">Ivan Grover Paz Mancilla</h3>
+                <div style="text-align:center;"><span class="directiva-role-title" style="background: var(--accent-gold); color: #030712;">Presidente del Estado Estudiantil</span></div>
+                <p class="card-desc">"Liderazgo, desarrollo de scripts y automatización."</p>
+                <button class="btn-ficha-tecnica">Ficha Técnica</button>
+              </div>
+              <div class="card-back" onclick="event.stopPropagation()">
+                <div class="back-header" style="color: var(--accent-gold);">
+                  <span>📋 Ficha Técnica</span>
+                  <span class="student-id-code" style="border-color:var(--accent-gold); color:var(--accent-gold);">DIR-01</span>
+                </div>
+                <div class="back-top-meta" style="border-color:rgba(255,183,0,0.3); background:rgba(255,183,0,0.08);">
+                  <span>👑 Presidente / Maestre</span>
+                  <span>⭐ 100 Pts</span>
+                </div>
+                <div class="back-body-grid">
+                  <div class="back-info-col back-content">
+                    <p><strong>Ocupación:</strong> Independiente</p>
+                    <p><strong>WhatsApp:</strong> <span class="whatsapp-contact">+591 65615031</span></p>
+                    <div class="github-project-badge" style="border-color:var(--accent-gold);">
+                      <span style="color:var(--accent-gold);">⚡ Script GitHub:</span>
+                      <a href="https://github.com/IvanBatmanMode" target="_blank">Rclone-Backup-Drive.bat ↗</a>
+                    </div>
+                    <div class="social-links">
+                      <a href="https://github.com/IvanBatmanMode" target="_blank">🐙 GitHub</a>
+                      <a href="https://linkedin.com" target="_blank">💼 LinkedIn</a>
+                    </div>
+                  </div>
+                  <div class="qr-container-back">
+                    <div class="qr-box-large"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=IvanPaz" alt="QR"></div>
+                    <span style="font-size:8.5px; font-weight:800; color:var(--accent-gold);">ESCANEAR ID</span>
+                  </div>
+                </div>
+                <button class="btn-volver" onclick="flipCard(this.closest('.card-container'))">Volver</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grissel (Vicepresidenta / Estudiante UMSA) -->
+          <div class="card-container" data-category="directiva" data-status="activo" data-birthday="1994-02-08" data-name="Grissel Salluca Castañeta" data-occ="Estudiante UMSA" onclick="flipCard(this)">
+            <div class="card-inner">
+              <div class="card-face">
+                <div class="bday-top-tag" id="top-tag-grissel">🎂 Cumpleaños</div>
+                <div class="stamp-badge" data-bday="1994-02-08" style="border-color:#ff79c6; background:rgba(255,121,198,0.12); color:#ff79c6;">CUMPLEAÑEROS DEL MES</div>
+                <div class="photo-frame" style="border-color:#ff79c6;"><img src="assets/fotos/grissel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Grissel'" alt="Grissel"></div>
+                <h3 class="card-title">Grissel Salluca Castañeta</h3>
+                <div style="text-align:center;"><span class="directiva-role-title" style="background: #ff79c6; color: #030712;">Vicepresidenta del Estado Estudiantil</span></div>
+                <p class="card-desc">"Coordinación general de proyectos."</p>
+                <button class="btn-ficha-tecnica">Ficha Técnica</button>
+              </div>
+              <div class="card-back" onclick="event.stopPropagation()">
+                <div class="back-header" style="color: #ff79c6;">
+                  <span>📋 Ficha Técnica</span>
+                  <span class="student-id-code" style="border-color:#ff79c6; color:#ff79c6;">DIR-02</span>
+                </div>
+                <div class="back-top-meta" style="border-color:rgba(255,121,198,0.3); background:rgba(255,121,198,0.08);">
+                  <span style="color:#ff79c6;">💡 Vicepresidenta</span>
+                  <span style="color:#ff79c6;">⭐ 95 Pts</span>
+                </div>
+                <div class="back-body-grid">
+                  <div class="back-info-col back-content">
+                    <p><strong>Ocupación:</strong> Estudiante UMSA</p>
+                    <p><strong>WhatsApp:</strong> <span class="whatsapp-contact">+591 78836884</span></p>
+                    <div class="github-project-badge" style="border-color:#ff79c6;">
+                      <span style="color:#ff79c6;">⚡ Script GitHub:</span>
+                      <a href="https://github.com/grissel" target="_blank">Odoo-Gestión-Cetal.py ↗</a>
+                    </div>
+                    <div class="social-links">
+                      <a href="https://github.com/grissel" target="_blank">🐙 GitHub</a>
+                    </div>
+                  </div>
+                  <div class="qr-container-back">
+                    <div class="qr-box-large"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GrisselSalluca" alt="QR"></div>
+                    <span style="font-size:8.5px; font-weight:800; color:#ff79c6;">ESCANEAR ID</span>
+                  </div>
+                </div>
+                <button class="btn-volver" onclick="flipCard(this.closest('.card-container'))">Volver</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jimena (Ministra de Economía) -->
+          <div class="card-container" data-category="directiva" data-status="activo" data-birthday="1989-08-08" data-name="Jimena Mamani Mamani" data-occ="Finanzas" onclick="flipCard(this)">
+            <div class="card-inner">
+              <div class="card-face">
+                <div class="bday-top-tag" id="top-tag-jimena">🎂 Cumpleaños</div>
+                <div class="stamp-badge" data-bday="1989-08-08" style="border-color:#27c93f; background:rgba(39,201,63,0.12); color:#27c93f;">CUMPLEAÑEROS DEL MES</div>
+                <div class="photo-frame" style="border-color:#27c93f;"><img src="assets/fotos/jimena.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Jimena'" alt="Jimena"></div>
+                <h3 class="card-title">Jimena Mamani Mamani</h3>
+                <div style="text-align:center;"><span class="directiva-role-title" style="background: #27c93f; color: #030712;">Ministra de Economía del Estado Estudiantil</span></div>
+                <p class="card-desc">"Administración financiera del curso."</p>
+                <button class="btn-ficha-tecnica">Ficha Técnica</button>
+              </div>
+              <div class="card-back" onclick="event.stopPropagation()">
+                <div class="back-header" style="color: #27c93f;">
+                  <span>📋 Ficha Técnica</span>
+                  <span class="student-id-code" style="border-color:#27c93f; color:#27c93f;">DIR-03</span>
+                </div>
+                <div class="back-top-meta" style="border-color:rgba(39,201,63,0.3); background:rgba(39,201,63,0.08);">
+                  <span style="color:#27c93f;">📊 Ministra Finanzas</span>
+                  <span style="color:#27c93f;">⭐ 90 Pts</span>
+                </div>
+                <div class="back-body-grid">
+                  <div class="back-info-col back-content">
+                    <p><strong>Ocupación:</strong> Finanzas</p>
+                    <p><strong>WhatsApp:</strong> <span class="whatsapp-contact">+591 71201352</span></p>
+                    <div class="github-project-badge" style="border-color:#27c93f;">
+                      <span style="color:#27c93f;">⚡ Script GitHub:</span>
+                      <a href="https://github.com/jimena" target="_blank">Control-Caja-Cetal.xlsx ↗</a>
+                    </div>
+                    <div class="social-links">
+                      <a href="https://github.com/jimena" target="_blank">🐙 GitHub</a>
+                    </div>
+                  </div>
+                  <div class="qr-container-back">
+                    <div class="qr-box-large"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=JimenaMamani" alt="QR"></div>
+                    <span style="font-size:8.5px; font-weight:800; color:#27c93f;">ESCANEAR ID</span>
+                  </div>
+                </div>
+                <button class="btn-volver" onclick="flipCard(this.closest('.card-container'))">Volver</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gabriel (Ministro de Deportes) -->
+          <div class="card-container" data-category="directiva" data-status="activo" data-birthday="1999-07-14" data-name="Gabriel Elias Quispe Mamani" data-occ="Logística" onclick="flipCard(this)">
+            <div class="card-inner">
+              <div class="card-face">
+                <div class="bday-top-tag" id="top-tag-gabriel">🎂 Cumpleaños</div>
+                <div class="stamp-badge" data-bday="1999-07-14" style="border-color:var(--accent-orange); background:rgba(255,123,0,0.12); color:var(--accent-orange);">CUMPLEAÑEROS DEL MES</div>
+                <div class="photo-frame" style="border-color:var(--accent-orange);"><img src="assets/fotos/gabriel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Gabriel'" alt="Gabriel"></div>
+                <h3 class="card-title">Gabriel Elias Quispe Mamani</h3>
+                <div style="text-align:center;"><span class="directiva-role-title" style="background: var(--accent-orange); color: #030712;">Ministro de Deportes del Estado Estudiantil</span></div>
+                <p class="card-desc">"Organización de torneos y campeonatos."</p>
+                <button class="btn-ficha-tecnica">Ficha Técnica</button>
+              </div>
+              <div class="card-back" onclick="event.stopPropagation()">
+                <div class="back-header" style="color: var(--accent-orange);">
+                  <span>📋 Ficha Técnica</span>
+                  <span class="student-id-code" style="border-color:var(--accent-orange); color:var(--accent-orange);">DIR-04</span>
+                </div>
+                <div class="back-top-meta" style="border-color:rgba(255,123,0,0.3); background:rgba(255,123,0,0.08);">
+                  <span style="color:var(--accent-orange);">⚽ Ministro Deportes</span>
+                  <span style="color:var(--accent-orange);">⭐ 90 Pts</span>
+                </div>
+                <div class="back-body-grid">
+                  <div class="back-info-col back-content">
+                    <p><strong>Ocupación:</strong> Logística</p>
+                    <p><strong>WhatsApp:</strong> <span class="whatsapp-contact">+591 73333333</span></p>
+                    <div class="github-project-badge" style="border-color:var(--accent-orange);">
+                      <span style="color:var(--accent-orange);">⚡ Script GitHub:</span>
+                      <a href="https://github.com/gabriel" target="_blank">Fixture-Torneo-Cetal.js ↗</a>
+                    </div>
+                    <div class="social-links">
+                      <a href="https://github.com/gabriel" target="_blank">🐙 GitHub</a>
+                    </div>
+                  </div>
+                  <div class="qr-container-back">
+                    <div class="qr-box-large"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GabrielQuispe" alt="QR"></div>
+                    <span style="font-size:8.5px; font-weight:800; color:var(--accent-orange);">ESCANEAR ID</span>
+                  </div>
+                </div>
+                <button class="btn-volver" onclick="flipCard(this.closest('.card-container'))">Volver</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Samuel Ariel Mamani Poma (Ministro de Redes y Sistemas) -->
+          <div class="card-container" data-category="directiva" data-status="activo" data-birthday="1995-02-10" data-name="Samuel Ariel Mamani poma" data-occ="Tec superior en redes y sistemas" onclick="flipCard(this)">
+            <div class="card-inner">
+              <div class="card-face">
+                <div class="bday-top-tag" id="top-tag-samuel">🎂 Cumpleaños</div>
+                <div class="stamp-badge" data-bday="1995-02-10" style="border-color:var(--primary); background:rgba(0,242,254,0.12); color:var(--primary);">CUMPLEAÑEROS DEL MES</div>
+                <div class="photo-frame" style="border-color:var(--primary);"><img src="assets/fotos/samuel.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Samuel'" alt="Samuel"></div>
+                <h3 class="card-title">Samuel Ariel Mamani poma</h3>
+                <div style="text-align:center;"><span class="directiva-role-title" style="background: var(--primary); color: #030712;">Ministro de Redes y Sistemas</span></div>
+                <p class="card-desc">"Soporte técnico y arquitectura de redes."</p>
+                <button class="btn-ficha-tecnica">Ficha Técnica</button>
+              </div>
+              <div class="card-back" onclick="event.stopPropagation()">
+                <div class="back-header" style="color: var(--primary);">
+                  <span>📋 Ficha Técnica</span>
+                  <span class="student-id-code" style="border-color:var(--primary); color:var(--primary);">DIR-05</span>
+                </div>
+                <div class="back-top-meta" style="border-color:rgba(0,242,254,0.3); background:rgba(0,242,254,0.08);">
+                  <span style="color:var(--primary);">🌐 Redes & Sistemas</span>
+                  <span style="color:var(--primary);">⭐ 90 Pts</span>
+                </div>
+                <div class="back-body-grid">
+                  <div class="back-info-col back-content">
+                    <p><strong>Ocupación:</strong> Tec superior en redes y sistemas</p>
+                    <p><strong>WhatsApp:</strong> <span class="whatsapp-contact">+591 76255883</span></p>
+                    <div class="github-project-badge" style="border-color:var(--primary);">
+                      <span style="color:var(--primary);">⚡ Script GitHub:</span>
+                      <a href="https://github.com/samuel" target="_blank">Cisco-Lab-Redes.pkt ↗</a>
+                    </div>
+                    <div class="social-links">
+                      <a href="https://github.com/samuel" target="_blank">🐙 GitHub</a>
+                    </div>
+                  </div>
+                  <div class="qr-container-back">
+                    <div class="qr-box-large"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SamuelMamani" alt="QR"></div>
+                    <span style="font-size:8.5px; font-weight:800; color:var(--primary);">ESCANEAR ID</span>
+                  </div>
+                </div>
+                <button class="btn-volver" onclick="flipCard(this.closest('.card-container'))">Volver</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ESTUDIANTES (GENERADOS DINÁMICAMENTE DESDE data.js) -->
+      <div class="section-group" data-group="estudiantes">
+        <div class="section-title-wrapper"><span class="section-title">💻 Estudiantes y Promoción Turno Noche (Orden Alfabético A - Z)</span></div>
+        <div class="grid" id="sorted-students-grid">
+          <!-- Se renderiza automáticamente con los datos de CETAL_DB.students -->
+        </div>
+      </div>
+
     </div>
 
+    <footer>
+      <p>&copy; 2026 – 2027 Carrera de Sistemas Informáticos CETAL. [Secure Terminal v4.4 Sync]</p>
+    </footer>
   </main>
 
-  <footer><p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p></footer>
+  <!-- ARCHIVO CENTRALIZADO DE DATOS -->
+  <script src="data.js"></script>
 
   <script>
-    function setupSearch() {
-      const searchInput = document.getElementById('student-search');
-      if (searchInput) {
-        searchInput.removeEventListener('input', searchHandler);
-        searchInput.addEventListener('input', searchHandler);
+    const sidebar = document.getElementById('sidebar');
+    const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+    
+    toggleMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      document.body.classList.toggle('menu-hidden');
+    });
+
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const htmlElement = document.documentElement;
+
+    if (localStorage.getItem('theme') === 'light') {
+      htmlElement.setAttribute('data-theme', 'light');
+      themeBtn.textContent = '☀️';
+    }
+
+    themeBtn.addEventListener('click', () => {
+      if (htmlElement.getAttribute('data-theme') === 'dark') {
+        htmlElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeBtn.textContent = '☀️';
+      } else {
+        htmlElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeBtn.textContent = '🌙';
+      }
+    });
+
+    // Renderizar estudiantes leyendo directamente desde CETAL_DB (data.js)
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof CETAL_DB !== 'undefined' && CETAL_DB.students) {
+        // Ordenar alfabéticamente A-Z
+        const sortedStudents = [...CETAL_DB.students].sort((a, b) => a.name.localeCompare(b.name));
+        
+        const gridContainer = document.getElementById('sorted-students-grid');
+        gridContainer.innerHTML = sortedStudents.map((s, i) => {
+          const isCombat = s.status === 'combat';
+          const stampClass = isCombat ? 'stamp-badge stamp-combat' : 'stamp-badge';
+          const stampText = isCombat ? 'CAÍDO EN ACCIÓN' : 'CUMPLEAÑEROS DEL MES';
+          const studentId = `EST-${String(i+1).padStart(2,'0')}`;
+          
+          return `
+            <div class="card-container" data-category="estudiantes" data-status="${isCombat ? 'combat' : 'activo'}" data-birthday="${s.bday}" data-name="${s.name}" data-occ="${s.occ}" onclick="flipCard(this)">
+              <div class="card-inner">
+                <div class="card-face" ${isCombat ? 'style="border-color: rgba(241, 39, 17, 0.4);"' : ''}>
+                  <div class="bday-top-tag">🎂 Cumpleaños</div>
+                  <div class="${stampClass}" data-bday="${s.bday}">${stampText}</div>
+                  <div class="photo-frame" ${isCombat ? 'style="border-color: #f12711; opacity: 0.7;"' : ''}>
+                    <img src="assets/fotos/${s.name.toLowerCase().replace(/\s+/g, '')}.jpg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${s.name}'" alt="${s.name}">
+                  </div>
+                  <h3 class="card-title" ${isCombat ? 'style="color: var(--text-muted);"' : ''}>${s.name}</h3>
+                  <div class="student-sub-role">${s.roleTag}</div>
+                  <p class="card-desc">"${s.desc}"</p>
+                  <button class="btn-ficha-tecnica">Ficha Técnica</button>
+                </div>
+                <div class="card-back" onclick="event.stopPropagation()">
+                  <div class="back-header" ${isCombat ? 'style="color: #f12711;"' : ''}>
+                    <span>📋 Ficha Técnica</span>
+                    <span class="student-id-code" ${isCombat ? 'style="border-color:#f12711; color:#f12711;"' : ''}>${studentId}</span>
+                  </div>
+                  <div class="back-top-meta" ${isCombat ? 'style="border-color:rgba(241,39,17,0.3); background:rgba(241,39,17,0.08);"' : ''}>
+                    <span ${isCombat ? 'style="color:#f12711;"' : ''}>⚡ Estudiante CETAL</span>
+                    <span ${isCombat ? 'style="color:#f12711;"' : ''}>⭐ 50 Pts</span>
+                  </div>
+                  <div class="back-body-grid">
+                    <div class="back-info-col back-content">
+                      <p><strong>Ocupación:</strong> ${s.occ}</p>
+                      <p><strong>WhatsApp:</strong> <span class="whatsapp-contact">+591 7${Math.floor(1000000 + Math.random() * 9000000)}</span></p>
+                      <div class="github-project-badge" ${isCombat ? 'style="border-color: #f12711;"' : ''}>
+                        <span ${isCombat ? 'style="color: #f12711;"' : ''}>⚡ Script GitHub:</span>
+                        <a href="https://github.com/${s.name.toLowerCase().replace(/\s+/g, '')}" target="_blank">${s.repo} ↗</a>
+                      </div>
+                      <div class="social-links">
+                        <a href="https://github.com/${s.name.toLowerCase().replace(/\s+/g, '')}" target="_blank">🐙 GitHub</a>
+                        <a href="https://linkedin.com" target="_blank">💼 LinkedIn</a>
+                      </div>
+                    </div>
+                    <div class="qr-container-back">
+                      <div class="qr-box-large"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${s.name.replace(/\s+/g, '')}" alt="QR"></div>
+                      <span style="font-size:8.5px; font-weight:800; color:${isCombat ? '#f12711' : 'var(--primary)'};">ESCANEAR ID</span>
+                    </div>
+                  </div>
+                  <button class="btn-volver" onclick="flipCard(this.closest('.card-container'))">Volver</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      calculateStats();
+      checkBirthdayStamps();
+    });
+
+    // Giro Inteligente de Tarjetas
+    function flipCard(cardContainer) {
+      const inner = cardContainer.querySelector('.card-inner');
+      const isFlipped = inner.classList.contains('flipped');
+
+      document.querySelectorAll('.card-inner').forEach(c => c.classList.remove('flipped'));
+
+      if (!isFlipped) {
+        inner.classList.add('flipped');
       }
     }
 
-    function searchHandler(e) {
-      const term = e.target.value.toLowerCase().trim();
-      document.querySelectorAll('.card-container').forEach(container => {
-        const text = container.innerText.toLowerCase();
-        container.style.display = text.includes(term) ? 'block' : 'none';
-      });
-    }
+    // Buscador Avanzado
+    function filterCards() {
+      const rawQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+      const terms = rawQuery.split(/\s+/);
+      const cards = document.querySelectorAll('.card-container');
 
-    setupSearch();
+      cards.forEach(card => {
+        const name = card.getAttribute('data-name').toLowerCase();
+        const occ = card.getAttribute('data-occ').toLowerCase();
+        const combinedText = `${name} ${occ}`;
+        const matches = terms.every(term => combinedText.includes(term));
 
-    function filterCategory(category, btn) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const controlsContainer = document.getElementById('controls-container');
-
-      if (category === 'all') {
-        controlsContainer.style.justifyContent = 'space-between';
-        controlsContainer.innerHTML = `
-          <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
-        `;
-        setupSearch();
-      } else if (category === 'directiva') {
-        controlsContainer.style.justifyContent = 'center';
-        controlsContainer.innerHTML = `
-          <a href="https://drive.google.com" target="_blank" id="drive-report-btn" class="drive-btn" title="Informes públicos de asistencia y aportes">
-            📂 Informes Mesa Directiva (Drive)
-          </a>
-        `;
-      } else if (category === 'docente') {
-        controlsContainer.style.justifyContent = 'space-between';
-        controlsContainer.innerHTML = '';
-      } else if (category === 'estudiantes') {
-        controlsContainer.style.justifyContent = 'space-between';
-        controlsContainer.innerHTML = `
-          <input type="text" id="student-search" class="search-box" placeholder="🔍 Buscar integrante por nombre o cargo...">
-        `;
-        setupSearch();
-      }
-
-      document.querySelectorAll('.section-group').forEach(group => {
-        if (category === 'all') {
-          group.style.display = 'block';
+        if (matches || rawQuery === '') {
+          card.style.display = 'block';
         } else {
-          const groupType = group.getAttribute('data-group');
-          group.style.display = (groupType === category) ? 'block' : 'none';
+          card.style.display = 'none';
         }
       });
     }
 
-    function flipCard(btn) {
-      const currentInner = btn.closest('.card-inner');
-      
-      if (!currentInner.classList.contains('flipped')) {
-        document.querySelectorAll('.card-inner.flipped').forEach(inner => {
-          inner.classList.remove('flipped');
-        });
-      }
-      
-      currentInner.classList.toggle('flipped');
+    // Filtrado interactivo mediante clics en las tarjetas del Dashboard superior
+    function filterByStat(type) {
+      document.querySelectorAll('.card-inner').forEach(c => c.classList.remove('flipped'));
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('searchInput').value = '';
+
+      document.querySelectorAll('.section-group').forEach(group => group.style.display = 'block');
+
+      const currentMonth = new Date().getMonth() + 1;
+      const cards = document.querySelectorAll('.card-container');
+
+      cards.forEach(card => {
+        const status = card.getAttribute('data-status');
+        const bday = card.getAttribute('data-birthday');
+        let show = false;
+
+        if (type === 'active' && status === 'activo') show = true;
+        if (type === 'combat' && status === 'combat') show = true;
+        if (type === 'birthday' && bday && parseInt(bday.split('-')[1], 10) === currentMonth) show = true;
+
+        card.style.display = show ? 'block' : 'none';
+      });
     }
+
+    function checkBirthdayStamps() {
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const currentDate = now.getDate();
+
+      document.querySelectorAll('.card-container').forEach(card => {
+        const bdayAttr = card.getAttribute('data-birthday');
+        const status = card.getAttribute('data-status');
+        const stamp = card.querySelector('.stamp-badge');
+        const topTag = card.querySelector('.bday-top-tag');
+
+        if (!stamp) return;
+
+        if (status === 'combat') {
+          stamp.style.display = 'block';
+          if(topTag) topTag.style.display = 'none';
+          return;
+        }
+
+        if (bdayAttr) {
+          const parts = bdayAttr.split('-');
+          const bMonth = parseInt(parts[1], 10);
+          const bDay = parseInt(parts[2], 10);
+
+          if (bMonth === currentMonth) {
+            stamp.style.display = 'block';
+            if (bDay === currentDate) {
+              if(topTag) topTag.style.display = 'flex';
+            } else {
+              if(topTag) topTag.style.display = 'none';
+            }
+          } else {
+            stamp.style.display = 'none';
+            if(topTag) topTag.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    function calculateStats() {
+      const allCards = document.querySelectorAll('.card-container');
+      const totalCards = allCards.length;
+      if (totalCards === 0) return;
+
+      let activeCount = 0;
+      let combatCount = 0;
+      let birthdayCount = 0;
+      const currentMonth = new Date().getMonth() + 1;
+
+      allCards.forEach(card => {
+        const status = card.getAttribute('data-status');
+        const bday = card.getAttribute('data-birthday');
+
+        if (status === 'combat') combatCount++;
+        else activeCount++;
+
+        if (bday && parseInt(bday.split('-')[1], 10) === currentMonth) {
+          birthdayCount++;
+        }
+      });
+
+      const activePct = Math.round((activeCount / totalCards) * 100);
+      const combatPct = Math.round((combatCount / totalCards) * 100);
+      const birthdayPct = Math.round((birthdayCount / totalCards) * 100);
+
+      document.getElementById('active-count').innerText = activeCount;
+      document.getElementById('active-bar').style.width = `${activePct}%`;
+      document.getElementById('active-val-label').innerText = `${activePct}% del total`;
+
+      document.getElementById('combat-count').innerText = combatCount;
+      document.getElementById('combat-bar').style.width = `${combatPct}%`;
+      document.getElementById('combat-val-label').innerText = `${combatPct}% del total`;
+
+      document.getElementById('birthday-count').innerText = birthdayCount;
+      document.getElementById('birthday-bar').style.width = `${birthdayPct}%`;
+      document.getElementById('birthday-val-label').innerText = `${birthdayPct}% del total`;
+    }
+
+    function filterCategory(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('searchInput').value = '';
+
+      document.querySelectorAll('.card-inner').forEach(c => c.classList.remove('flipped'));
+
+      document.querySelectorAll('.section-group').forEach(group => {
+        if(category === 'all' || group.getAttribute('data-group') === category) {
+          group.style.display = 'block';
+        } else {
+          group.style.display = 'none';
+        }
+      });
+      document.querySelectorAll('.card-container').forEach(c => c.style.display = 'block');
+    }
+
+    function updateClockSystem() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+
+      document.getElementById('f-h1').innerText = h[0];
+      document.getElementById('f-h2').innerText = h[1];
+      document.getElementById('f-m1').innerText = m[0];
+      document.getElementById('f-m2').innerText = m[1];
+      document.getElementById('f-s1').innerText = s[0];
+      document.getElementById('f-s2').innerText = s[1];
+    }
+    setInterval(updateClockSystem, 1000);
+    updateClockSystem();
 
     const audio = document.getElementById('bg-music');
     const musicBtn = document.getElementById('btn-toggle-music');
@@ -1033,6 +936,7 @@
     if (localStorage.getItem('musicPlaying') === 'true') {
       audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
       audio.play().catch(() => {});
+      musicBtn.textContent = '⏸️ Pausar Música';
     }
 
     musicBtn.addEventListener('click', function() {
@@ -1043,7 +947,7 @@
       } else {
         audio.pause();
         localStorage.setItem('musicPlaying', 'false');
-        musicBtn.textContent = '🎵 Reproducir / Pausar Música';
+        musicBtn.textContent = '🎵 Música';
       }
     });
 

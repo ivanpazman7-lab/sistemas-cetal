@@ -1,309 +1,465 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio | Sistemas Informáticos CETAL</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Inicio | Sistemas Informaticos CETAL</title>
   <style>
     :root {
-      --bg-gradient: radial-gradient(circle at 50% 0%, #111d35 0%, #070a13 70%);
-      --card-bg: rgba(19, 27, 46, 0.9);
-      --border: rgba(0, 242, 254, 0.25);
+      --bg-main: #030712;
+      --bg-sidebar: #070d19;
+      --card-bg: #09101d;
+      --card-hover: #0e172a;
+      --border-color: #1e293b;
       --primary: #00f2fe;
       --accent: #3fb950;
+      --accent-gold: #ffb700;
+      --accent-purple: #b537f2;
+      --accent-orange: #ff7b00;
       --text-main: #f0f6fc;
-      --text-muted: #919eaf;
-      --shadow: 0 10px 30px -10px rgba(0,0,0,0.7);
+      --text-muted: #64748b;
+      --shadow: 0 10px 30px -10px rgba(0,0,0,0.9);
+      --font-mono: 'Courier New', Courier, monospace;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    body {
-      background: var(--bg-gradient);
-      background-attachment: fixed;
-      color: var(--text-main);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
+    [data-theme="light"] {
+      --bg-main: #e2e8f0;
+      --bg-sidebar: #cbd5e1;
+      --card-bg: #f8fafc;
+      --card-hover: #e2e8f0;
+      --border-color: #94a3b8;
+      --primary: #0284c7;
+      --accent: #15803d;
+      --accent-gold: #b45309;
+      --accent-purple: #7e22ce;
+      --accent-orange: #c2410c;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --shadow: 0 10px 25px -5px rgba(0,0,0,0.15);
     }
 
-    header {
-      text-align: center;
-      padding: 30px 20px 15px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+    body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; font-family: var(--font-sans); }
 
-    header h1 {
-      font-size: 26px;
-      margin: 0 0 8px 0;
-      background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
+    aside {
+      width: 280px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; height: 100vh; overflow-y: auto; scrollbar-width: none;
+      box-shadow: 5px 0 20px rgba(0,0,0,0.2); flex-shrink: 0; position: relative;
+      transition: width 0.3s ease, transform 0.3s ease; z-index: 1001;
     }
+    aside::-webkit-scrollbar { display: none; }
+    aside.collapsed { width: 0px; transform: translateX(-280px); overflow: hidden; }
 
-    header p {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin: 0 0 12px 0;
+    .toggle-sidebar-btn {
+      position: fixed; left: 260px; top: 15px; z-index: 1000;
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
+      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.3); transition: left 0.3s ease, transform 0.2s;
     }
+    .toggle-sidebar-btn:hover { transform: scale(1.1); background: var(--card-hover); }
+    body.menu-hidden .toggle-sidebar-btn { left: 15px; }
 
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px;
-      background: rgba(7, 10, 19, 0.7);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(8px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      flex-wrap: wrap;
-    }
+    .sidebar-user { padding: 20px 16px; border-bottom: 1px solid var(--border-color); background: rgba(255,183,0,0.02); display: flex; align-items: center; gap: 14px; }
+    .user-avatar-img { width: 52px; height: 52px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent-gold); box-shadow: 0 0 14px rgba(255,183,0,0.5); background: rgba(255,183,0,0.1); flex-shrink: 0; }
+    .user-info .name { font-size: 0.9rem; font-weight: bold; color: var(--text-main); font-family: var(--font-mono); }
+    .user-info .role { font-size: 0.72rem; color: var(--accent); font-family: var(--font-mono); }
 
-    nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 20px;
-      transition: all 0.2s ease;
-    }
+    .nav-group { padding: 14px 16px; border-bottom: 1px solid rgba(30,41,59,0.5); }
+    .nav-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--font-mono); }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 6px; transition: all 0.2s; cursor: pointer; }
+    .nav-item:hover { background-color: var(--card-hover); color: var(--text-main); }
+    .nav-item.active { background-color: var(--card-hover); color: var(--text-main); font-weight: 600; }
+    .nav-item.c-cyan.active { color: var(--primary); }
+    .nav-item.c-green.active { color: var(--accent); }
+    .nav-item.c-yellow.active { color: var(--accent-gold); }
+    .nav-item.c-purple.active { color: var(--accent-purple); }
+    .nav-item.c-orange.active { color: var(--accent-orange); }
 
-    nav a.active, nav a:hover {
-      color: #fff;
-      background: rgba(0, 242, 254, 0.15);
-      border: 1px solid rgba(0, 242, 254, 0.3);
-    }
+    .cyber-node { background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 6px; padding: 10px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+    .cyber-node span { color: var(--accent); }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 30px 20px;
+    main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+
+    header-top {
+      background-color: var(--bg-sidebar); border-bottom: 1px solid var(--border-color); padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 10px;
     }
+    .topbar-left { font-family: var(--font-mono); font-size: 0.8rem; color: var(--primary); margin-left: 35px; }
+    .topbar-right-widgets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .flip-clock { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); }
+    .flip-group { display: flex; align-items: center; gap: 2px; }
+    .flip-card {
+      background: var(--card-bg); border: 1px solid var(--primary); border-radius: 4px; width: 24px; height: 30px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: var(--text-main);
+      box-shadow: 0 0 6px rgba(0,242,254,0.3);
+    }
+    .flip-colon { color: var(--primary); font-weight: bold; font-size: 0.85rem; }
+
+    .theme-toggle-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+    .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.05); }
+    .sync-badge { background: rgba(63,185,80,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 6px; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; box-sizing: border-box; }
 
     .music-btn {
-      background: #00f2fe; color: #0d1117; border: none;
-      padding: 8px 16px; font-weight: bold; border-radius: 20px;
-      cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease;
-      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--primary); color: #030712; border: none; padding: 7px 16px; font-weight: bold; border-radius: 20px;
+      cursor: pointer; font-size: 0.8rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(0,242,254,0.3);
     }
-    .music-btn:hover { background: #3fb950; transform: scale(1.03); }
-    
+    .music-btn:hover { opacity: 0.9; transform: scale(1.03); }
+
     .status-banner {
-      background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 14px; padding: 22px; margin-bottom: 25px; text-align: center;
-      box-shadow: var(--shadow); backdrop-filter: blur(10px);
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 26px;
+      margin-bottom: 20px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .swiss-weather-bg { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 5rem; opacity: 0.15; pointer-events: none; }
+    .banner-date-title { font-family: var(--font-sans); color: var(--text-main); font-size: 1.8rem; font-weight: 800; margin-top: 10px; }
+    .center-flip-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+    .flip-box-group { display: flex; align-items: center; gap: 3px; }
+    .flip-card-sm { background: var(--card-bg); border: 1px solid var(--accent-gold); border-radius: 4px; width: 30px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold; color: var(--accent-gold); font-family: var(--font-mono); box-shadow: 0 0 8px rgba(255,183,0,0.25); }
+    .flip-label-sm { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase; margin-right: 4px; }
+    .day-message { font-size: 0.9rem; margin-top: 10px; color: var(--accent-gold); font-weight: 600; font-style: italic; }
+
+    /* MONITOR CRT */
+    .crt-monitor {
+      background: #020617; border: 3px solid #1e293b; border-radius: 12px;
+      box-shadow: inset 0 0 30px rgba(0,242,254,0.15), 0 10px 25px rgba(0,0,0,0.8);
+      position: relative; overflow: hidden; font-family: var(--font-mono); margin-bottom: 20px;
+    }
+    .crt-monitor::before {
+      content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      z-index: 10; background-size: 100% 3px, 3px 100%; pointer-events: none;
+    }
+    .crt-header {
+      background: #09101d; border-bottom: 1px solid #1e293b; padding: 10px 15px;
+      display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--primary);
+    }
+    .crt-led { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent); display: inline-block; margin-right: 6px; }
+
+    .crt-body-scroll { height: 180px; overflow: hidden; position: relative; padding: 15px; }
+    .credits-container { position: absolute; width: 100%; left: 0; animation: starWarsScroll 22s linear infinite; }
+    .crt-monitor:hover .credits-container { animation-play-state: paused; }
+
+    @keyframes starWarsScroll {
+      0% { transform: translateY(180px); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-240px); opacity: 0; }
+    }
+    .credit-block { margin-bottom: 20px; text-align: center; }
+    .credit-title { color: var(--accent-gold); font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
+    .credit-desc { color: var(--text-main); font-size: 0.80rem; opacity: 0.9; }
+    .credit-time { color: var(--text-muted); font-size: 0.7rem; margin-top: 2px; }
+
+    /* Ticker Lento Bitácora */
+    .tv-ticker {
+      background: #000; border-top: 1px solid #1e293b; padding: 8px 12px;
+      display: flex; align-items: center; overflow: hidden; white-space: nowrap; font-size: 0.8rem;
+    }
+    .ticker-label {
+      background: var(--accent-orange); color: #000; font-weight: bold; padding: 2px 8px;
+      border-radius: 4px; margin-right: 12px; flex-shrink: 0; font-size: 0.75rem;
+    }
+    .ticker-content {
+      display: inline-block;
+      animation: tickerMoveRightToLeft 65s linear infinite;
+      color: var(--accent);
+    }
+    .tv-ticker:hover .ticker-content { animation-play-state: paused; }
+    @keyframes tickerMoveRightToLeft {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+    .ticker-item { margin-right: 60px; display: inline-block; }
+
+    /* WIDGETS TACÓMETRO */
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .gauge-widget {
+      background: #020617; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;
+      text-align: center; font-family: var(--font-mono); box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
       position: relative; overflow: hidden;
     }
-    .status-banner::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
+    .gauge-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .gauge-number {
+      font-size: 2.5rem; font-weight: bold; color: var(--primary); margin: 6px 0;
+      text-shadow: 0 0 10px rgba(0,242,254,0.4);
     }
-    .clock-display { font-family: 'Courier New', monospace; color: #fff; font-size: 1.15rem; font-weight: bold; margin-top: 10px; }
-    .day-message { font-size: 1rem; margin-top: 8px; color: #ffbd2e; font-weight: 600; font-style: italic; }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+    .gauge-number.gold { color: var(--accent-gold); text-shadow: 0 0 10px rgba(255,183,0,0.4); }
+    .gauge-number.danger { color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.4); }
+    .gauge-subtext { font-size: 0.78rem; color: var(--text-main); margin-top: 4px; }
+    .birthday-names-box {
+      margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(255,183,0,0.3);
+      font-size: 0.8rem; color: var(--accent-gold); font-weight: bold; display: none;
+      animation: fadeIn 0.8s ease forwards;
     }
-
-    .hero-card {
-      margin-bottom: 25px;
-      position: relative;
-    }
-    .hero-card h2 {
-      font-size: 20px;
-      margin-top: 0;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .hero-card p {
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 0;
-      font-size: 14px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 22px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-    .stat-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--primary);
-    }
-    .stat-card h3 {
-      color: var(--primary);
-      font-size: 2rem;
-      margin: 0 0 6px 0;
-      font-family: monospace;
-    }
-    .stat-card p {
-      color: var(--text-muted);
-      font-size: 13px;
-      margin: 0;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: var(--text-muted);
-      font-size: 12px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      margin-top: 40px;
-      background: rgba(7, 10, 19, 0.4);
-    }
+    footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 11px; border-top: 1px solid var(--border-color); margin-top: 30px; background: var(--bg-sidebar); font-family: var(--font-mono); }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Sistemas Informáticos</h1>
-    <p>El equipo de sistemas CETAL te da la bienvenida a su página web oficial (Promoción 2026 - 2027)</p>
+  <button class="toggle-sidebar-btn" id="toggleMenuBtn" title="Ocultar / Mostrar Menú">≡</button>
+
+  <aside id="sidebar">
+    <div class="sidebar-user">
+      <img src="assets/logo.png" alt="Logo CETAL" class="user-avatar-img">
+      <div class="user-info">
+        <div class="name">CETAL Noche</div>
+        <div class="role">Sistemas Informaticos</div>
+      </div>
+    </div>
     
-    <div style="margin-top: 12px;">
-      <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
-      <audio id="bg-music" loop preload="auto">
-        <source src="assets/audio.mp3" type="audio/mpeg">
-      </audio>
-    </div>
-  </header>
-
-  <nav>
-    <a href="index.html" class="active">Inicio</a>
-    <a href="anuario.html">Anuario</a>
-    <a href="actividades.html">Bitácora</a>
-    <a href="proyectos.html">Proyectos</a>
-    <a href="recursos.html">Recursos</a>
-  </nav>
-
-  <main class="container">
-    
-    <!-- BANNER DE TELEMETRÍA Y ESTADO DE RED -->
-    <div class="status-banner">
-      <div style="font-family:'Courier New', monospace; color:#3fb950; font-weight:bold; font-size:0.95rem; letter-spacing: 1px;">
-        [SYSTEM_STATUS: <span style="color:#00f2fe;">ONLINE</span>] <span id="loading-bar">[░░░░░░░░░░░░] 0%</span>
-      </div>
-      <div class="clock-display" id="clock">
-        Iniciando conexión con el servidor CETAL...
-      </div>
-      <div class="day-message" id="day-message"></div>
+    <div class="nav-group">
+      <div class="nav-title">Navegacion Oficial</div>
+      <a href="index.html" class="nav-item c-cyan active">⚡ Inicio</a>
+      <a href="anuario.html" class="nav-item c-green">👥 Anuario</a>
+      <a href="actividades.html" class="nav-item c-yellow">📋 Bitacora</a>
+      <a href="proyectos.html" class="nav-item c-purple">🚀 Proyectos</a>
+      <a href="recursos.html" class="nav-item c-orange">🛠️ Recursos</a>
     </div>
 
-    <!-- TARJETA PRINCIPAL DE BIENVENIDA -->
-    <section class="card hero-card">
-      <h2>A las Ingenieras e Ingenieros de la Vida 🌟</h2>
-      <p>Gracias por ser nuestra fuente de energía y por el esfuerzo inmenso de superarse cada día en CETAL. Esta plataforma conmemorativa registra nuestro paso, avances y momentos destacados durante la formación técnica.</p>
-    </section>
-
-    <!-- TARJETAS DE ESTADÍSTICAS / MÉTRICAS -->
-    <div class="grid">
-      <div class="card stat-card">
-        <h3>21</h3>
-        <p>Integrantes (20 Estudiantes + 1 Docente)</p>
-      </div>
-      <div class="card stat-card">
-        <h3>2026-2027</h3>
-        <p>Gestión Académica</p>
-      </div>
-      <div class="card stat-card">
-        <h3 style="font-size: 1.5rem; margin-top: 10px; margin-bottom: 12px;">Turno Noche</h3>
-        <p>Sistemas Informáticos</p>
+    <div class="nav-group">
+      <div class="nav-title">Estado del Sistema</div>
+      <div class="cyber-node">
+        <div>CORE: <span>ONLINE</span></div>
+        <div>NODE: <span>LA PAZ - BO</span></div>
+        <div>SEC_LVL: <span>ALPHA-1</span></div>
       </div>
     </div>
+  </aside>
 
+  <main>
+    <header-top>
+      <div class="topbar-left">
+        <span>// SISTEMAS_CETAL_2026</span>
+      </div>
+      <div class="topbar-right-widgets">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="flip-clock">
+            <div class="flip-group"><div class="flip-card" id="f-h1">0</div><div class="flip-card" id="f-h2">0</div></div>
+            <span class="flip-colon">:</span>
+            <div class="flip-group"><div class="flip-card" id="f-m1">0</div><div class="flip-card" id="f-m2">0</div></div>
+            <span class="flip-colon">:</span>
+            <div class="flip-group"><div class="flip-card" id="f-s1">0</div><div class="flip-card" id="f-s2">0</div></div>
+          </div>
+        </div>
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Cambiar Tema Día/Noche">🌙</button>
+        <div class="sync-badge">🛡️ SECURE</div>
+      </div>
+    </header-top>
+
+    <div class="container">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 15px;">
+        <div>
+          <h1 style="font-size: 24px; margin: 0 0 4px 0; color: var(--text-main); font-weight: 800;">Sistemas Informaticos</h1>
+          <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Panel de Control & Monitor en Tiempo Real (Promoción 2026 - 2027)</p>
+        </div>
+        <div>
+          <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Musica</button>
+          <audio id="bg-music" loop preload="auto">
+            <source src="assets/audio.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+      </div>
+
+      <!-- BANNER CENTRAL CON CLIMA Y DÍA -->
+      <div class="status-banner">
+        <div class="swiss-weather-bg" id="swiss-icon">☀️</div>
+        <div style="font-family: var(--font-mono); color: var(--accent); font-weight: bold; font-size: 0.85rem; letter-spacing: 1.5px;">
+          [SECURITY_STATE: <span style="color: var(--primary);">OPTIMIZED</span>] &bull; TURNO NOCHE
+        </div>
+        <div class="banner-date-title" id="center-day-name">CARGANDO...</div>
+        <div class="center-flip-container">
+          <div style="display: flex; align-items: center;">
+            <span class="flip-label-sm">Día:</span>
+            <div class="flip-box-group"><div class="flip-card-sm" id="cf-d1">0</div><div class="flip-card-sm" id="cf-d2">0</div></div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span class="flip-label-sm">Mes:</span>
+            <div class="flip-box-group"><div class="flip-card-sm" id="cf-m1">0</div><div class="flip-card-sm" id="cf-m2">0</div></div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span class="flip-label-sm">Año:</span>
+            <div class="flip-box-group"><div class="flip-card-sm" id="cf-y1">2</div><div class="flip-card-sm" id="cf-y2">0</div><div class="flip-card-sm" id="cf-y3">2</div><div class="flip-card-sm" id="cf-y4">6</div></div>
+          </div>
+          <div id="center-weather-info" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-gold); background: var(--card-bg); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px;">
+            📍 La Paz &bull; 17°C
+          </div>
+        </div>
+        <div class="day-message" id="day-message"></div>
+      </div>
+
+      <!-- MONITOR CRT (Lee proyectos y bitácora de data.js) -->
+      <div class="crt-monitor">
+        <div class="crt-header">
+          <div><span class="crt-led"></span> TERMINAL DE PROYECTOS & SCRIPTS (LIVE FEED)</div>
+          <div style="font-size: 0.7rem; color: var(--text-muted);">[BUCLE CRÉDITOS]</div>
+        </div>
+        <div class="crt-body-scroll">
+          <div class="credits-container" id="index-projects-box">
+            <!-- Se llena dinámicamente desde data.js -->
+          </div>
+        </div>
+        
+        <!-- TICKER DE BITÁCORA -->
+        <div class="tv-ticker">
+          <div class="ticker-label">BITÁCORA EN VIVO</div>
+          <div class="ticker-content" id="index-bitacora-box">
+            <!-- Se llena dinámicamente desde data.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- WIDGETS TACÓMETRO (Sincronizados con data.js) -->
+      <div class="dashboard-grid">
+        <div class="gauge-widget">
+          <div class="gauge-label">⏱️ Ciclo Académico Turno Noche</div>
+          <div class="gauge-number" id="counter-days">0</div>
+          <div class="gauge-subtext">Días de Clases (Lunes a Jueves)</div>
+          <div style="margin-top: 12px; font-size: 0.8rem; color: var(--accent);">
+            👥 <strong id="survivors-num">35</strong> Sobrevivientes Activos
+          </div>
+        </div>
+
+        <div class="gauge-widget">
+          <div class="gauge-label">⚠️ Estado de Personal</div>
+          <div class="gauge-number danger" id="counter-bajas">1</div>
+          <div class="gauge-subtext">Caído en Acción / Baja Registrada</div>
+          <div style="margin-top: 12px; font-size: 0.8rem; color: #ef4444;" id="casualty-box">
+            Retirado oficial
+          </div>
+        </div>
+
+        <div class="gauge-widget">
+          <div class="gauge-label" id="month-label">🎂 Cumpleañeros del Mes</div>
+          <div class="gauge-number gold" id="counter-bdays">0</div>
+          <div class="gauge-subtext">Registrados en el Anuario</div>
+          <div class="birthday-names-box" id="birthday-names-container">
+            🎉 Cargando...
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      <p>&copy; 2026 - 2027 Carrera de Sistemas Informaticos CETAL. [Secure Terminal v7.0]</p>
+    </footer>
   </main>
 
-  <footer>
-    <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL.</p>
-  </footer>
+  <!-- ARCHIVO CENTRALIZADO DE DATOS -->
+  <script src="data.js"></script>
 
   <script>
-    // Reproductor de Música Continuo Sincronizado
-    const audio = document.getElementById('bg-music');
-    const musicBtn = document.getElementById('btn-toggle-music');
-    
-    if (localStorage.getItem('musicPlaying') === 'true') {
-      audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
-      audio.play().catch(() => {});
-      musicBtn.textContent = '⏸️ Pausar Música';
+    // Lógica para poblar index.html usando CETAL_DB
+    function calculateBusinessDays(startDateStr) {
+      let startDate = new Date(startDateStr);
+      let today = new Date();
+      let count = 0;
+      let curDate = new Date(startDate.getTime());
+      while (curDate <= today) {
+        let dayOfWeek = curDate.getDay();
+        if (dayOfWeek >= 1 && dayOfWeek <= 4) count++; // Lunes a Jueves
+        curDate.setDate(curDate.getDate() + 1);
+      }
+      return count;
     }
 
-    musicBtn.addEventListener('click', function() {
-      if (audio.paused) {
-        audio.play();
-        localStorage.setItem('musicPlaying', 'true');
-        musicBtn.textContent = '⏸️ Pausar Música';
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Proyectos en Terminal CRT
+      const projBox = document.getElementById('index-projects-box');
+      if(projBox && CETAL_DB.projects) {
+        projBox.innerHTML = CETAL_DB.projects.map(p => `
+          <div class="credit-block">
+            <div class="credit-title">&gt; ${p.title}</div>
+            <div class="credit-desc">${p.description}</div>
+            <div class="credit-time">Estado: ${p.status}</div>
+          </div>
+        `).join('');
+      }
+
+      // 2. Bitácora en Ticker Lento
+      const bitBox = document.getElementById('index-bitacora-box');
+      if(bitBox && CETAL_DB.bitacora) {
+        bitBox.innerHTML = CETAL_DB.bitacora.map(b => `
+          <span class="ticker-item">📋 [${b.date}] ${b.title}: ${b.desc}</span>
+        `).join('');
+      }
+
+      // 3. Tacómetros y Días Hábiles
+      const totalDays = calculateBusinessDays(CETAL_DB.config.startDate);
+      document.getElementById('counter-days').innerText = totalDays;
+      document.getElementById('survivors-num').innerText = CETAL_DB.config.totalSurvivors;
+      
+      if(CETAL_DB.config.casualties.length > 0) {
+        document.getElementById('casualty-box').innerText = `Retirado oficial: ${CETAL_DB.config.casualties[0].name}`;
+      }
+
+      // 4. Cumpleañeros del mes actual (Sincronizado exactamente con CETAL_DB.students)
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1; // 1 a 12 (Septiembre = 9)
+      const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      
+      document.getElementById('month-label').innerText = `🎂 Cumpleañeros de ${monthNames[currentMonth - 1]}`;
+
+      let activeBdays = [];
+      if (CETAL_DB.students) {
+        activeBdays = CETAL_DB.students.filter(s => {
+          if (!s.bday) return false;
+          const bMonth = parseInt(s.bday.split('-')[1], 10);
+          return bMonth === currentMonth && s.status !== 'combat';
+        });
+      }
+
+      const targetBdays = activeBdays.length;
+      document.getElementById('counter-bdays').innerText = targetBdays;
+
+      const namesBox = document.getElementById('birthday-names-container');
+      if(targetBdays > 0) {
+        const names = activeBdays.map(b => b.name);
+        namesBox.innerHTML = "🎉 " + names.join(" &bull; ");
+        namesBox.style.display = 'block';
       } else {
-        audio.pause();
-        localStorage.setItem('musicPlaying', 'false');
-        musicBtn.textContent = '🎵 Reproducir / Pausar Música';
+        namesBox.innerHTML = "💤 Sin cumpleañeros este mes.";
+        namesBox.style.display = 'block';
       }
     });
 
-    setInterval(() => {
-      if (!audio.paused) {
-        localStorage.setItem('musicTime', audio.currentTime);
-      }
-    }, 1000);
+    // Scripts visuales de la interfaz
+    const sidebar = document.getElementById('sidebar');
+    document.getElementById('toggleMenuBtn').addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      document.body.classList.toggle('menu-hidden');
+    });
 
-    // Barra de Carga Estilo Linux Dinámica
-    let progress = 0;
-    function animateBar() {
-      if (progress <= 100) {
-        const dots = Math.floor(progress / 10);
-        const bar = '█'.repeat(dots) + '░'.repeat(10 - dots);
-        document.getElementById('loading-bar').innerText = `[${bar}] ${progress}%`;
-        progress += 10;
-        setTimeout(animateBar, 70);
+    const themeBtn = document.getElementById('themeToggleBtn');
+    themeBtn.addEventListener('click', () => {
+      const html = document.documentElement;
+      if(html.getAttribute('data-theme') === 'dark') {
+        html.setAttribute('data-theme', 'light'); themeBtn.textContent = '☀️';
       } else {
-        document.getElementById('loading-bar').innerText = `[██████████] 100% OK`;
+        html.setAttribute('data-theme', 'dark'); themeBtn.textContent = '🌙';
       }
-    }
+    });
 
     function updateClock() {
       const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateStr = now.toLocaleDateString('es-ES', options);
-      const timeStr = now.toLocaleTimeString('es-ES');
-      
-      document.getElementById('clock').innerHTML = `📅 <strong>${dateStr.toUpperCase()}</strong> | ⏰ <strong>${timeStr}</strong> <br><span style="color:var(--text-muted); font-size:0.9rem; font-weight:normal;">📍 La Paz, Bolivia 🌤️ 14°C</span>`;
-      
-      const day = now.getDay();
-      let msg = "";
-      switch(day) {
-        case 0: msg = "☀️ Domingo en familia: recarga de energías para la semana académica."; break;
-        case 1: case 2: case 3: case 4: msg = "💻 Clases CETAL (Turno Noche): A programar y compilar ideas."; break;
-        case 5: msg = "🎉 ¡Es viernes y el cuerpo lo sabe! Pero primero se entrega el código."; break;
-        case 6: msg = "🛋️ Sábado de descanso y estudio autónomo."; break;
-      }
-      document.getElementById('day-message').innerText = msg;
+      document.getElementById('f-h1').innerText = String(now.getHours()).padStart(2,'0')[0];
+      document.getElementById('f-h2').innerText = String(now.getHours()).padStart(2,'0')[1];
+      document.getElementById('f-m1').innerText = String(now.getMinutes()).padStart(2,'0')[0];
+      document.getElementById('f-m2').innerText = String(now.getMinutes()).padStart(2,'0')[1];
+      document.getElementById('f-s1').innerText = String(now.getSeconds()).padStart(2,'0')[0];
+      document.getElementById('f-s2').innerText = String(now.getSeconds()).padStart(2,'0')[1];
+      document.getElementById('center-day-name').innerText = now.toLocaleDateString('es-ES', { weekday: 'long' }).toUpperCase();
     }
-    
-    animateBar();
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(updateClock, 1000); updateClock();
   </script>
-
 </body>
 </html>

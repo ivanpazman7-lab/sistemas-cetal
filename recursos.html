@@ -1,806 +1,623 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>root@cetal-sec:~# kali-linux-osint-terminal</title>
-  <style>
-    :root {
-      --bg-terminal: #05080c;
-      --border-green: #00ff66;
-      --border-dark: #131c2b;
-      --card-bg: rgba(13, 20, 32, 0.88);
-      --text-green: #00ff66;
-      --text-cyan: #00f2fe;
-      --text-main: #d1d5db;
-      --text-muted: #6b7280;
-      --text-yellow: #ffb700;
-      --text-purple: #a78bfa;
-      --text-red: #ff0055;
-      --font-mono: 'Fira Code', 'Consolas', 'Courier New', monospace;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CETAL Linux OSINT - Recursos</title>
+    <style>
+        :root {
+            --bg-color: #0b0f15;
+            --term-bg: #0d1117;
+            --term-header: #161b22;
+            --text-color: #c9d1d9;
+            --accent-green: #3fb950;
+            --accent-blue: #58a6ff;
+            --accent-yellow: #d29922;
+            --accent-red: #f85149;
+            --border-color: #30363d;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-mono); }
-    html, body { 
-      min-height: 100vh; 
-      background-color: var(--bg-terminal); 
-      color: var(--text-main); 
-      overflow-x: hidden; 
-      position: relative;
-      scrollbar-width: none; 
-    }
-    body::-webkit-scrollbar { display: none; }
+        body {
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-    #dragon-canvas {
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(3.5);
-      width: 100vw; height: 100vh; pointer-events: none; z-index: 1; 
-      opacity: 0.28; filter: drop-shadow(0 0 25px #00ff66) sepia(100%) hue-rotate(60deg) saturate(400%);
-    }
+        /* Pantalla de Carga Masiva (10 Segundos) */
+        #boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #030508;
+            color: #2ecc71;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            z-index: 9999;
+            padding: 25px;
+            box-sizing: border-box;
+            font-size: 11px;
+            line-height: 1.25;
+            overflow: hidden;
+        }
 
-    body::before {
-      content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-      z-index: 999; background-size: 100% 3px, 6px 100%; pointer-events: none;
-    }
+        .boot-log-line {
+            white-space: pre-wrap;
+            margin: 1px 0;
+        }
 
-    #boot-screen {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: #020305; color: var(--text-green); z-index: 9999;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      padding: 20px; font-size: 0.85rem; transition: opacity 0.8s ease;
-    }
+        .boot-highlight {
+            color: #f1c40f;
+        }
 
-    .boot-dragon {
-      color: var(--text-green); font-weight: bold; font-size: 0.65rem; white-space: pre;
-      text-shadow: 0 0 18px var(--text-green); margin-bottom: 20px; text-align: center;
-    }
+        /* Efecto Matrix Pantalla Completa */
+        #matrix-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            color: #00ff66;
+            z-index: 9998;
+            display: none;
+            font-family: monospace;
+            font-size: 16px;
+            padding: 20px;
+            overflow: hidden;
+            white-space: pre;
+        }
 
-    .boot-progress-bar {
-      width: 100%; max-width: 600px; height: 10px; border: 1px solid var(--border-green);
-      border-radius: 4px; margin: 15px 0; overflow: hidden; background: #081018;
-    }
+        .main-container {
+            width: 950px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            display: none;
+        }
 
-    .boot-progress-fill {
-      height: 100%; width: 0%; background: linear-gradient(90deg, #00ff66, #00f2fe);
-      box-shadow: 0 0 12px var(--text-green); transition: width 0.1s linear;
-    }
+        /* Barra de Navegación Superior con Enlaces Reales exactos a tu carpeta */
+        .top-paths {
+            background-color: var(--term-header);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+        }
 
-    .boot-log {
-      width: 100%; max-width: 650px; text-align: left; height: 130px; overflow: hidden;
-      color: var(--text-main); font-size: 0.78rem; line-height: 1.4;
-    }
+        .top-paths a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
 
-    .boot-ok { color: var(--text-green); font-weight: bold; }
+        .top-paths a:hover {
+            background-color: #30363d;
+            color: var(--accent-green);
+        }
 
-    .terminal-container { display: flex; flex-direction: column; padding: 15px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .top-paths a.active {
+            color: var(--accent-green);
+            font-weight: bold;
+            background-color: #21262d;
+            border: 1px solid var(--border-color);
+        }
 
-    .terminal-header {
-      background: #111827; padding: 8px 14px; border-radius: 8px 8px 0 0;
-      display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-dark); border-bottom: none;
-    }
-    .window-dots { display: flex; gap: 8px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-red { background: #ff5f56; } .dot-yellow { background: #ffbd2e; } .dot-green { background: #27c93f; }
-    .window-title { color: var(--text-muted); font-size: 0.8rem; }
+        .vm-window {
+            background-color: var(--term-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            height: 420px;
+        }
 
-    nav {
-      background: #090e17; padding: 10px 15px; border: 1px solid var(--border-dark); border-top: none;
-      display: flex; gap: 12px; flex-wrap: wrap;
-    }
-    nav a { color: var(--text-muted); text-decoration: none; font-size: 0.82rem; transition: all 0.2s; }
-    nav a:hover, nav a.active { color: var(--text-green); text-shadow: 0 0 8px var(--text-green); }
+        .vm-header {
+            background-color: var(--term-header);
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    .terminal-body {
-      background: rgba(2, 4, 8, 0.95); border: 1px solid var(--border-dark); border-radius: 0 0 8px 8px;
-      padding: 20px; min-height: 380px; display: flex; flex-direction: column;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); font-size: 0.90rem; max-height: 420px; overflow-y: auto;
-    }
+        .vm-title {
+            font-size: 13px;
+            color: #8b949e;
+        }
 
-    .system-banner { color: var(--text-muted); font-size: 0.73rem; margin-bottom: 12px; line-height: 1.3; }
+        .vm-buttons {
+            display: flex;
+            gap: 6px;
+        }
 
-    .clean-kali-banner {
-      color: var(--text-green); font-size: 1.5rem; font-weight: 900; letter-spacing: 3px;
-      text-shadow: 0 0 12px rgba(0, 255, 102, 0.6); margin: 10px 0 15px 0; border-left: 4px solid var(--text-green); padding-left: 10px;
-    }
+        .vm-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
 
-    .input-line { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-    .prompt { color: var(--text-green); font-weight: bold; white-space: nowrap; }
-    .prompt-user { color: var(--text-cyan); } .prompt-host { color: var(--text-green); } .prompt-path { color: var(--text-purple); }
+        .btn-close { background-color: #ff5f56; }
+        .btn-minimize { background-color: #ffbd2e; }
+        .btn-maximize { background-color: #27c93f; }
 
-    .cmd-input {
-      background: transparent; border: none; outline: none; color: var(--text-green);
-      font-family: var(--font-mono); font-size: 0.95rem; width: 100%;
-    }
+        .terminal-body {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.4;
+        }
 
-    .cursor {
-      display: inline-block; width: 8px; height: 1.1em; background-color: var(--text-green);
-      animation: blink 0.8s infinite; box-shadow: 0 0 8px var(--text-green);
-    }
-    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+        .output-line {
+            margin-bottom: 4px;
+            white-space: pre-wrap;
+        }
 
-    .dir-item { color: var(--text-cyan); font-weight: bold; cursor: pointer; }
-    .dir-item:hover { text-decoration: underline; text-shadow: 0 0 6px var(--text-cyan); }
-    
-    .file-item { color: var(--text-main); cursor: pointer; transition: color 0.2s; }
-    .file-item:hover { color: var(--text-yellow); text-shadow: 0 0 6px var(--text-yellow); }
+        .prompt-text {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
 
-    .tool-item { color: var(--text-yellow); font-weight: bold; cursor: pointer; }
-    .tool-item:hover { text-shadow: 0 0 6px var(--text-yellow); text-decoration: underline; }
+        .path-text {
+            color: var(--accent-blue);
+        }
 
-    /* Tablero Extendido de Ayuda con Indicadores LED */
-    .cheat-sheet-section {
-      margin-top: 20px; background: var(--card-bg); border: 1px solid var(--border-dark); border-radius: 8px; padding: 18px;
-    }
-    .section-title {
-      color: var(--text-cyan); font-size: 0.95rem; margin-bottom: 12px; border-left: 3px solid var(--border-green); padding-left: 10px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .category-title {
-      color: var(--text-yellow); font-size: 0.85rem; margin: 12px 0 6px 0; font-weight: bold; border-bottom: 1px solid #1b283b; padding-bottom: 4px;
-    }
-    .cmd-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px; font-size: 0.78rem;
-      max-height: 320px; overflow-y: auto; padding-right: 5px;
-    }
-    .cmd-card {
-      background: #04070d; border: 1px solid #1b283b; padding: 6px 10px; border-radius: 6px;
-      display: flex; flex-direction: column; gap: 2px; position: relative;
-    }
-    .cmd-header-row { display: flex; justify-content: space-between; align-items: center; }
-    .cmd-name { color: var(--text-green); font-weight: bold; }
-    .cmd-desc { color: var(--text-muted); font-size: 0.73rem; }
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
 
-    /* Luces LED de Estado */
-    .led {
-      width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px currentColor;
-    }
-    .led-green { color: #00ff66; background-color: #00ff66; }
-    .led-red { color: #ff0055; background-color: #ff0055; }
+        .input-container input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            outline: none;
+            margin-left: 5px;
+        }
 
-    /* Modal de Vista Previa */
-    #preview-modal {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85);
-      z-index: 10000; display: none; justify-content: center; align-items: center; padding: 20px;
-    }
-    .modal-box {
-      background: #0b1320; border: 1px solid var(--border-green); border-radius: 10px;
-      width: 100%; max-width: 650px; padding: 20px; box-shadow: 0 0 30px rgba(0,255,102,0.3);
-      display: flex; flex-direction: column; gap: 15px;
-    }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
-    .modal-title { color: var(--text-cyan); font-weight: bold; font-size: 1rem; }
-    .modal-close { background: #ff5f56; border: none; color: #fff; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
-    .modal-content { font-size: 0.85rem; color: var(--text-main); line-height: 1.5; max-height: 250px; overflow-y: auto; background: #04070d; padding: 12px; border-radius: 6px; border: 1px solid #162235; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-    .btn-action { background: #0284c7; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.82rem; }
-    .btn-action.download { background: #059669; }
-    .btn-action:hover { opacity: 0.9; }
+        /* Tablero Individualizado de Comandos */
+        .help-panel {
+            background-color: var(--term-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
 
-    footer { text-align: center; padding: 15px 0; color: var(--text-muted); font-size: 0.75rem; }
-  </style>
+        .help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--accent-blue);
+        }
+
+        .led-active {
+            color: var(--accent-green);
+            font-size: 11px;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .cmd-card {
+            background-color: var(--term-header);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 6px 8px;
+        }
+
+        .cmd-name {
+            color: var(--accent-green);
+            font-weight: bold;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cmd-desc {
+            font-size: 10px;
+            color: #8b949e;
+            margin-top: 3px;
+        }
+
+        .dir { color: var(--accent-blue); font-weight: bold; }
+        .file { color: var(--text-color); }
+        .success { color: var(--accent-green); }
+        .warning { color: var(--accent-yellow); }
+        .error { color: var(--accent-red); }
+    </style>
 </head>
 <body>
 
-  <svg id="dragon-canvas" viewBox="-60 -60 120 120">
-    <defs>
-      <g id="FosilDragon">
-        <path style="fill:none;stroke:#00ff66;stroke-width:2;stroke-opacity:0.95" d="M-30,0 Q-20,-15 0,-20 Q20,-15 30,0 Q20,15 0,20 Q-20,15 -30,0 Z" />
-        <path style="fill:none;stroke:#00ff66;stroke-width:1.4" d="M-20,-5 Q-10,-28 0,-10 Q10,-28 20,-5" />
-        <path style="fill:none;stroke:#00ff66;stroke-width:1.4" d="M-15,5 Q-5,28 0,10 Q5,28 15,5" />
-      </g>
-    </defs>
-    <use href="#FosilDragon" x="0" y="0" />
-    <use href="#FosilDragon" x="-45" y="-35" transform="scale(0.65)" />
-    <use href="#FosilDragon" x="45" y="35" transform="scale(0.65)" />
-  </svg>
-
-  <div id="boot-screen">
-    <pre class="boot-dragon">
-                /\_/\
-              =( °w° )=   [ KALI LINUX OSINT SHELL v6.2 ]
-                /   \     CETAL SISTEMAS INFORMÁTICOS
-               (/     \)   PROMOCIÓN 2026 - 2027
-    </pre>
-    <div class="boot-progress-bar"><div class="boot-progress-fill" id="boot-fill"></div></div>
-    <div class="boot-log" id="boot-log-text"></div>
-  </div>
-
-  <div id="preview-modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-title" id="modal-file-title">documento.docx</div>
-        <button class="modal-close" onclick="closeModal()">✕</button>
-      </div>
-      <div class="modal-content" id="modal-file-desc">
-        Cargando metadatos del archivo y resumen académico del repositorio CETAL...
-      </div>
-      <div class="modal-actions">
-        <button class="btn-action" onclick="closeModal()">Cerrar Ventana</button>
-        <button class="btn-action download" id="btn-download-action">📥 Descargar a la PC</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="terminal-container">
-    <div class="terminal-header">
-      <div class="window-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
-      <div class="window-title">root@cetal-sec:/archivos</div>
-      <div></div>
+    <!-- Pantalla de Inicio Masiva (10 Segundos) -->
+    <div id="boot-screen">
+        <div id="bootContainer" style="width: 100%; height: 100%; overflow: hidden;"></div>
     </div>
 
-    <nav>
-      <a href="index.html">./inicio.sh</a> |
-      <a href="anuario.html">./anuario.py</a> |
-      <a href="actividades.html">./bitacora.log</a> |
-      <a href="proyectos.html">./proyectos.bin</a> |
-      <a href="recursos.html" class="active">./recursos.conf</a>
-    </nav>
+    <!-- Pantalla Matrix (Easter Egg) -->
+    <div id="matrix-screen" onclick="stopMatrix();">
+        <div style="margin-bottom: 15px; color: #fff; background: #000; padding: 5px;">[ MODO MATRIX ACTIVO - Haz clic en cualquier parte para salir ]</div>
+        <div id="matrixContent"></div>
+    </div>
 
-    <div class="terminal-body" id="terminal-body" onclick="focusInput()">
-      <div class="terminal-output" id="terminal-output">
-        <div class="system-banner">
-          [SISTEMA ]: Linux cetal-sec 6.1.0-kali9-amd64 x86_64 Kernel.<br>
-          [ENTIDAD ]: CETAL SISTEMAS INFORMÁTICOS | PROMOCIÓN 2026 - 2027.
+    <!-- Contenedor Principal -->
+    <div class="main-container" id="mainContainer">
+        
+        <!-- Barra de Enlaces Superiores conectados a tus nombres reales -->
+        <div class="top-paths">
+            <a href="index.html">./inicio.sh</a>
+            <a href="anuario.html">./anuario.py</a>
+            <a href="actividades.html">./bitacora.log</a>
+            <a href="proyectos.html">./proyectos.bin</a>
+            <a href="recursos.html" class="active">./recursos.conf</a>
         </div>
-        <div class="clean-kali-banner">> KALI LINUX OSINT_</div>
-        <div class="line-output" style="color: var(--text-green); font-weight: bold;">
-          [ SYSTEM: Base de datos completa cargada (Docente + Estudiantes CETAL). Escribe 'ayuda' o consulta el tablero inferior ]
-        </div>
-        <div class="line-output">--------------------------------------------------------------------------------</div>
-      </div>
 
-      <div class="input-line">
-        <span class="prompt">
-          <span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path" id="current-path-display">/archivos</span>#
-        </span>
-        <input type="text" id="cli-input" class="cmd-input" autocomplete="off" spellcheck="false">
-        <span class="cursor"></span>
-      </div>
+        <div class="vm-window">
+            <div class="vm-header">
+                <div class="vm-title">
+                    <span>root@cetal-sec:/archivos/recursos</span>
+                </div>
+                <div class="vm-buttons">
+                    <span class="vm-btn btn-close"></span>
+                    <span class="vm-btn btn-minimize"></span>
+                    <span class="vm-btn btn-maximize"></span>
+                </div>
+            </div>
+
+            <div class="terminal-body" id="terminalBody" onclick="document.getElementById('commandInput').focus();">
+                <div class="output-line">[SISTEMA]: Linux cetal-sec 6.1.0-kali9-amd64 x86_64 Kernel.</div>
+                <div class="output-line">[ENTIDAD]: CETAL SISTEMAS INFORMÁTICOS | Módulo de Recursos Activo.</div>
+                <div class="output-line warning">> Haz clic arriba en las pestañas para salir de este entorno y abrir su respectiva página.</div>
+                <div class="output-line">------------------------------------------------------------------</div>
+                <div id="historyOutput"></div>
+
+                <div class="input-container">
+                    <span class="prompt-text">root@cetal-sec:</span>
+                    <span class="path-text" id="currentPathPrompt">/archivos/recursos</span>
+                    <span class="prompt-text">#</span>
+                    <input type="text" id="commandInput" autofocus autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tablero Individualizado de Comandos -->
+        <div class="help-panel">
+            <div class="help-header">
+                <span>🛠️ Guía Interactiva de Comandos CETAL OSINT</span>
+                <span class="led-active">● Sistema en Línea</span>
+            </div>
+            <div class="commands-grid">
+                <div class="cmd-card">
+                    <div class="cmd-name">ls <span>🟢</span></div>
+                    <div class="cmd-desc">Lista archivos y carpetas.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">cd <span>🟢</span></div>
+                    <div class="cmd-desc">Cambia de directorio.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">pwd <span>🟢</span></div>
+                    <div class="cmd-desc">Muestra ruta actual.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">cat <span>🟢</span></div>
+                    <div class="cmd-desc">Lee archivos de texto.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">mkdir <span>🟢</span></div>
+                    <div class="cmd-desc">Crea un directorio.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">touch <span>🟢</span></div>
+                    <div class="cmd-desc">Crea un archivo nuevo.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">rm <span>🟢</span></div>
+                    <div class="cmd-desc">Elimina elemento.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">whoami <span>🟢</span></div>
+                    <div class="cmd-desc">Muestra el usuario.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">uname -a <span>🟢</span></div>
+                    <div class="cmd-desc">Versión del Kernel.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">matrix <span>✨</span></div>
+                    <div class="cmd-desc">Efecto visual hacker.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">sudo pkg update <span>⚡</span></div>
+                    <div class="cmd-desc">Actualiza repos (20s [bad/ok]).</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">sudo pkg upgrade -y <span>⚡</span></div>
+                    <div class="cmd-desc">Corrige a [OK] y actualiza.</div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Tablero de Ayuda Extendido (Básicos, Avanzados y Herramientas con Indicadores LED) -->
-    <section class="cheat-sheet-section">
-      <h3 class="section-title">
-        <span>🛠️ Tablero de Ayuda y Comandos Linux / Ciberseguridad (Estado LED Activo)</span>
-        <span style="font-size: 0.72rem; color: var(--text-green);">🟢 Activo / 🔴 Desactivado</span>
-      </h3>
-      <div id="cmd-cheat-container">
-        <!-- Se inyectará dinámicamente mediante JS -->
-      </div>
-    </section>
+<script>
+    const bootContainer = document.getElementById("bootContainer");
+    const bootScreen = document.getElementById("boot-screen");
+    const mainContainer = document.getElementById("mainContainer");
 
-    <footer>
-      CETAL Virtual Shell v6.2 - Carrera de Sistemas Informáticos (Promoción 2026-2027)
-    </footer>
-  </div>
-
-  <script>
-    let fileSystem = { "/archivos": { type: "dir", children: {} } };
-
-    // Base de datos completa de estudiantes, directiva y docente guía del CETAL
-    const studentOsintDb = [
-      { name: "ivan", fullname: "Ivan (Abogado / SysAdmin)", phone: "+591 71234567", flag: "🇧🇴", reg: "CETAL-2026-084", role: "Sistemas Informáticos / Batman Mode / Automatización" },
-      { name: "freddy mamani", fullname: "Lic. Freddy Mamani Chuilla", phone: "+591 71500111", flag: "🇧🇴", reg: "CETAL-DOC-01", role: "Docente Guía de la Carrera" },
-      { name: "mijael", fullname: "Mijael", phone: "+591 72345678", flag: "🇧🇴", reg: "CETAL-2026-002", role: "Estudiante / Promoción Turno Noche" },
-      { name: "jhamil", fullname: "Jhamil", phone: "+591 73456789", flag: "🇧🇴", reg: "CETAL-2026-003", role: "Estudiante / Promoción Turno Noche" },
-      { name: "omar", fullname: "Omar", phone: "+591 74567890", flag: "🇧🇴", reg: "CETAL-2026-004", role: "Estudiante / Promoción Turno Noche" },
-      { name: "bryan", fullname: "Bryan", phone: "+591 75678901", flag: "🇧🇴", reg: "CETAL-2026-005", role: "Estudiante / Promoción Turno Noche" },
-      { name: "betty", fullname: "Betty", phone: "+591 76789012", flag: "🇧🇴", reg: "CETAL-2026-006", role: "Estudiante / Promoción Turno Noche" },
-      { name: "subeida", fullname: "Subeida", phone: "+591 77890123", flag: "🇧🇴", reg: "CETAL-2026-007", role: "Estudiante / Promoción Turno Noche" },
-      { name: "jenny", fullname: "Jenny", phone: "+591 78901234", flag: "🇧🇴", reg: "CETAL-2026-008", role: "Estudiante / Promoción Turno Noche" },
-      { name: "alexis", fullname: "Alexis", phone: "+591 79012345", flag: "🇧🇴", reg: "CETAL-2026-009", role: "Estudiante / Promoción Turno Noche" },
-      { name: "vargas cuchillos", fullname: "Vargas Cuchillos", phone: "+591 70123456", flag: "🇧🇴", reg: "CETAL-2026-010", role: "Estudiante / Promoción Turno Noche" }
+    const rawBootLines = [
+        "Uncompressing Linux... parsing ELF... done.",
+        "Booting a Linux kernel on bare metal hardware...",
+        "Linux version 6.1.0-kali9-amd64 (devel@kali.org) #1 SMP PREEMPT_DYNAMIC Kali",
+        "Command line: BOOT_IMAGE=/boot/vmlinuz-6.1.0-kali9-amd64 root=UUID=cetal-sec-2026 ro quiet",
+        "BIOS-provided physical RAM map: [mem 0x0000000000000000-0x00000000ffffffff] usable",
+        "Initializing cgroups subsys cpuset",
+        "Initializing cgroups subsys cpu",
+        "CPU: Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz (12 cores)",
+        "Memory: 16384MB/15820MB available",
+        "Mounting virtual filesystems... /proc, /sys, /dev, /run",
+        "Initializing network subsystem [TCP/IP v4, IPv6, Netfilter active]",
+        "Loading CETAL security modules [MITRE ATT&CK Framework v14]...",
+        "Checking encrypted filesystems: 0 errors, 7 files checked successfully.",
+        "Starting system message bus: dbus...",
+        "Starting OpenBSD Secure Shell server: sshd... done.",
+        "Initializing secure storage for /archivos/recursos...",
+        "Setting up network interface eth0 [DHCP assigned: 192.168.1.105]...",
+        "Loading user profile: Ivan (Sistemas Informáticos CETAL Turno Noche)...",
+        "Verifying database integrity and security modules...",
+        "Starting system logging daemon: syslogd... done.",
+        "Triggering udev coldplug events... done.",
+        "[ OK ] Reached target Multi-User System.",
+        "[ OK ] Reached target Graphical Interface.",
+        "CETAL-OS Security Environment initialized successfully."
     ];
 
-    // Lista estructurada dividida en Básicos, Avanzados y Herramientas (con estado activo/desactivado LED)
-    const categorizedCommands = {
-      basicos: [
-        { cmd: "ls", desc: "Lista archivos y directorios en la ruta actual.", active: true },
-        { cmd: "cd", desc: "Cambia de directorio de trabajo.", active: true },
-        { cmd: "pwd", desc: "Muestra la ruta del directorio actual.", active: true },
-        { cmd: "cat", desc: "Muestra el contenido de un archivo en texto.", active: true },
-        { cmd: "clear", desc: "Limpia la pantalla de la terminal.", active: true },
-        { cmd: "echo", desc: "Imprime texto en la terminal o archivos.", active: true },
-        { cmd: "mkdir", desc: "Crea un nuevo directorio.", active: true },
-        { cmd: "touch", desc: "Crea un archivo vacío o actualiza marcas de tiempo.", active: true },
-        { cmd: "cp", desc: "Copia archivos y directorios.", active: true },
-        { cmd: "mv", desc: "Mueve o renombra archivos y directorios.", active: true },
-        { cmd: "rm", desc: "Elimina archivos o directorios permanentemente.", active: true },
-        { cmd: "history", desc: "Muestra el historial de comandos ejecutados.", active: true },
-        { cmd: "whoami", desc: "Muestra el usuario actual conectado.", active: true },
-        { cmd: "date", desc: "Muestra la fecha y hora del sistema.", active: true },
-        { cmd: "cal", desc: "Muestra el calendario del mes actual.", active: true }
-      ],
-      avanzados: [
-        { cmd: "grep", desc: "Busca patrones específicos dentro de archivos.", active: true },
-        { cmd: "chmod", desc: "Modifica los permisos de archivos y carpetas.", active: true },
-        { cmd: "chown", desc: "Cambia el propietario y grupo de un archivo.", active: true },
-        { cmd: "ps", desc: "Muestra los procesos activos del sistema.", active: true },
-        { cmd: "top", desc: "Monitor en tiempo real de recursos y procesos.", active: true },
-        { cmd: "kill", desc: "Termina un proceso en ejecución por su PID.", active: true },
-        { cmd: "df", desc: "Muestra el espacio disponible en disco.", active: true },
-        { cmd: "free", desc: "Muestra la memoria RAM libre y ocupada.", active: true },
-        { cmd: "uname", desc: "Muestra información detallada del Kernel y sistema.", active: true },
-        { cmd: "find", desc: "Busca archivos en el sistema de directorios.", active: true },
-        { cmd: "tar", desc: "Empaqueta o desempaqueta archivos comprimidos.", active: true },
-        { cmd: "wget", desc: "Descarga archivos desde la web vía HTTP/FTP.", active: true },
-        { cmd: "curl", desc: "Transfiere datos desde o hacia un servidor.", active: true },
-        { cmd: "ssh", desc: "Conexión segura a servidores remotos.", active: true },
-        { cmd: "iptables", desc: "Administrador de cortafuegos de Linux.", active: false },
-        { cmd: "crontab", desc: "Programa tareas automáticas en segundo plano.", active: true },
-        { cmd: "systemctl", desc: "Controla servicios y daemons del sistema.", active: false },
-        { cmd: "awk", desc: "Procesador y filtrado avanzado de texto.", active: true },
-        { cmd: "sed", desc: "Editor de flujos de texto en línea.", active: true }
-      ],
-      herramientas: [
-        { cmd: "mrholmes", desc: "Herramienta OSINT para rastreo de identidades y datos.", active: true },
-        { cmd: "ip-tracer", desc: "Rastrea geolocalización y origen de IPs.", active: true },
-        { cmd: "phoneinfoga", desc: "OSINT avanzado para análisis de números telefónicos.", active: true },
-        { cmd: "john", desc: "John the Ripper para descifrado de hashes.", active: true },
-        { cmd: "kali-nethunter-rootfs-full-arm64.tar.xz", desc: "Carga entorno rootfs completo chroot arm64.", active: true },
-        { cmd: "hydra", desc: "Fuerza bruta multicapa (Desactivado en tablero).", active: false },
-        { cmd: "sqlmap", desc: "Automatiza detección y explotación SQLi.", active: false },
-        { cmd: "metasploit", desc: "Framework de explotación de vulnerabilidades.", active: false },
-        { cmd: "aircrack-ng", desc: "Auditoría de redes inalámbricas Wi-Fi.", active: false },
-        { cmd: "hashcat", desc: "Recuperador de contraseñas por GPU.", active: false },
-        { cmd: "steghide", desc: "Esteganografía para ocultar datos en imágenes.", active: true },
-        { cmd: "nikto", desc: "Escáner de vulnerabilidades para servidores web.", active: false },
-        { cmd: "gobuster", desc: "Descubre rutas y subdominios web velozmente.", active: false },
-        { cmd: "setoolkit", desc: "Framework de ingeniería social.", active: false },
-        { cmd: "maltego", desc: "Plataforma de inteligencia de fuentes abiertas.", active: false }
-      ]
+    let currentLine = 0;
+    function renderBootLines() {
+        if (currentLine < rawBootLines.length) {
+            let div = document.createElement("div");
+            div.className = "boot-log-line";
+            if (rawBootLines[currentLine].includes("[ OK ]")) {
+                div.innerHTML = `<span style="color: #2ecc71;">[ OK ]</span> ${rawBootLines[currentLine].replace('[ OK ]', '')}`;
+            } else if (rawBootLines[currentLine].includes("Linux version") || rawBootLines[currentLine].includes("Welcome")) {
+                div.innerHTML = `<span class="boot-highlight">${rawBootLines[currentLine]}</span>`;
+            } else {
+                div.innerHTML = `[ <span style="color: #3498db;">0.${currentLine < 10 ? '0' + currentLine : currentLine}s</span> ] ${rawBootLines[currentLine]}`;
+            }
+            bootContainer.appendChild(div);
+            bootContainer.scrollTop = bootContainer.scrollHeight;
+            currentLine++;
+            setTimeout(renderBootLines, 330); 
+        } else {
+            setTimeout(() => {
+                bootScreen.style.display = "none";
+                mainContainer.style.display = "flex";
+                document.getElementById("commandInput").focus();
+            }, 600);
+        }
+    }
+    window.onload = renderBootLines;
+
+    let fileSystem = {
+        "recursos": {
+            type: "dir",
+            content: {
+                "normativa": { type: "file", content: "Reglamento institucional CETAL 2026." },
+                "herramientas": { type: "file", content: "Corel VideoStudio, Blender, Stellarium y Canva." }
+            }
+        }
     };
 
-    function renderCheatSheet() {
-      const container = document.getElementById('cmd-cheat-container');
-      let html = '';
-
-      // Categoría Básicos
-      html += `<div class="category-title">📂 Comandos Básicos (Funcionales)</div>`;
-      html += `<div class="cmd-grid">`;
-      categorizedCommands.basicos.forEach(item => {
-        html += generateCardHtml(item);
-      });
-      html += `</div>`;
-
-      // Categoría Avanzados
-      html += `<div class="category-title">⚡ Comandos Avanzados (Mixtos / Funcionales y Desactivados)</div>`;
-      html += `<div class="cmd-grid">`;
-      categorizedCommands.avanzados.forEach(item => {
-        html += generateCardHtml(item);
-      });
-      html += `</div>`;
-
-      // Categoría Herramientas Ciberseguridad
-      html += `<div class="category-title">🛠️ Herramientas OSINT & Ciberseguridad (Estado LED)</div>`;
-      html += `<div class="cmd-grid">`;
-      categorizedCommands.herramientas.forEach(item => {
-        html += generateCardHtml(item);
-      });
-      html += `</div>`;
-
-      container.innerHTML = html;
-    }
-
-    function generateCardHtml(item) {
-      let ledClass = item.active ? "led-green" : "led-red";
-      let statusText = item.active ? "Activo" : "Desactivado";
-      return `
-        <div class="cmd-card">
-          <div class="cmd-header-row">
-            <span class="cmd-name">${item.cmd}</span>
-            <span title="${statusText}"><span class="led ${ledClass}"></span></span>
-          </div>
-          <span class="cmd-desc">${item.desc}</span>
-        </div>
-      `;
-    }
-
-    renderCheatSheet();
-
-    async function loadRepositoryData() {
-      try {
-        let response = await fetch('repo-index.json');
-        let data = await response.json();
-        buildFileSystemFromJson(data.files);
-      } catch (error) {
-        buildFileSystemFromJson({
-          "01_basico": { "apuntes": [], "excel_planillas": [], "investigaciones": [], "powerpoint_presentaciones": [], "word_documentos": [] },
-          "02_auxiliar": { 
-            "apuntes": [], 
-            "excel_planillas": ["08-BasicoExcel.xlsx","12-BasicoExcel.xlsx","Excel ejercicios 8-9-10-11.docx"], 
-            "investigaciones": ["Monografia_Linux_Sistemas_Operativos_II.docx"], 
-            "powerpoint_presentaciones": [], 
-            "word_documentos": [] 
-          },
-          "03_tecnico_medio": { "apuntes": [], "excel_planillas": [], "investigaciones": [], "powerpoint_presentaciones": [], "word_documentos": [] },
-          "04_tecnico_superior": { "apuntes": [], "excel_planillas": [], "investigaciones": [], "powerpoint_presentaciones": [], "word_documentos": [] },
-          "05_directiva_cetal": { "apuntes": [], "excel_planillas": [], "investigaciones": [], "powerpoint_presentaciones": [], "word_documentos": ["reglamento-cetal-2026.docx"] },
-          "Proyectos": { "apuntes": [], "excel_planillas": [], "investigaciones": [], "powerpoint_presentaciones": [], "word_documentos": [] }
-        });
-      }
-    }
-
-    function buildFileSystemFromJson(filesMap) {
-      const defaultNiveles = ["01_basico", "02_auxiliar", "03_tecnico_medio", "04_tecnico_superior", "05_directiva_cetal", "Proyectos"];
-      let rootChildren = fileSystem["/archivos"].children;
-
-      defaultNiveles.forEach(nivel => {
-        if (!rootChildren[nivel]) rootChildren[nivel] = { type: "dir", children: {} };
-      });
-
-      for (let nivel in filesMap) {
-        if (!rootChildren[nivel]) rootChildren[nivel] = { type: "dir", children: {} };
-        for (let subfolder in filesMap[nivel]) {
-          if (!rootChildren[nivel].children[subfolder]) {
-            rootChildren[nivel].children[subfolder] = { type: "dir", children: {} };
-          }
-          let fileList = filesMap[nivel][subfolder];
-          if (Array.isArray(fileList)) {
-            fileList.forEach(filename => {
-              rootChildren[nivel].children[subfolder].children[filename] = { type: "file" };
-            });
-          }
-        }
-      }
-    }
-
-    loadRepositoryData();
-
-    const bootLogs = [
-      "[ 0.001 ] Initializing Kali OSINT Cyber-Kernel...",
-      "[ 0.150 ] Loading modules: Mr.Holmes, Ip-Tracer, PhoneInfoga, John...",
-      "[ 0.380 ] <span class='boot-ok'>[ OK ]</span> Connecting to CETAL Student & Teacher Database...",
-      "[ 0.720 ] <span class='boot-ok'>[ OK ]</span> Mounting /archivos & Tool Binaries...",
-      "[ 1.200 ] <span class='boot-ok'>[ OK ]</span> Terminal OSINT Shell Ready."
-    ];
-
-    const bootLogText = document.getElementById('boot-log-text');
-    const bootScreen = document.getElementById('boot-screen');
-    const bootFill = document.getElementById('boot-fill');
-    let logIndex = 0;
-
-    function runBootSequence() {
-      if (logIndex < bootLogs.length) {
-        bootLogText.innerHTML += bootLogs[logIndex] + "<br>";
-        logIndex++;
-        let pct = Math.floor((logIndex / bootLogs.length) * 100);
-        bootFill.style.width = pct + "%";
-        setTimeout(runBootSequence, 120);
-      } else {
-        setTimeout(() => {
-          bootScreen.style.opacity = '0';
-          setTimeout(() => {
-            bootScreen.style.display = 'none';
-            cliInput.focus();
-          }, 800);
-        }, 200);
-      }
-    }
-
-    window.addEventListener('load', runBootSequence);
-
-    let currentPath = "/archivos";
-    let cmdHistory = [];
+    let currentPathArray = ["archivos", "recursos"];
+    let commandHistory = [];
     let historyIndex = -1;
-    let awaitingNethunterPassword = false;
+    let matrixInterval = null;
 
-    const cliInput = document.getElementById('cli-input');
-    const outputDiv = document.getElementById('terminal-body');
-    const pathDisplay = document.getElementById('current-path-display');
+    const terminalBody = document.getElementById("terminalBody");
+    const historyOutput = document.getElementById("historyOutput");
+    const commandInput = document.getElementById("commandInput");
+    const currentPathPrompt = document.getElementById("currentPathPrompt");
 
-    function focusInput() { cliInput.focus(); }
-
-    function getNodeAtPath(path) {
-      if (path === "/archivos") return fileSystem["/archivos"];
-      const parts = path.replace("/archivos/", "").split("/");
-      let current = fileSystem["/archivos"];
-      for (let part of parts) {
-        if (current.children && current.children[part]) current = current.children[part];
-        else return null;
-      }
-      return current;
-    }
-
-    function openPreviewModal(fileName) {
-      const modal = document.getElementById('preview-modal');
-      const title = document.getElementById('modal-file-title');
-      const desc = document.getElementById('modal-file-desc');
-      const downloadBtn = document.getElementById('btn-download-action');
-
-      title.innerText = fileName;
-      desc.innerHTML = `<b>Institución:</b> CETAL Sistemas Informáticos<br><b>Ubicación:</b> ${currentPath}/${fileName}<br><br>Haz clic en el botón para descargar este archivo verificado en tu equipo.`;
-      
-      downloadBtn.onclick = function() {
-        triggerRealBrowserDownload(fileName);
-      };
-      modal.style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('preview-modal').style.display = 'none';
-    }
-
-    function triggerRealBrowserDownload(filename) {
-      printLine(`<span style="color:var(--text-yellow)">--2026-09-03--  https://cetal.repo/download/${filename}</span>`);
-      printLine(`<span style="color:var(--text-green)">[ 100% ] Descarga HTTP completada. Iniciando transferencia con navegador...</span>`);
-
-      let blobContent = `--- REPOSITORIO OFICIAL CETAL SISTEMAS INFORMÁTICOS ---\nDocumento: ${filename}\nRuta: ${currentPath}/${filename}\nPromoción 2026-2027`;
-      let blob = new Blob([blobContent], { type: "text/plain;charset=utf-8" });
-      let link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      setTimeout(() => {
-        printLine(`<span style="color:var(--text-green); font-weight:bold;">[✓] Archivo '${filename}' guardado con éxito en tu PC.</span>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-        closeModal();
-      }, 800);
-    }
-
-    cliInput.addEventListener('keydown', async function(e) {
-      if (e.key === 'ArrowUp') {
-        if (cmdHistory.length > 0 && historyIndex < cmdHistory.length - 1) {
-          historyIndex++;
-          this.value = cmdHistory[cmdHistory.length - 1 - historyIndex];
-        }
-      } else if (e.key === 'ArrowDown') {
-        if (historyIndex > 0) {
-          historyIndex--;
-          this.value = cmdHistory[cmdHistory.length - 1 - historyIndex];
-        } else if (historyIndex === 0) {
-          historyIndex = -1;
-          this.value = '';
-        }
-      } else if (e.key === 'Enter') {
-        let fullCmd = this.value.trim();
-        this.value = '';
-        historyIndex = -1;
-        if (!fullCmd) return;
-
-        cmdHistory.push(fullCmd);
-        printLine(`<span class="prompt"><span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path">${currentPath}</span>#</span> ${fullCmd}`);
-        
-        if (awaitingNethunterPassword) {
-          awaitingNethunterPassword = false;
-          if (fullCmd === '767') {
-            printLine(`<span style="color:var(--text-green)">[+] Contraseña correcta. Desplegando Kali NetHunter rootfs completo en arquitectura arm64...</span>`);
-            printLine(`<span style="color:var(--text-cyan)">[✓] Entorno chroot configurado exitosamente. Bienvenido al kernel móvil.</span>`);
-          } else {
-            printLine(`<span style="color:var(--text-red)">[-] Contraseña incorrecta. Acceso denegado.</span>`);
-            printLine(`<span style="color:var(--text-yellow)">[*] Analizando conexiones remotas e interfaz de red en busca de intrusos...</span>`);
-            
-            // Conteo de 5 segundos con reporte de ubicación simulada
-            let count = 5;
-            let interval = setInterval(() => {
-              if (count > 0) {
-                printLine(`<span style="color:var(--text-yellow)">[!] Advertencia de seguridad: Rastreo activo en ${count} segundos...</span>`);
-                count--;
-              } else {
-                clearInterval(interval);
-                printLine(`<span style="color:var(--text-red); font-weight:bold; font-size:1.05rem;">[!] UBICACIÓN DETECTADA: Bolivia 🇧🇴 (La Paz) - IP Pública Registrada.</span>`);
-                printLine(`<span style="color:var(--text-green); font-weight:bold; font-size:1.1rem; text-shadow:0 0 10px #00ff66;">¡Te la creíste! xD Volviendo al comando principal...</span>`);
-                outputDiv.scrollTop = outputDiv.scrollHeight;
-              }
-            }, 1000);
-          }
-          outputDiv.scrollTop = outputDiv.scrollHeight;
-          return;
-        }
-
-        const args = fullCmd.split(" ").filter(a => a !== "");
-        const cmd = args[0] ? args[0].toLowerCase() : '';
-
-        if (cmd === 'ls') {
-          let res = [];
-          if (currentPath === "/archivos") {
-            res.push(`<span class="tool-item" onclick="runToolQuick('mrholmes')">🛠️ mrholmes</span>`);
-            res.push(`<span class="tool-item" onclick="runToolQuick('iptracer')">🛠️ ip-tracer</span>`);
-            res.push(`<span class="tool-item" onclick="runToolQuick('phoneinfoga')">🛠️ phoneinfoga</span>`);
-            res.push(`<span class="tool-item" onclick="runToolQuick('john')">🛠️ john</span>`);
-          }
-          let node = getNodeAtPath(currentPath);
-          if (node && node.children) {
-            for (let k in node.children) {
-              let item = node.children[k];
-              if (item.type === 'dir') {
-                res.push(`<span class="dir-item" onclick="executeCdFromPrompt('${k}')">📂 ${k}/</span>`);
-              } else {
-                res.push(`<span class="file-item" onclick="openPreviewModal('${k}')">📄 ${k}</span>`);
-              }
-            }
-          }
-          printLine(res.join("&nbsp;&nbsp;&nbsp;&nbsp;"));
-        } 
-        else if (cmd === 'cd') {
-          let target = args[1];
-          if (target === '..') {
-            if (currentPath !== "/archivos") {
-              let parts = currentPath.split("/"); parts.pop(); currentPath = parts.join("/");
-            }
-          } else if (target) {
-            let clean = target.replace("/", "").toLowerCase();
-            let node = getNodeAtPath(currentPath);
-            let foundKey = null;
-            if (node && node.children) {
-              for (let key in node.children) {
-                if (key.toLowerCase() === clean) { foundKey = key; break; }
-              }
-            }
-            if (foundKey && node.children[foundKey].type === 'dir') {
-              currentPath += "/" + foundKey;
+    function getDirByPath(pathArr) {
+        let current = fileSystem;
+        for (let part of pathArr) {
+            if (current[part] && current[part].content) {
+                current = current[part].content;
             } else {
-              printLine(`<span style="color:var(--text-red)">bash: cd: ${clean}: Carpeta no encontrada</span>`);
+                return null;
             }
-          }
-          pathDisplay.innerText = currentPath;
-        } 
-        else if (cmd === 'wget') {
-          let file = args[1];
-          let node = getNodeAtPath(currentPath);
-          if (node && node.children && node.children[file]) {
-            triggerRealBrowserDownload(file);
-          } else {
-            printLine(`<span style="color:var(--text-red)">wget: ${file}: Archivo no encontrado en esta ruta</span>`);
-          }
         }
-        else if (cmd === 'mrholmes') {
-          let query = args.slice(1).join(" ").toLowerCase();
-          runMrHolmes(query);
+        return current;
+    }
+
+    function updatePromptDisplay() {
+        currentPathPrompt.textContent = "/" + currentPathArray.join("/");
+    }
+
+    commandInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            let cmdText = commandInput.value.trim();
+            if (cmdText !== "") {
+                commandHistory.push(cmdText);
+                historyIndex = commandHistory.length;
+                processCommand(cmdText);
+            }
+            commandInput.value = "";
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        } else if (event.key === "ArrowUp") {
+            if (historyIndex > 0) {
+                historyIndex--;
+                commandInput.value = commandHistory[historyIndex];
+            }
+            event.preventDefault();
+        } else if (event.key === "ArrowDown") {
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                commandInput.value = commandHistory[historyIndex];
+            } else {
+                historyIndex = commandHistory.length;
+                commandInput.value = "";
+            }
+            event.preventDefault();
         }
-        else if (cmd === 'ip-tracer') {
-          let targetIp = args[1] ? args[1] : '181.115.x.x';
-          runIpTracer(targetIp);
-        }
-        else if (cmd === 'phoneinfoga') {
-          let phone = args[1] ? args[1] : '+59171234567';
-          runPhoneInfoga(phone);
-        }
-        else if (cmd === 'john' || cmd === 'ripiajhon') {
-          let targetFile = args[1] ? args[1] : 'hashes.txt';
-          runRipiaJohn(targetFile);
-        }
-        else if (fullCmd.includes('kali-nethunter-rootfs-full-arm64.tar.xz')) {
-          runNetHunterExtract();
-        }
-        else if (cmd === 'hydra' || cmd === 'sqlmap' || cmd === 'metasploit') {
-          printLine(`<span style="color:var(--text-red)">[!] ${cmd}: Herramienta desactivada (Luz roja). Verifique el tablero de recursos.</span>`);
-        }
-        else if (cmd === 'clear') {
-          outputDiv.innerHTML = `
-            <div class="system-banner">
-              [SISTEMA ]: Linux cetal-sec 6.1.0-kali9-amd64 x86_64 Kernel.<br>
-              [ENTIDAD ]: CETAL SISTEMAS INFORMÁTICOS | PROMOCIÓN 2026 - 2027.
-            </div>
-            <div class="clean-kali-banner">> KALI LINUX OSINT_</div>
-          `;
-        } else {
-          printLine(`<span style="color:var(--text-red)">Comando desconocido. Revisa el tablero de ayuda inferior o prueba 'mrholmes [nombre/cel]', 'ip-tracer', 'phoneinfoga', 'john'.</span>`);
-        }
-      }
     });
 
-    function runToolQuick(toolName) {
-      if (toolName === 'mrholmes') {
-        printLine(`<span class="prompt"><span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path">${currentPath}</span>#</span> mrholmes freddy`);
-        runMrHolmes('freddy');
-      } else if (toolName === 'iptracer') {
-        printLine(`<span class="prompt"><span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path">${currentPath}</span>#</span> ip-tracer 181.115.20.10`);
-        runIpTracer('181.115.20.10');
-      } else if (toolName === 'phoneinfoga') {
-        printLine(`<span class="prompt"><span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path">${currentPath}</span>#</span> phoneinfoga scan +59171500111`);
-        runPhoneInfoga('+59171500111');
-      } else if (toolName === 'john') {
-        printLine(`<span class="prompt"><span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path">${currentPath}</span>#</span> john hash_cetal.txt`);
-        runRipiaJohn('hash_cetal.txt');
-      }
+    function printToTerminal(htmlContent) {
+        historyOutput.innerHTML += `<div class="output-line">${htmlContent}</div>`;
+        terminalBody.scrollTop = terminalBody.scrollHeight;
     }
 
-    function runMrHolmes(query) {
-      printLine(`<span style="color:var(--text-yellow)">[*] Inicializando Mr. Holmes OSINT v2.5 (Buscando en base de datos Docentes & Estudiantes CETAL)...</span>`);
-      setTimeout(() => {
-        let results = studentOsintDb;
-        if (query) {
-          results = studentOsintDb.filter(s => 
-            s.name.includes(query) || 
-            s.fullname.toLowerCase().includes(query) || 
-            s.phone.includes(query) ||
-            s.role.toLowerCase().includes(query)
-          );
+    function simulateProgressiveOutput(lines, delayPerLine, onComplete) {
+        let index = 0;
+        function nextLine() {
+            if (index < lines.length) {
+                printToTerminal(lines[index]);
+                index++;
+                setTimeout(nextLine, delayPerLine);
+            } else {
+                if (onComplete) onComplete();
+            }
+        }
+        nextLine();
+    }
+
+    function startMatrix() {
+        const matrixScreen = document.getElementById("matrix-screen");
+        const matrixContent = document.getElementById("matrixContent");
+        matrixScreen.style.display = "block";
+        let chars = "0101010101ABCDEF-CETAL-OSINT-SECURITY-ROOT-SYS";
+        matrixInterval = setInterval(() => {
+            let text = "";
+            for (let i = 0; i < 400; i++) {
+                text += chars.charAt(Math.floor(Math.random() * chars.length));
+                if (i % 40 === 0) text += "\n";
+            }
+            matrixContent.textContent = text;
+        }, 60);
+    }
+
+    function stopMatrix() {
+        clearInterval(matrixInterval);
+        document.getElementById("matrix-screen").style.display = "none";
+    }
+
+    function processCommand(input) {
+        printToTerminal(`<span class="prompt-text">root@cetal-sec:</span><span class="path-text">/${currentPathArray.join('/')}</span><span class="prompt-text">#</span> ${input}`);
+        
+        let cleanInput = input.trim();
+        let args = cleanInput.split(" ");
+        let cmd = args[0];
+        let target = args[1];
+
+        let currentDir = getDirByPath(currentPathArray);
+
+        if (cmd === "sudo" && args[1] === "pkg" && args[2] === "update") {
+            let updateSteps = [
+                "Ign:1 http://kali.download/kali triton InRelease",
+                "Hit:2 http://kali.download/kali triton Release",
+                "<span class=\"warning\">Err:3 http://security.kali.org triton-security/main amd64 Packages</span>",
+                "  <span class=\"error\">404  Not Found [IP: 192.168.1.1 80]</span>",
+                "Get:4 http://kali.download/kali triton/main amd64 Packages [18.2 MB]",
+                "Fetched 18.3 MB in 12s (1,530 kB/s)",
+                "Reading package lists... Done",
+                "<span class=\"error\">[ ✗ ] Advertencia: Se detectaron errores 'bad' en repositorios.</span>"
+            ];
+            simulateProgressiveOutput(updateSteps, 1600);
+            return;
         }
 
-        if (results.length === 0) {
-          printLine(`<span style="color:var(--text-red)">[-] No se encontraron registros coincidentes para: '${query}'</span>`);
-        } else {
-          results.forEach(student => {
-            printLine(`<div style="background:#04070d; border:1px solid #1b283b; padding:8px; border-radius:4px; margin-top:5px;">
-              <span style="color:var(--text-cyan); font-weight:bold;">[+] TARGET ENCONTRADO:</span> ${student.fullname}<br>
-              <span style="color:var(--text-green);">📱 Teléfono:</span> ${student.phone} ${student.flag}<br>
-              <span style="color:var(--text-yellow);">🆔 Registro:</span> ${student.reg}<br>
-              <span style="color:var(--text-muted);">📌 Rol/Perfil:</span> ${student.role}
-            </div>`);
-          });
+        if (cmd === "sudo" && args[1] === "pkg" && args[2] === "upgrade" && args[3] === "-y") {
+            let upgradeSteps = [
+                "Reading package lists... Done",
+                "<span class=\"success\">[ OK ] Sincronizando claves GPG y reparando repositorios...</span>",
+                "Calculating upgrade... Done",
+                "<span class=\"success\">[ ✓ ] sudo pkg upgrade -y completado. Sistema 100% actualizado.</span>"
+            ];
+            simulateProgressiveOutput(upgradeSteps, 1200);
+            return;
         }
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-      }, 500);
+
+        switch(cmd) {
+            case "help":
+                printToTerminal(`Comandos disponibles:
+  <span class="warning">ls</span>                      - Lista archivos y carpetas
+  <span class="warning">cd [dir]</span>                - Cambia de directorio
+  <span class="warning">pwd</span>                     - Muestra la ruta actual
+  <span class="warning">cat [arq]</span>               - Muestra contenido de archivo
+  <span class="warning">matrix</span>                  - Lanza efectos visuales hacker
+  <span class="warning">clear</span>                   - Limpia la pantalla`);
+                break;
+
+            case "pwd":
+                printToTerminal("/" + currentPathArray.join("/"));
+                break;
+
+            case "whoami":
+                printToTerminal("root");
+                break;
+
+            case "uname":
+                printToTerminal("Linux cetal-sec 6.1.0-kali9-amd64 #1 SMP PREEMPT_DYNAMIC Kali x86_64");
+                break;
+
+            case "matrix":
+                startMatrix();
+                printToTerminal("<span class=\"success\">Modo Matrix lanzado en pantalla completa. Haz clic para salir.</span>");
+                break;
+
+            case "ls":
+                if (!currentDir) {
+                    printToTerminal("Error al leer el directorio.");
+                    break;
+                }
+                let keys = Object.keys(currentDir);
+                let formattedKeys = keys.map(k => {
+                    if (currentDir[k].type === "dir") {
+                        return `<span class="dir">${k}/</span>`;
+                    } else {
+                        return `<span class="file">${k}</span>`;
+                    }
+                }).join("   ");
+                printToTerminal(formattedKeys || "(Directorio vacío)");
+                break;
+
+            case "clear":
+                historyOutput.innerHTML = "";
+                break;
+
+            default:
+                printToTerminal(`Comando no reconocido: ${cmd}. Escribe <span class="warning">help</span> para obtener ayuda.`);
+        }
     }
 
-    function runIpTracer(ip) {
-      printLine(`<span style="color:var(--text-yellow)">[*] IP-Tracer: Consultando bases de datos de geolocalización para ${ip}...</span>`);
-      setTimeout(() => {
-        printLine(`<div style="background:#04070d; border:1px solid #1b283b; padding:8px; border-radius:4px; margin-top:5px;">
-          <span style="color:var(--text-cyan); font-weight:bold;">[+] IP Analizada:</span> ${ip}<br>
-          <span style="color:var(--text-green);">🌍 País:</span> Bolivia 🇧🇴<br>
-          <span style="color:var(--text-yellow);">🏙️ Ciudad:</span> La Paz<br>
-          <span style="color:var(--text-muted);">🏢 ISP:</span> Entel / AXS Bolivia
-        </div>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-      }, 500);
-    }
+    updatePromptDisplay();
+</script>
 
-    function runPhoneInfoga(phone) {
-      printLine(`<span style="color:var(--text-yellow)">[*] PhoneInfoga: Recopilando información de huella digital para ${phone}...</span>`);
-      setTimeout(() => {
-        let match = studentOsintDb.find(s => s.phone.includes(phone));
-        let ownerInfo = match ? `${match.fullname} (${match.role})` : "Sujeto no listado / Activo en red";
-        printLine(`<div style="background:#04070d; border:1px solid #1b283b; padding:8px; border-radius:4px; margin-top:5px;">
-          <span style="color:var(--text-cyan); font-weight:bold;">[+] Número:</span> ${phone} 🇧🇴<br>
-          <span style="color:var(--text-green);">👤 Titular / Registro:</span> ${ownerInfo}<br>
-          <span style="color:var(--text-yellow);">📋 Formato internacional válido:</span> Sí (+591)<br>
-          <span style="color:var(--text-muted);">🔍 Estado en base CETAL:</span> Verificado
-        </div>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-      }, 500);
-    }
-
-    function runRipiaJohn(target) {
-      printLine(`<span style="color:var(--text-yellow)">[*] John the Ripper (Ripiajhon) - Cargando diccionario académico...</span>`);
-      setTimeout(() => {
-        printLine(`<span style="color:var(--text-muted)">[+] 1 hash cargado de ${target} (Format: bcrypt / md5crypt)</span>`);
-        printLine(`<span style="color:var(--text-green)">[+] ¡Contraseña descifrada con éxito!: <b style="color:var(--text-cyan)">cetal2026_secure</b></span>`);
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-      }, 600);
-    }
-
-    function runNetHunterExtract() {
-      printLine(`<span style="color:var(--text-yellow)">[*] Descomprimiendo Kali NetHunter rootfs (arm64)...</span>`);
-      let steps = [
-        "[ 10% ] Leyendo bloques tar.xz del archivo comprimido...",
-        "[ 45% ] Extrayendo binarios de seguridad y dependencias chroot...",
-        "[ 80% ] Configurando permisos de superusuario y servicios root...",
-        "[ 100% ] Extracción finalizada con éxito."
-      ];
-      let delay = 300;
-      steps.forEach((st, idx) => {
-        setTimeout(() => {
-          printLine(`<span style="color:var(--text-muted)">${st}</span>`);
-          outputDiv.scrollTop = outputDiv.scrollHeight;
-          if (idx === steps.length - 1) {
-            setTimeout(() => {
-              printLine(`<span style="color:var(--text-yellow); font-weight:bold;">[?] Ingrese contraseña de seguridad para montar NetHunter rootfs:</span>`);
-              awaitingNethunterPassword = true;
-              outputDiv.scrollTop = outputDiv.scrollHeight;
-            }, 400);
-          }
-        }, delay * (idx + 1));
-      });
-    }
-
-    function executeCdFromPrompt(folderName) {
-      currentPath += "/" + folderName;
-      pathDisplay.innerText = currentPath;
-      printLine(`<span class="prompt"><span class="prompt-user">root</span>@<span class="prompt-host">cetal-sec</span>:<span class="prompt-path">${currentPath}</span>#</span> cd ${folderName}`);
-    }
-
-    function printLine(html) {
-      const div = document.createElement('div');
-      div.innerHTML = html;
-      outputDiv.insertBefore(div, document.querySelector('.input-line'));
-      outputDiv.scrollTop = outputDiv.scrollHeight;
-    }
-  </script>
 </body>
 </html>

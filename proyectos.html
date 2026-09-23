@@ -1,997 +1,849 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Proyectos & Ciberseguridad | Sistemas CETAL</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     :root {
-      --bg-dark: #0d1117;
-      --card-bg: #161b22;
-      --border-color: #30363d;
-      --text-main: #c9d1d9;
-      --text-muted: #8b949e;
-      --cyan-neon: #00f2fe;
-      --blue-accent: #58a6ff;
-      --green-success: #3fb950;
-      --amber-warning: #d29922;
+      --bg-main: #030712;
+      --bg-sidebar: #070d19;
+      --card-bg: #09101d;
+      --card-hover: #0e172a;
+      --border-color: #1e293b;
+      --primary: #00f2fe;
+      --accent: #3fb950;
+      --accent-gold: #ffb700;
+      --accent-purple: #b537f2;
+      --accent-orange: #ff7b00;
       --red-alert: #f85149;
-      --purple-accent: #a371f7;
+      --text-main: #f0f6fc;
+      --text-muted: #64748b;
+      --shadow: 0 10px 30px -10px rgba(0,0,0,0.9);
+      --font-mono: 'Courier New', Courier, monospace;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    [data-theme="light"] {
+      --bg-main: #cbd5e1;
+      --bg-sidebar: #94a3b8;
+      --card-bg: #f1f5f9;
+      --card-hover: #ffffff;
+      --border-color: #64748b;
+      --primary: #0284c7;
+      --accent: #15803d;
+      --accent-gold: #b45309;
+      --accent-purple: #7e22ce;
+      --accent-orange: #c2410c;
+      --red-alert: #dc2626;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
     }
 
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      padding: 20px;
-      line-height: 1.6;
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+    
+    html, body { 
+      background-color: var(--bg-main); color: var(--text-main); font-family: var(--font-sans);
+      min-height: 100vh; width: 100%; overflow-x: hidden;
     }
 
-    header {
-      text-align: center;
-      padding: 20px 0 30px;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 30px;
-    }
+    body { display: flex; flex-direction: column; }
 
-    header h1 {
-      color: var(--blue-accent);
-      font-size: 2.2rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-shadow: 0 0 12px rgba(88, 166, 255, 0.4);
+    /* BARRA LATERAL EXACTA */
+    aside {
+      width: 280px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; height: 100vh; position: fixed; top: 0; left: 0;
+      overflow-y: auto; scrollbar-width: none; box-shadow: 5px 0 20px rgba(0,0,0,0.15); 
+      transition: width 0.3s ease, transform 0.3s ease; z-index: 1001;
     }
+    aside::-webkit-scrollbar { display: none; }
+    aside.collapsed { width: 0px; transform: translateX(-280px); overflow: hidden; }
 
-    header p {
-      color: var(--text-muted);
-      margin-top: 8px;
-      font-size: 1rem;
+    .toggle-sidebar-btn {
+      position: fixed; left: 250px; top: 12px; z-index: 1005;
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
+      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.2); transition: left 0.3s ease, transform 0.2s;
     }
+    .toggle-sidebar-btn:hover { transform: scale(1.1); background: var(--card-hover); }
+    body.menu-hidden .toggle-sidebar-btn { left: 15px; }
+
+    .sidebar-user { padding: 20px 16px; border-bottom: 1px solid var(--border-color); background: rgba(255,183,0,0.02); display: flex; align-items: center; gap: 14px; }
+    .user-avatar-img {
+      width: 52px; height: 52px; object-fit: cover; border-radius: 50%;
+      border: 2px solid var(--accent-gold); box-shadow: 0 0 14px rgba(255,183,0,0.3);
+      background: rgba(255,183,0,0.1); flex-shrink: 0;
+    }
+    .user-info .name { font-size: 0.9rem; font-weight: bold; color: var(--text-main); font-family: var(--font-mono); }
+    .user-info .role { font-size: 0.72rem; color: var(--accent); font-family: var(--font-mono); }
+
+    .nav-group { padding: 14px 16px; border-bottom: 1px solid rgba(30,41,59,0.15); }
+    .nav-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--font-mono); font-weight: 700; }
+    
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-muted);
+      text-decoration: none; font-size: 0.85rem; border-radius: 6px; transition: all 0.2s; cursor: pointer; font-weight: 600;
+    }
+    .nav-item:hover { background-color: var(--card-hover); color: var(--text-main); }
+    .nav-item.active { background-color: var(--card-hover); color: var(--text-main); font-weight: 700; }
+    .nav-item.c-cyan.active { color: var(--primary); }
+    .nav-item.c-green.active { color: var(--accent); }
+    .nav-item.c-yellow.active { color: var(--accent-gold); }
+    .nav-item.c-purple.active { color: var(--accent-purple); }
+    .nav-item.c-orange.active { color: var(--accent-orange); }
+
+    .cyber-node { background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 6px; padding: 10px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
+    .cyber-node span { color: var(--accent); }
+
+    /* CONTENIDO PRINCIPAL */
+    main { 
+      margin-left: 280px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 280px);
+      transition: margin-left 0.3s ease, width 0.3s ease;
+    }
+    body.menu-hidden main { margin-left: 0; width: 100%; }
+
+    header-top {
+      background-color: var(--bg-sidebar); border-bottom: 1px solid var(--border-color); padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 10px;
+    }
+    .topbar-left { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-left: 35px; }
+    .topbar-right-widgets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    /* TICKER DE ALERTAS EN TIEMPO REAL (IDEA 5) */
+    .live-ticker-bar {
+      background: rgba(0, 242, 254, 0.05); border-bottom: 1px solid var(--border-color);
+      padding: 6px 20px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--primary);
+      display: flex; align-items: center; gap: 10px; overflow: hidden; white-space: nowrap;
+    }
+    .ticker-tag { background: var(--primary); color: #030712; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.68rem; }
+    .ticker-text { animation: marquee 25s linear infinite; display: inline-block; }
+
+    /* RELOJ DE CAJAS */
+    .flip-clock { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); }
+    .flip-group { display: flex; align-items: center; gap: 2px; }
+    .flip-card {
+      background: var(--card-bg); border: 1px solid var(--primary); border-radius: 4px; width: 24px; height: 30px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 800; color: var(--text-main);
+      box-shadow: 0 0 6px rgba(0,242,254,0.2);
+    }
+    .flip-colon { color: var(--primary); font-weight: bold; font-size: 0.85rem; }
+    
+    .theme-toggle-btn {
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
+      padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold;
+    }
+    .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.05); }
 
     .music-btn {
-      background: var(--cyan-neon);
-      color: #0d1117;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 15px;
-      transition: all 0.3s ease;
+      background: var(--primary); color: #030712; border: none; padding: 7px 16px; font-weight: 800; border-radius: 20px;
+      cursor: pointer; font-size: 0.85rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;
+      box-shadow: 0 0 15px rgba(0,242,254,0.2);
     }
+    .music-btn:hover { opacity: 0.9; transform: scale(1.03); }
 
-    .music-btn:hover {
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; box-sizing: border-box; flex: 1; }
 
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-    }
+    header { text-align: center; padding: 10px 0 20px; margin-bottom: 25px; }
+    header h1 { color: var(--text-main); font-size: 1.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+    header p { color: var(--text-muted); margin-top: 6px; font-size: 0.95rem; font-weight: 600; }
 
-    nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      transition: all 0.3s ease;
-    }
-
-    nav a:hover, nav a.active {
-      color: var(--cyan-neon);
-      border-color: var(--cyan-neon);
-      background: rgba(0, 242, 254, 0.05);
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* METRICAS Y RESUMEN */
+    /* DASHBOARD MÉTRICAS */
     .dashboard-metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px;
     }
-
     .metric-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+      padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow);
     }
+    .metric-info h4 { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-family: var(--font-mono); font-weight: 800; }
+    .metric-info .number { font-size: 1.8rem; font-weight: 900; color: var(--text-main); margin-top: 2px; font-family: var(--font-mono); }
 
-    .metric-info h4 {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
+    /* MAPA DE ACTIVIDAD ESTILO GITHUB (IDEA 2) */
+    .github-activity-box {
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+      padding: 20px; margin-bottom: 25px; box-shadow: var(--shadow);
     }
+    .github-activity-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .github-activity-header h4 { font-size: 0.85rem; font-family: var(--font-mono); color: var(--primary); font-weight: 800; }
+    .activity-grid { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 5px; }
+    .activity-col { display: flex; flex-direction: column; gap: 4px; }
+    .activity-cell { width: 12px; height: 12px; border-radius: 2px; background: var(--bg-main); border: 1px solid rgba(255,255,255,0.03); }
+    .activity-cell.lvl-1 { background: #0e4429; }
+    .activity-cell.lvl-2 { background: #006d32; }
+    .activity-cell.lvl-3 { background: #26a641; }
+    .activity-cell.lvl-4 { background: #39d353; box-shadow: 0 0 6px rgba(57,211,83,0.4); }
 
-    .metric-info .number {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #ffffff;
-      margin-top: 2px;
-    }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      color: var(--green-success);
-    }
-
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      background-color: var(--green-success);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--green-success);
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.2); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    /* FILTROS Y BUSQUEDA */
+    /* CONTROLES: FILTROS Y CHULETA DE COMANDOS (IDEAS 3 y 4) */
     .controls-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-      background: var(--card-bg);
-      padding: 15px 20px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
+      display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center;
+      margin-bottom: 15px; background: var(--card-bg); padding: 15px 20px; border-radius: 12px;
+      border: 1px solid var(--border-color); box-shadow: var(--shadow);
     }
-
-    .search-box {
-      flex: 1;
-      min-width: 250px;
-    }
-
+    .search-box { flex: 1; min-width: 250px; }
     .search-box input {
-      width: 100%;
-      background: var(--bg-dark);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 10px 15px;
-      border-radius: 6px;
-      outline: none;
-      transition: border-color 0.3s ease;
+      width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main);
+      padding: 10px 15px; border-radius: 8px; outline: none; font-family: var(--font-mono); font-size: 0.85rem;
     }
+    .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,242,254,0.2); }
 
-    .search-box input:focus {
-      border-color: var(--cyan-neon);
+    /* PILLS DE TECNOLOGÍAS AVANZADAS (IDEA 3) */
+    .tech-pills-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; background: var(--card-bg);
+      padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-color); align-items: center;
     }
+    .pill-label { font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted); font-weight: 800; margin-right: 5px; }
+    .tech-pill {
+      background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-muted);
+      padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+      font-family: var(--font-mono); transition: 0.2s;
+    }
+    .tech-pill.active, .tech-pill:hover { background: var(--primary); color: #030712; border-color: var(--primary); box-shadow: 0 0 10px rgba(0,242,254,0.3); }
 
-    .filter-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    /* CHULETA RÁPIDA DE SNIPPETS (IDEA 4) */
+    .snippets-drawer {
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+      padding: 15px 20px; margin-bottom: 30px; box-shadow: var(--shadow);
     }
-
-    .filter-btn {
-      background: var(--bg-dark);
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
+    .snippets-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .snippets-header h4 { font-size: 0.85rem; font-family: var(--font-mono); color: var(--accent-gold); font-weight: 800; }
+    .snippets-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 15px; }
+    .snippet-item {
+      background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
     }
-
-    .filter-btn.active, .filter-btn:hover {
-      background: rgba(88, 166, 255, 0.1);
-      color: var(--blue-accent);
-      border-color: var(--blue-accent);
+    .snippet-info code { color: var(--accent); font-size: 0.78rem; font-family: var(--font-mono); display: block; margin-top: 2px; }
+    .snippet-info span { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; }
+    .copy-snippet-btn {
+      background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 5px 8px;
+      border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: bold; transition: 0.2s; flex-shrink: 0;
     }
+    .copy-snippet-btn:hover { background: var(--accent-gold); color: #030712; border-color: var(--accent-gold); }
 
     .section-title {
-      color: var(--blue-accent);
-      font-size: 1.6rem;
-      margin: 35px 0 20px;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      border-left: 4px solid var(--cyan-neon);
-      padding-left: 12px;
+      color: var(--text-main); font-size: 1.3rem; margin: 35px 0 20px; text-transform: uppercase;
+      letter-spacing: 1.2px; border-left: 4px solid var(--primary); padding-left: 12px; font-weight: 800;
     }
 
     /* TARJETAS DE PROYECTOS */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-      gap: 20px;
-    }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; }
 
     .project-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+      padding: 22px; display: flex; flex-direction: column; justify-content: space-between;
       transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden; box-shadow: var(--shadow);
     }
-
-    .project-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--cyan-neon);
-      box-shadow: 0 8px 25px rgba(0, 242, 254, 0.15);
-    }
-
+    .project-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 12px 30px rgba(0, 242, 254, 0.15); }
     .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--cyan-neon), var(--green-success));
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
     }
 
     .status-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      padding: 4px 10px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      position: absolute; top: 15px; right: 15px; font-size: 0.7rem; font-weight: 800;
+      padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 5px; font-family: var(--font-mono);
     }
+    .status-badge.completed { background: rgba(63, 185, 80, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+    .status-badge.in-progress { background: rgba(255, 183, 0, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
 
-    .status-badge.completed {
-      background: rgba(35, 134, 54, 0.2);
-      color: var(--green-success);
-      border: 1px solid var(--green-success);
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .spin-icon { display: inline-block; animation: spin 2s linear infinite; }
 
-    .status-badge.in-progress {
-      background: rgba(210, 153, 34, 0.2);
-      color: var(--amber-warning);
-      border: 1px solid var(--amber-warning);
-    }
+    .project-title { color: var(--text-main); font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; padding-right: 90px; }
+    .project-author { font-size: 0.78rem; color: var(--accent); font-family: var(--font-mono); margin-bottom: 12px; font-weight: 700; }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .spin-icon {
-      display: inline-block;
-      animation: spin 2s linear infinite;
-    }
-
-    .project-title {
-      color: var(--blue-accent);
-      font-size: 1.25rem;
-      margin-bottom: 4px;
-      padding-right: 90px;
-    }
-
-    .project-author {
-      font-size: 0.8rem;
-      color: var(--green-success);
-      font-family: monospace;
-      margin-bottom: 12px;
-    }
-
-    .badges-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 15px;
-    }
-
-    .badge {
-      font-size: 0.7rem;
-      font-weight: bold;
-      padding: 3px 8px;
-      border-radius: 10px;
-      color: #0d1117;
-      text-transform: uppercase;
-    }
-
-    .badge-bash { background-color: var(--green-success); }
-    .badge-rclone { background-color: var(--cyan-neon); }
-    .badge-crypto { background-color: var(--amber-warning); }
+    .badges-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
+    .badge { font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 8px; color: #030712; text-transform: uppercase; font-family: var(--font-mono); }
+    .badge-bash { background-color: var(--accent); }
+    .badge-rclone { background-color: var(--primary); }
+    .badge-crypto { background-color: var(--accent-gold); }
     .badge-clam { background-color: var(--red-alert); }
-    .badge-win { background-color: var(--purple-accent); }
-    .badge-web { background-color: #f0883e; }
-    .badge-sec { background-color: #ff7b72; }
+    .badge-win { background-color: var(--accent-purple); }
+    .badge-web { background-color: var(--accent-orange); }
 
-    .project-desc {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-bottom: 15px;
-      flex-grow: 1;
+    .project-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.45; margin-bottom: 15px; flex-grow: 1; font-weight: 600; }
+
+    .tech-specs { background: var(--bg-main); border-radius: 8px; padding: 10px 12px; margin-bottom: 15px; font-size: 0.78rem; border: 1px solid var(--border-color); }
+    .tech-specs div { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .tech-specs div:last-child { margin-bottom: 0; }
+    .tech-specs span.label { color: var(--text-muted); font-weight: 600; }
+    .tech-specs span.val { color: var(--text-main); font-family: var(--font-mono); font-weight: 700; }
+
+    .progress-container { margin-bottom: 15px; }
+    .progress-header { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--accent-gold); margin-bottom: 4px; font-weight: 800; font-family: var(--font-mono); }
+    .progress-bar-bg { background: var(--bg-main); height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border-color); }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-gold), var(--primary)); border-radius: 4px; }
+
+    /* SISTEMA DE VOTACIÓN Y CALIFICACIÓN POR ESTRELLAS (IDEA 6) */
+    .rating-box {
+      background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px;
+      padding: 10px 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
     }
+    .stars-container { display: flex; gap: 3px; cursor: pointer; }
+    .star { font-size: 1.1rem; color: var(--text-muted); transition: 0.15s; }
+    .star.rated, .star:hover, .star ~ .star:hover { color: var(--accent-gold); }
+    .rating-stats { font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-muted); font-weight: 700; text-align: right; }
+    .rating-stats span { color: var(--accent-gold); font-weight: 800; }
 
-    /* FICHA TECNICA */
-    .tech-specs {
-      background: var(--bg-dark);
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-bottom: 15px;
-      font-size: 0.8rem;
-      border: 1px solid #21262d;
-    }
-
-    .tech-specs div {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 3px;
-    }
-
-    .tech-specs div:last-child {
-      margin-bottom: 0;
-    }
-
-    .tech-specs span.label {
-      color: var(--text-muted);
-    }
-
-    .tech-specs span.val {
-      color: var(--text-main);
-      font-family: monospace;
-    }
-
-    /* BARRA DE PROGRESO */
-    .progress-container {
-      margin-bottom: 15px;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--amber-warning);
-      margin-bottom: 4px;
-      font-weight: bold;
-    }
-
-    .progress-bar-bg {
-      background: var(--bg-dark);
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--amber-warning), var(--cyan-neon));
-      border-radius: 4px;
-    }
-
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
+    .btn-group { display: flex; flex-direction: column; gap: 8px; }
     .download-btn, .action-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: transparent;
-      color: var(--cyan-neon);
-      border: 1px solid var(--cyan-neon);
-      padding: 9px 15px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 0.85rem;
-      transition: all 0.3s ease;
-      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: transparent;
+      color: var(--primary); border: 1px solid var(--primary); padding: 9px 15px; border-radius: 8px;
+      text-decoration: none; font-weight: 800; font-size: 0.82rem; transition: all 0.3s ease; cursor: pointer; font-family: var(--font-mono);
     }
+    .download-btn:hover, .action-btn:hover { background: var(--primary); color: var(--bg-main); box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
+    .download-btn.secondary { color: var(--accent); border-color: var(--accent); }
+    .download-btn.secondary:hover { background: var(--accent); color: #ffffff; box-shadow: 0 0 15px rgba(63, 185, 80, 0.4); }
+    .download-btn.disabled { color: var(--text-muted); border-color: var(--border-color); cursor: not-allowed; pointer-events: none; background: rgba(100,116,139,0.05); }
 
-    .download-btn:hover, .action-btn:hover {
-      background: var(--cyan-neon);
-      color: var(--bg-dark);
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-    }
-
-    .download-btn.secondary {
-      color: var(--green-success);
-      border-color: var(--green-success);
-    }
-
-    .download-btn.secondary:hover {
-      background: var(--green-success);
-      color: #ffffff;
-      box-shadow: 0 0 15px rgba(35, 134, 54, 0.4);
-    }
-
-    .download-btn.disabled {
-      color: #484f58;
-      border-color: var(--border-color);
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    /* SECCION DE CIBERSEGURIDAD */
+    /* SECCIÓN DE CIBERSEGURIDAD */
     .sec-container {
-      background: var(--card-bg);
-      border: 1px solid var(--red-alert);
-      border-radius: 10px;
-      padding: 25px;
-      margin-top: 40px;
-      position: relative;
+      background: var(--card-bg); border: 1px solid var(--red-alert); border-radius: 12px;
+      padding: 25px; margin-top: 40px; position: relative; box-shadow: var(--shadow);
     }
+    .sec-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--red-alert); }
+    .sec-title { color: var(--red-alert); font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .sec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+    .sec-card { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; }
+    .sec-card h4 { color: var(--accent-gold); margin-bottom: 8px; font-size: 1rem; font-weight: 800; }
+    .sec-card ul { padding-left: 18px; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+    .sec-card ul li { margin-bottom: 6px; }
 
-    .sec-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: var(--red-alert);
-    }
-
-    .sec-title {
-      color: var(--red-alert);
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sec-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .sec-card {
-      background: var(--bg-dark);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 18px;
-    }
-
-    .sec-card h4 {
-      color: var(--amber-warning);
-      margin-bottom: 8px;
-      font-size: 1.1rem;
-    }
-
-    .sec-card ul {
-      padding-left: 20px;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-    }
-
-    .sec-card ul li {
-      margin-bottom: 6px;
-    }
-
-    /* MODAL DE VISTA PREVIA DE CÓDIGO */
+    /* MODAL */
     .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      padding: 20px;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85);
+      display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(4px);
     }
-
     .modal-content {
-      background: var(--card-bg);
-      border: 1px solid var(--cyan-neon);
-      border-radius: 10px;
-      max-width: 800px;
-      width: 100%;
-      max-height: 85vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 30px rgba(0, 242, 254, 0.25);
+      background: var(--card-bg); border: 1px solid var(--primary); border-radius: 12px;
+      max-width: 800px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 0 35px rgba(0, 242, 254, 0.25);
     }
-
-    .modal-header {
-      padding: 15px 20px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-header h3 {
-      color: var(--cyan-neon);
-      font-size: 1.1rem;
-      font-family: monospace;
-    }
-
-    .close-modal {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .close-modal:hover {
-      color: var(--red-alert);
-    }
-
-    .modal-body {
-      padding: 20px;
-      overflow-y: auto;
-      flex-grow: 1;
-    }
-
+    .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { color: var(--primary); font-size: 1rem; font-family: var(--font-mono); font-weight: 800; }
+    .close-modal { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+    .close-modal:hover { color: var(--red-alert); }
+    .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
     pre code {
-      font-family: 'Consolas', 'Courier New', monospace;
-      color: #3fb950;
-      background: var(--bg-dark);
-      display: block;
-      padding: 15px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      white-space: pre-wrap;
-      word-break: break-all;
-      border: 1px solid var(--border-color);
+      font-family: 'Consolas', 'Courier New', monospace; color: var(--accent); background: var(--bg-main);
+      display: block; padding: 15px; border-radius: 8px; font-size: 0.82rem; white-space: pre-wrap; word-break: break-all; border: 1px solid var(--border-color);
     }
-
-    .modal-footer {
-      padding: 15px 20px;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
+    .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; }
 
     footer {
-      text-align: center;
-      margin-top: 50px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border-color);
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      text-align: center; padding: 20px; border-top: 1px solid var(--border-color); color: var(--text-muted);
+      font-size: 0.82rem; font-weight: 700; background: var(--bg-sidebar); font-family: var(--font-mono); margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      aside { transform: translateX(-280px); }
+      aside.mobile-open { transform: translateX(0); width: 280px; }
+      main { margin-left: 0; width: 100%; }
+      .toggle-sidebar-btn { left: 15px !important; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Proyectos & Despliegues Técnicos</h1>
-    <p>Repositorio de scripts de automatización, optimización y laboratorio de ciberseguridad</p>
-    <div>
-      <button id="btn-toggle-music" class="music-btn">🎵 Reproducir / Pausar Música</button>
-      <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
-    </div>
-  </header>
+  <button class="toggle-sidebar-btn" id="toggleMenuBtn" title="Ocultar / Mostrar Menú">≡</button>
 
-  <nav>
-    <a href="index.html">Inicio</a>
-    <a href="anuario.html">Anuario</a>
-    <a href="actividades.html">Bitácora</a>
-    <a href="proyectos.html" class="active">Proyectos</a>
-    <a href="recursos.html">Recursos</a>
-  </nav>
-
-  <main class="container">
-
-    <!-- RESUMEN DE METRICAS DEL DASHBOARD -->
-    <div class="dashboard-metrics">
-      <div class="metric-card">
-        <div class="metric-info">
-          <h4>Total Proyectos</h4>
-          <div class="number" id="count-total">8</div>
-        </div>
-        <span style="font-size: 2rem;">📦</span>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-info">
-          <h4>Completados</h4>
-          <div class="number" id="count-completed" style="color: var(--green-success);">4</div>
-        </div>
-        <span style="font-size: 2rem;">✔</span>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-info">
-          <h4>En Desarrollo</h4>
-          <div class="number" id="count-progress" style="color: var(--amber-warning);">4</div>
-        </div>
-        <span style="font-size: 2rem;">⚙</span>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-info">
-          <h4>Estado Repositorio</h4>
-          <div class="status-indicator">
-            <div class="pulse-dot"></div> Operativo
-          </div>
-        </div>
-        <span style="font-size: 2rem;">🛡️</span>
+  <!-- BARRA LATERAL -->
+  <aside id="sidebar">
+    <div class="sidebar-user">
+      <img src="assets/logo.png" alt="CETAL Logo" class="user-avatar-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'45\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23ffb700\'/><text x=\'50%\' y=\'55%\' font-size=\'14\' fill=\'%23000\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-weight=\'bold\'>CETAL</text></svg>'">
+      <div class="user-info">
+        <div class="name">CETAL Noche</div>
+        <div class="role">Sistemas Informáticos</div>
       </div>
     </div>
 
-    <!-- CONTROLES: FILTROS Y BUSQUEDA -->
-    <div class="controls-bar">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="🔍 Buscar proyecto, tecnología o comando (ej: Rclone, RAM, IP)..." onkeyup="filterProjects()">
+    <div class="nav-group">
+      <div class="nav-title">Navegación Oficial</div>
+      <a href="index.html" class="nav-item c-cyan">⚡ Inicio</a>
+      <a href="anuario.html" class="nav-item c-green">👥 Anuario</a>
+      <a href="actividades.html" class="nav-item c-yellow">📋 Bitácora</a>
+      <a href="proyectos.html" class="nav-item c-purple active">🚀 Proyectos</a>
+      <a href="recursos.html" class="nav-item c-orange">🛠️ Recursos</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-title">Estado del Sistema</div>
+      <div class="cyber-node">
+        <div>CORE: <span>ONLINE</span></div>
+        <div>NODE: <span>LA PAZ - BO</span></div>
+        <div>SEC_LVL: <span>ALPHA-1</span></div>
       </div>
-      <div class="filter-group">
-        <button class="filter-btn active" onclick="setFilter('all', this)">Todos</button>
-        <button class="filter-btn" onclick="setFilter('completed', this)">✔ Listos</button>
-        <button class="filter-btn" onclick="setFilter('in-progress', this)">⚙ En Proceso</button>
-        <button class="filter-btn" onclick="setFilter('sec', this)">🛡️ Seguridad</button>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="main-content">
+    
+    <!-- TOP MONITOR BAR -->
+    <header-top>
+      <div class="topbar-left">
+        <span>// REPOSITORIO_OFICIAL_CETAL_2026</span>
+      </div>
+      <div class="topbar-right-widgets">
+        <div class="flip-clock">
+          <div class="flip-group"><div class="flip-card" id="f-h1">0</div><div class="flip-card" id="f-h2">0</div></div>
+          <span class="flip-colon">:</span>
+          <div class="flip-group"><div class="flip-card" id="f-m1">0</div><div class="flip-card" id="f-m2">0</div></div>
+          <span class="flip-colon">:</span>
+          <div class="flip-group"><div class="flip-card" id="f-s1">0</div><div class="flip-card" id="f-s2">0</div></div>
+        </div>
+
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Modo Diurno / Nocturno">🌙</button>
+        <button id="btn-toggle-music" class="music-btn">🎵 Música</button>
+        <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
+      </div>
+    </header-top>
+
+    <!-- TICKER DE ALERTAS EN TIEMPO REAL (IDEA 5) -->
+    <div class="live-ticker-bar">
+      <span class="ticker-tag">ALERTA LIVE</span>
+      <div style="overflow: hidden; width: 100%;">
+        <span class="ticker-text">🛡️ Sistemas de escaneo ClamAV activos en red local CETAL — 🚀 Nuevo sistema de votación global por estrellas habilitado — 💻 Sincronización automática Rclone en segundo plano OK.</span>
       </div>
     </div>
 
-    <h2 class="section-title">💻 Módulo de Scripts y Software</h2>
+    <div class="container">
 
-    <div class="projects-grid" id="projects-grid">
+      <header>
+        <h1>Proyectos & Despliegues Técnicos</h1>
+        <p>Repositorio interactivo, calificaciones comunitarias y laboratorio de ciberseguridad</p>
+      </header>
 
-      <!-- PROYECTO 1: BACKUP SYSTEM -->
-      <article class="project-card" data-status="in-progress" data-cat="sec">
-        <div class="status-badge in-progress"><span class="spin-icon">⚙</span> En Proceso</div>
-        <div>
-          <h3 class="project-title">Universal Backup System</h3>
-          <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
-          <div class="badges-container">
-            <span class="badge badge-bash">Bash Shell</span>
-            <span class="badge badge-rclone">Rclone CLI</span>
-            <span class="badge badge-crypto">Cifrado AES</span>
+      <!-- MÉTRICAS -->
+      <div class="dashboard-metrics">
+        <div class="metric-card">
+          <div class="metric-info">
+            <h4>Total Proyectos</h4>
+            <div class="number" id="count-total">8</div>
           </div>
-          <p class="project-desc">
-            Script automatizado para la sincronización segura, cifrado local y respaldo continuo a la nube de unidades portables USB y archivos críticos.
-          </p>
-          <div class="progress-container">
-            <div class="progress-header">
-              <span>Avance de Desarrollo</span>
-              <span>75%</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: 75%;"></div>
-            </div>
-          </div>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">Windows 10/11 + Rclone</span></div>
-            <div><span class="label">Ejecución:</span><span class="val">~ 15 segundos</span></div>
-            <div><span class="label">Comando:</span><span class="val">rclone sync --crypto</span></div>
-          </div>
+          <span style="font-size: 2rem;">📦</span>
         </div>
-        <div class="btn-group">
-          <a href="#" class="download-btn disabled">⏳ Próximamente Disponible</a>
-        </div>
-      </article>
-
-      <!-- PROYECTO 2: CLAMAV CLI -->
-      <article class="project-card" data-status="completed" data-cat="sec">
-        <div class="status-badge completed">✔ Listo</div>
-        <div>
-          <h3 class="project-title">Antivirus ClamAV CLI Portable</h3>
-          <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
-          <div class="badges-container">
-            <span class="badge badge-clam">ClamAV Core</span>
-            <span class="badge badge-win">CMD / Batch</span>
-            <span class="badge badge-rclone">Freshclam Sync</span>
+        <div class="metric-card">
+          <div class="metric-info">
+            <h4>Completados</h4>
+            <div class="number" id="count-completed" style="color: var(--accent);">4</div>
           </div>
-          <p class="project-desc">
-            Motor de seguridad de consola pura sin interfaz gráfica pesada. Utiliza el comando <code>freshclam</code> para descargar firmas víricas directamente de servidores de internet y escanear unidades portables.
-          </p>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">Sin instalación (Portable)</span></div>
-            <div><span class="label">Ejecución:</span><span class="val">Varía según disco</span></div>
-            <div><span class="label">Comando:</span><span class="val">clamscan.exe -r --bell</span></div>
-          </div>
+          <span style="font-size: 2rem;">✔</span>
         </div>
-        <div class="btn-group">
-          <a href="archivos/proyectos/ClamWinPortable.7z" class="download-btn" download="ClamWinPortable.7z">📦 Descargar Antivirus (.7z)</a>
-          <button class="action-btn" onclick="openCodeModal('ClamAV CLI Auto-Update Script', 'freshclam.exe --config-file=freshclam.conf\nclamscan.exe --database=database --infected --recursive --bell C:\\UnidadUSB\npause')">👁️ Ver Script</button>
-        </div>
-      </article>
-
-      <!-- PROYECTO 3: EVERYTHING SEARCH -->
-      <article class="project-card" data-status="completed" data-cat="tools">
-        <div class="status-badge completed">✔ Listo</div>
-        <div>
-          <h3 class="project-title">Buscador Indexado Everything</h3>
-          <div class="project-author">👨‍💻 Integrado por: Ivan Paz</div>
-          <div class="badges-container">
-            <span class="badge badge-rclone">NTFS Indexing</span>
-            <span class="badge badge-win">Ultra Light</span>
-            <span class="badge badge-bash">Instant Search</span>
+        <div class="metric-card">
+          <div class="metric-info">
+            <h4>En Desarrollo</h4>
+            <div class="number" id="count-progress" style="color: var(--accent-gold);">4</div>
           </div>
-          <p class="project-desc">
-            Herramienta portable e hiperliviana que sustituye al lento buscador de Windows. Indexa millones de archivos en segundos basándose en la tabla de archivos NTFS.
-          </p>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">Sistemas NTFS</span></div>
-            <div><span class="label">Ejecución:</span><span class="val">Instantánea (&lt;1s)</span></div>
-            <div><span class="label">Comando:</span><span class="val">Everything.exe -search</span></div>
-          </div>
+          <span style="font-size: 2rem;">⚙</span>
         </div>
-        <div class="btn-group">
-          <a href="archivos/proyectos/Everything.zip" class="download-btn" download="Everything.zip">🔍 Descargar Buscador (.zip)</a>
-        </div>
-      </article>
-
-      <!-- PROYECTO 4: SCRIPT LIMPIAR BASURA -->
-      <article class="project-card" data-status="completed" data-cat="tools">
-        <div class="status-badge completed">✔ Listo</div>
-        <div>
-          <h3 class="project-title">Script Depurador "Limpiar Basura"</h3>
-          <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
-          <div class="badges-container">
-            <span class="badge badge-win">Windows Batch</span>
-            <span class="badge badge-crypto">Temp Clean</span>
-            <span class="badge badge-bash">Maintenance</span>
-          </div>
-          <p class="project-desc">
-            Script ejecutable para mantenimiento directo del sistema. Elimina archivos temporales (%temp%), limpia la caché del sistema y libera espacio de almacenamiento.
-          </p>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">Privilegios Administrador</span></div>
-            <div><span class="label">Ejecución:</span><span class="val">~ 5 segundos</span></div>
-            <div><span class="label">Comando:</span><span class="val">del /s /q /f %temp%\*</span></div>
-          </div>
-        </div>
-        <div class="btn-group">
-          <a href="archivos/proyectos/Limpiar_Basura.zip" class="download-btn" download="Limpiar_Basura.zip">📦 Descargar Paquete (.zip)</a>
-          <button class="action-btn" onclick="openCodeModal('Script Limpiar Basura (.bat)', '@echo off\necho Limpiando archivos temporales del sistema...\ndel /s /q /f %temp%\\*.*\ndel /s /q /f C:\\Windows\\Temp\\*.*\nipconfig /flushdns\necho Mantenimiento Completado con Exito.\npause')">👁️ Ver Código Source</button>
-        </div>
-      </article>
-
-      <!-- PROYECTO 5: PLATAFORMA WEB -->
-      <article class="project-card" data-status="completed" data-cat="web">
-        <div class="status-badge completed">✔ Listo</div>
-        <div>
-          <h3 class="project-title">Plataforma Web Promoción CETAL</h3>
-          <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz & Carrera Sistemas</div>
-          <div class="badges-container">
-            <span class="badge badge-web">HTML5</span>
-            <span class="badge badge-rclone">CSS3 Cyber</span>
-            <span class="badge badge-crypto">JavaScript ES6</span>
-          </div>
-          <p class="project-desc">
-            Portal web institucional adaptativo con estética cyber/terminal, filtrado dinámico de datos, reproductores de audio en background y consola interactiva.
-          </p>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">Navegador Moderno</span></div>
-            <div><span class="label">Despliegue:</span><span class="val">Servidor Local / Nube</span></div>
-          </div>
-        </div>
-        <div class="btn-group">
-          <a href="index.html" class="download-btn">🌐 Explorar Plataforma</a>
-        </div>
-      </article>
-
-      <!-- PROYECTO 6: MONITOR DE RED -->
-      <article class="project-card" data-status="in-progress" data-cat="net">
-        <div class="status-badge in-progress"><span class="spin-icon">⚙</span> En Proceso</div>
-        <div>
-          <h3 class="project-title">Monitor de Red & Servidores</h3>
-          <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
-          <div class="badges-container">
-            <span class="badge badge-win">Network CLI</span>
-            <span class="badge badge-crypto">Ping Monitor</span>
-            <span class="badge badge-bash">Bash Script</span>
-          </div>
-          <p class="project-desc">
-            Módulo de consola para diagnóstico de latencia en bucle, monitoreo de IPs locales y verificación de estado de enlaces activos en tiempo real.
-          </p>
-          <div class="progress-container">
-            <div class="progress-header">
-              <span>Avance de Desarrollo</span>
-              <span>40%</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: 40%;"></div>
+        <div class="metric-card">
+          <div class="metric-info">
+            <h4>Estado Red</h4>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: bold; color: var(--accent);">
+              <div style="width: 10px; height: 10px; background-color: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent);"></div> En Línea
             </div>
           </div>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">CMD / Windows Terminal</span></div>
-            <div><span class="label">Comando:</span><span class="val">ping -t 192.168.1.1</span></div>
-          </div>
+          <span style="font-size: 2rem;">🌐</span>
         </div>
-        <div class="btn-group">
-          <a href="#" class="download-btn disabled">⏳ Próximamente Disponible</a>
-          <button class="action-btn" onclick="openCodeModal('Borrador - Monitor de Latencia', '@echo off\n:loop\nping 8.8.8.8 -n 1 | findstr /i \"tiempo bytes\"\ntimeout /t 2 >nul\ngoto loop')">👁️ Ver Prototipo</button>
-        </div>
-      </article>
+      </div>
 
-      <!-- PROYECTO 7: CONMUTADOR DE RED IP -->
-      <article class="project-card" data-status="in-progress" data-cat="net">
-        <div class="status-badge in-progress"><span class="spin-icon">⚙</span> En Proceso</div>
-        <div>
-          <h3 class="project-title">Conmutador de Red / IP Estática</h3>
-          <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
-          <div class="badges-container">
-            <span class="badge badge-win">Netsh CLI</span>
-            <span class="badge badge-rclone">DHCP Switch</span>
-          </div>
-          <p class="project-desc">
-            Script interactivo de un solo clic para alternar de forma inmediata entre direcciones IP fijas de los laboratorios del instituto y configuración DHCP.
-          </p>
-          <div class="progress-container">
-            <div class="progress-header">
-              <span>Avance de Desarrollo</span>
-              <span>60%</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: 60%;"></div>
-            </div>
-          </div>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">Privilegios Administrador</span></div>
-            <div><span class="label">Comando:</span><span class="val">netsh interface ip set address</span></div>
-          </div>
+      <!-- MAPA DE ACTIVIDAD ESTILO GITHUB (IDEA 2) -->
+      <div class="github-activity-box">
+        <div class="github-activity-header">
+          <h4>📊 Actividad Anual del Repositorio (Commits & Despliegues)</h4>
+          <span style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-muted);">248 contribuciones este año</span>
         </div>
-        <div class="btn-group">
-          <a href="#" class="download-btn disabled">⏳ Próximamente Disponible</a>
+        <div class="activity-grid" id="github-heatmap">
+          <!-- Generado dinámicamente por JS -->
         </div>
-      </article>
+      </div>
 
-      <!-- PROYECTO 8: AUDITOR DE HARDWARE -->
-      <article class="project-card" data-status="in-progress" data-cat="tools">
-        <div class="status-badge in-progress"><span class="spin-icon">⚙</span> En Proceso</div>
-        <div>
-          <h3 class="project-title">Auditor de Hardware & Sistema</h3>
-          <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
-          <div class="badges-container">
-            <span class="badge badge-win">WMIC / Systeminfo</span>
-            <span class="badge badge-bash">Report Log</span>
-          </div>
-          <p class="project-desc">
-            Utilidad Batch para inventariado rápido que extrae número de serie, módulos de RAM, salud del disco y procesador exportando a un reporte `.txt`.
-          </p>
-          <div class="progress-container">
-            <div class="progress-header">
-              <span>Avance de Desarrollo</span>
-              <span>30%</span>
+      <!-- CONTROLES: BÚSQUEDA -->
+      <div class="controls-bar">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="🔍 Buscar proyecto, tecnología o autor (ej: Ivan Paz, ClamAV, Batch)..." onkeyup="filterProjects()">
+        </div>
+      </div>
+
+      <!-- PILLS DE TECNOLOGÍAS AVANZADAS (IDEA 3) -->
+      <div class="tech-pills-bar">
+        <span class="pill-label">FILTRAR POR TECH:</span>
+        <button class="tech-pill active" onclick="filterByTech('all', this)">Todos</button>
+        <button class="tech-pill" onclick="filterByTech('bash', this)">Bash</button>
+        <button class="tech-pill" onclick="filterByTech('rclone', this)">Rclone</button>
+        <button class="tech-pill" onclick="filterByTech('clam', this)">ClamAV</button>
+        <button class="tech-pill" onclick="filterByTech('win', this)">Batch / Win</button>
+        <button class="tech-pill" onclick="filterByTech('web', this)">Web</button>
+      </div>
+
+      <!-- CHULETA RÁPIDA DE SNIPPETS (IDEA 4) -->
+      <div class="snippets-drawer">
+        <div class="snippets-header" onclick="toggleSnippets()">
+          <h4>⚡ Chuleta Rápida de Comandos Frecuentes (Copiar en 1 Clic)</h4>
+          <span id="snippets-toggle-icon" style="font-size: 1.1rem; color: var(--accent-gold);">▼</span>
+        </div>
+        <div class="snippets-content" id="snippets-body">
+          <div class="snippet-item">
+            <div class="snippet-info">
+              <span>Actualizar firmas ClamAV</span>
+              <code>freshclam.exe --config-file=freshclam.conf</code>
             </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: 30%;"></div>
-            </div>
+            <button class="copy-snippet-btn" onclick="copySnippet('freshclam.exe --config-file=freshclam.conf')">Copiar</button>
           </div>
-          <div class="tech-specs">
-            <div><span class="label">Requisito:</span><span class="val">CMD Windows</span></div>
-            <div><span class="label">Comando:</span><span class="val">wmic memorychip get capacity</span></div>
+          <div class="snippet-item">
+            <div class="snippet-info">
+              <span>Sincronización Rclone Cloud</span>
+              <code>rclone sync C:\Data remote:Backup --progress</code>
+            </div>
+            <button class="copy-snippet-btn" onclick="copySnippet('rclone sync C:\\Data remote:Backup --progress')">Copiar</button>
+          </div>
+          <div class="snippet-item">
+            <div class="snippet-info">
+              <span>Limpiar DNS Caché Windows</span>
+              <code>ipconfig /flushdns</code>
+            </div>
+            <button class="copy-snippet-btn" onclick="copySnippet('ipconfig /flushdns')">Copiar</button>
+          </div>
+          <div class="snippet-item">
+            <div class="snippet-info">
+              <span>Depurar Temp de Sistema</span>
+              <code>del /s /q /f %temp%\*.*</code>
+            </div>
+            <button class="copy-snippet-btn" onclick="copySnippet('del /s /q /f %temp%\\*.*')">Copiar</button>
           </div>
         </div>
-        <div class="btn-group">
-          <a href="#" class="download-btn disabled">⏳ Próximamente Disponible</a>
+      </div>
+
+      <h2 class="section-title">💻 Repositorio Oficial & Calificaciones</h2>
+
+      <div class="projects-grid" id="projects-grid">
+
+        <!-- PROYECTO 1 -->
+        <article class="project-card" data-status="in-progress" data-tech="bash rclone">
+          <div class="status-badge in-progress"><span class="spin-icon">⚙</span> En Proceso</div>
+          <div>
+            <h3 class="project-title">Universal Backup System</h3>
+            <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
+            <div class="badges-container">
+              <span class="badge badge-bash">Bash Shell</span>
+              <span class="badge badge-rclone">Rclone CLI</span>
+              <span class="badge badge-crypto">Cifrado AES</span>
+            </div>
+            <p class="project-desc">Script automatizado para la sincronización segura, cifrado local y respaldo continuo a la nube de unidades portables y archivos críticos.</p>
+            <div class="progress-container">
+              <div class="progress-header"><span>Avance de Desarrollo</span><span>75%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 75%;"></div></div>
+            </div>
+            <div class="tech-specs">
+              <div><span class="label">Requisito:</span><span class="val">Windows 10/11 + Rclone</span></div>
+              <div><span class="label">Comando:</span><span class="val">rclone sync --crypto</span></div>
+            </div>
+            <!-- CALIFICACIÓN (IDEA 6) -->
+            <div class="rating-box" data-project-id="p1">
+              <div class="stars-container" onclick="rateProject('p1', event)">
+                <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
+              </div>
+              <div class="rating-stats"><span class="score-val">4.8</span>/5 (<span class="votes-val">14</span> votos)</div>
+            </div>
+          </div>
+          <div class="btn-group">
+            <a href="#" class="download-btn disabled">⏳ Próximamente Disponible</a>
+          </div>
+        </article>
+
+        <!-- PROYECTO 2 -->
+        <article class="project-card" data-status="completed" data-tech="clam win rclone">
+          <div class="status-badge completed">✔ Listo</div>
+          <div>
+            <h3 class="project-title">Antivirus ClamAV CLI Portable</h3>
+            <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
+            <div class="badges-container">
+              <span class="badge badge-clam">ClamAV Core</span>
+              <span class="badge badge-win">CMD / Batch</span>
+              <span class="badge badge-rclone">Freshclam Sync</span>
+            </div>
+            <p class="project-desc">Motor de seguridad de consola pura. Utiliza el comando <code>freshclam</code> para descargar firmas víricas directamente de internet y escanear unidades portables.</p>
+            <div class="tech-specs">
+              <div><span class="label">Requisito:</span><span class="val">Sin instalación (Portable)</span></div>
+              <div><span class="label">Comando:</span><span class="val">clamscan.exe -r --bell</span></div>
+            </div>
+            <!-- CALIFICACIÓN (IDEA 6) -->
+            <div class="rating-box" data-project-id="p2">
+              <div class="stars-container" onclick="rateProject('p2', event)">
+                <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
+              </div>
+              <div class="rating-stats"><span class="score-val">5.0</span>/5 (<span class="votes-val">28</span> votos)</div>
+            </div>
+          </div>
+          <div class="btn-group">
+            <a href="archivos/proyectos/ClamWinPortable.7z" class="download-btn" download="ClamWinPortable.7z">📦 Descargar Antivirus (.7z)</a>
+            <button class="action-btn" onclick="openCodeModal('ClamAV CLI Auto-Update Script', 'freshclam.exe --config-file=freshclam.conf\nclamscan.exe --database=database --infected --recursive --bell C:\\UnidadUSB\npause')">👁️ Ver Script</button>
+          </div>
+        </article>
+
+        <!-- PROYECTO 3 -->
+        <article class="project-card" data-status="completed" data-tech="rclone win">
+          <div class="status-badge completed">✔ Listo</div>
+          <div>
+            <h3 class="project-title">Buscador Indexado Everything</h3>
+            <div class="project-author">👨‍💻 Integrado por: Ivan Paz</div>
+            <div class="badges-container">
+              <span class="badge badge-rclone">NTFS Indexing</span>
+              <span class="badge badge-win">Ultra Light</span>
+              <span class="badge badge-bash">Instant Search</span>
+            </div>
+            <p class="project-desc">Herramienta portable e hiperliviana que sustituye al buscador de Windows. Indexa millones de archivos en segundos basándose en la tabla NTFS.</p>
+            <div class="tech-specs">
+              <div><span class="label">Requisito:</span><span class="val">Sistemas NTFS</span></div>
+              <div><span class="label">Comando:</span><span class="val">Everything.exe -search</span></div>
+            </div>
+            <!-- CALIFICACIÓN (IDEA 6) -->
+            <div class="rating-box" data-project-id="p3">
+              <div class="stars-container" onclick="rateProject('p3', event)">
+                <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
+              </div>
+              <div class="rating-stats"><span class="score-val">4.9</span>/5 (<span class="votes-val">19</span> votos)</div>
+            </div>
+          </div>
+          <div class="btn-group">
+            <a href="archivos/proyectos/Everything.zip" class="download-btn" download="Everything.zip">🔍 Descargar Buscador (.zip)</a>
+          </div>
+        </article>
+
+        <!-- PROYECTO 4 -->
+        <article class="project-card" data-status="completed" data-tech="win bash">
+          <div class="status-badge completed">✔ Listo</div>
+          <div>
+            <h3 class="project-title">Script Depurador "Limpiar Basura"</h3>
+            <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
+            <div class="badges-container">
+              <span class="badge badge-win">Windows Batch</span>
+              <span class="badge badge-crypto">Temp Clean</span>
+              <span class="badge badge-bash">Maintenance</span>
+            </div>
+            <p class="project-desc">Script ejecutable para mantenimiento directo. Elimina archivos temporales (%temp%), limpia la caché de red y libera espacio de almacenamiento.</p>
+            <div class="tech-specs">
+              <div><span class="label">Requisito:</span><span class="val">Privilegios Administrador</span></div>
+              <div><span class="label">Comando:</span><span class="val">del /s /q /f %temp%\*</span></div>
+            </div>
+            <!-- CALIFICACIÓN (IDEA 6) -->
+            <div class="rating-box" data-project-id="p4">
+              <div class="stars-container" onclick="rateProject('p4', event)">
+                <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
+              </div>
+              <div class="rating-stats"><span class="score-val">4.7</span>/5 (<span class="votes-val">22</span> votos)</div>
+            </div>
+          </div>
+          <div class="btn-group">
+            <a href="archivos/proyectos/Limpiar_Basura.zip" class="download-btn" download="Limpiar_Basura.zip">📦 Descargar Paquete (.zip)</a>
+            <button class="action-btn" onclick="openCodeModal('Script Limpiar Basura (.bat)', '@echo off\necho Limpiando archivos temporales...\ndel /s /q /f %temp%\\*.*\nipconfig /flushdns\npause')">👁️ Ver Código Source</button>
+          </div>
+        </article>
+
+        <!-- PROYECTO 5 -->
+        <article class="project-card" data-status="completed" data-tech="web rclone">
+          <div class="status-badge completed">✔ Listo</div>
+          <div>
+            <h3 class="project-title">Plataforma Web Promoción CETAL</h3>
+            <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz & Sistemas</div>
+            <div class="badges-container">
+              <span class="badge badge-web">HTML5</span>
+              <span class="badge badge-rclone">CSS3 Cyber</span>
+              <span class="badge badge-crypto">JavaScript</span>
+            </div>
+            <p class="project-desc">Portal web institucional adaptativo con estética cyber/terminal, filtrado dinámico de datos y reproductores de audio en background.</p>
+            <div class="tech-specs">
+              <div><span class="label">Requisito:</span><span class="val">Navegador Moderno</span></div>
+              <div><span class="label">Despliegue:</span><span class="val">Servidor Local</span></div>
+            </div>
+            <!-- CALIFICACIÓN (IDEA 6) -->
+            <div class="rating-box" data-project-id="p5">
+              <div class="stars-container" onclick="rateProject('p5', event)">
+                <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
+              </div>
+              <div class="rating-stats"><span class="score-val">4.9</span>/5 (<span class="votes-val">31</span> votos)</div>
+            </div>
+          </div>
+          <div class="btn-group">
+            <a href="index.html" class="download-btn">🌐 Explorar Plataforma</a>
+          </div>
+        </article>
+
+        <!-- PROYECTO 6 -->
+        <article class="project-card" data-status="in-progress" data-tech="bash win">
+          <div class="status-badge in-progress"><span class="spin-icon">⚙</span> En Proceso</div>
+          <div>
+            <h3 class="project-title">Monitor de Red & Servidores</h3>
+            <div class="project-author">👨‍💻 Desarrollado por: Ivan Paz</div>
+            <div class="badges-container">
+              <span class="badge badge-win">Network CLI</span>
+              <span class="badge badge-crypto">Ping Monitor</span>
+              <span class="badge badge-bash">Bash Script</span>
+            </div>
+            <p class="project-desc">Módulo de consola para diagnóstico de latencia en bucle, monitoreo de IPs locales y verificación de estado de enlaces activos.</p>
+            <div class="progress-container">
+              <div class="progress-header"><span>Avance de Desarrollo</span><span>40%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 40%;"></div></div>
+            </div>
+            <div class="tech-specs">
+              <div><span class="label">Requisito:</span><span class="val">CMD Windows</span></div>
+              <div><span class="label">Comando:</span><span class="val">ping -t 192.168.1.1</span></div>
+            </div>
+            <!-- CALIFICACIÓN (IDEA 6) -->
+            <div class="rating-box" data-project-id="p6">
+              <div class="stars-container" onclick="rateProject('p6', event)">
+                <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
+              </div>
+              <div class="rating-stats"><span class="score-val">4.6</span>/5 (<span class="votes-val">9</span> votos)</div>
+            </div>
+          </div>
+          <div class="btn-group">
+            <a href="#" class="download-btn disabled">⏳ Próximamente Disponible</a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- SECCIÓN DE CIBERSEGURIDAD -->
+      <section class="sec-container">
+        <h3 class="sec-title">🛡️ Centro de Ciberseguridad & Buenas Prácticas Técnicas</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600;">
+          Pautas y protocolos recomendados para asegurar estaciones de trabajo, almacenamiento portable y respaldos durante las sesiones de laboratorio en CETAL.
+        </p>
+        <div class="sec-grid">
+          <div class="sec-card">
+            <h4>🔒 Seguridad en Unidades Portables (USB)</h4>
+            <ul>
+              <li>Escanear siempre con <b>ClamAV CLI</b> antes de abrir ejecutables.</li>
+              <li>Inhabilitar la ejecución automática en Windows.</li>
+              <li>Mantener partición cifrada para documentos confidenciales.</li>
+            </ul>
+          </div>
+          <div class="sec-card">
+            <h4>💾 Protocolo de Respaldos Cifrados</h4>
+            <ul>
+              <li>Aplicar la regla <b>3-2-1</b> (3 copias, 2 soportes, 1 nube).</li>
+              <li>Utilizar cifrado local en <b>Rclone</b> antes de subir a repos remotos.</li>
+              <li>Verificar mensualmente la integridad de llaves e imágenes.</li>
+            </ul>
+          </div>
+          <div class="sec-card">
+            <h4>⚙ Protecciones a Nivel de Sistema</h4>
+            <ul>
+              <li>Ejecutar scripts de depuración periódicamente.</li>
+              <li>Validar hashes SHA256 de utilidades descargadas.</li>
+              <li>Usar cuenta estándar para tareas diarias.</li>
+            </ul>
+          </div>
         </div>
-      </article>
+      </section>
 
     </div>
 
-    <!-- SECCION DE CIBERSEGURIDAD Y BUENAS PRACTICAS -->
-    <section class="sec-container">
-      <h3 class="sec-title">🛡️ Centro de Ciberseguridad & Buenas Prácticas Técnicas</h3>
-      <p style="color: var(--text-muted); font-size: 0.95rem;">
-        Pautas y protocolos recomendados para asegurar estaciones de trabajo, almacenamiento portable y respaldos durante las sesiones de laboratorio en CETAL.
-      </p>
-
-      <div class="sec-grid">
-        <div class="sec-card">
-          <h4>🔒 Seguridad en Unidades Portables (USB)</h4>
-          <ul>
-            <li>Escanear siempre los pendrives con <b>ClamAV CLI</b> antes de abrir archivos ejecutables.</li>
-            <li>Inhabilitar la ejecución automática (Autorun/Autoplay) de Windows para evitar propagación de malwares.</li>
-            <li>Mantener una partición cifrada para documentos confidenciales del instituto.</li>
-          </ul>
+    <!-- MODAL DE CÓDIGO -->
+    <div class="modal-overlay" id="code-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">📄 Vista Previa de Código</h3>
+          <button class="close-modal" onclick="closeCodeModal()">&times;</button>
         </div>
-
-        <div class="sec-card">
-          <h4>💾 Protocolo de Respaldos Cifrados</h4>
-          <ul>
-            <li>Aplicar la regla <b>3-2-1</b>: 3 copias de seguridad, 2 medios distintos, 1 fuera de sitio (Nube).</li>
-            <li>Utilizar el parámetro de cifrado local en <b>Rclone</b> antes de subir datos a repositorios remotos.</li>
-            <li>Verificar mensualmente la integridad de las llaves de recuperación e imágenes de backup.</li>
-          </ul>
+        <div class="modal-body">
+          <pre><code id="modal-code">// El código del script aparecerá aquí...</code></pre>
         </div>
-
-        <div class="sec-card">
-          <h4>⚙ Protecciones a Nivel de Sistema Operativo</h4>
-          <ul>
-            <li>Ejecutar los scripts de depuración periódicamente para evitar la acumulación de datos residuo.</li>
-            <li>Validar los hashes SHA256 de las utilidades descargadas antes de su ejecución directa.</li>
-            <li>Usar usuarios estándar para tareas diarias y reservar la cuenta de Administrador para scripts.</li>
-          </ul>
+        <div class="modal-footer">
+          <button class="action-btn" onclick="copyCodeToClipboard()">📋 Copiar Código</button>
+          <button class="download-btn secondary" onclick="closeCodeModal()">Cerrar</button>
         </div>
       </div>
-    </section>
+    </div>
 
+    <footer>
+      <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL | Laboratorio de Automatización & Seguridad</p>
+    </footer>
   </main>
 
-  <!-- VENTANA MODAL DE VISTA PREVIA DE CODIGO -->
-  <div class="modal-overlay" id="code-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modal-title">📄 Vista Previa de Código</h3>
-        <button class="close-modal" onclick="closeCodeModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <pre><code id="modal-code">// El codigo del script aparecerá aquí...</code></pre>
-      </div>
-      <div class="modal-footer">
-        <button class="action-btn" onclick="copyCodeToClipboard()">📋 Copiar Código</button>
-        <button class="download-btn secondary" onclick="closeCodeModal()">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL | Laboratorio de Automatización & Seguridad</p>
-  </footer>
-
   <script>
-    // CONTROL DE MUSICA DE FONDO
+    // 1. BARRA LATERAL
+    const sidebar = document.getElementById('sidebar');
+    const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+    toggleMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      document.body.classList.toggle('menu-hidden');
+      if (window.innerWidth <= 768) sidebar.classList.toggle('mobile-open');
+    });
+
+    // 2. TEMA
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const htmlElement = document.documentElement;
+    if (localStorage.getItem('theme') === 'light') {
+      htmlElement.setAttribute('data-theme', 'light');
+      themeBtn.textContent = '☀️';
+    }
+    themeBtn.addEventListener('click', () => {
+      if (htmlElement.getAttribute('data-theme') === 'dark') {
+        htmlElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeBtn.textContent = '☀️';
+      } else {
+        htmlElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeBtn.textContent = '🌙';
+      }
+    });
+
+    // 3. RELOJ FLIP
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('f-h1').innerText = h[0];
+      document.getElementById('f-h2').innerText = h[1];
+      document.getElementById('f-m1').innerText = m[0];
+      document.getElementById('f-m2').innerText = m[1];
+      document.getElementById('f-s1').innerText = s[0];
+      document.getElementById('f-s2').innerText = s[1];
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 4. MÚSICA
     const audio = document.getElementById('bg-music');
     const musicBtn = document.getElementById('btn-toggle-music');
-    
     if (localStorage.getItem('musicPlaying') === 'true') {
       audio.currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
       audio.play().catch(() => {});
     }
-
     musicBtn.addEventListener('click', function() {
-      if (audio.paused) { 
-        audio.play(); 
-        localStorage.setItem('musicPlaying', 'true'); 
-      } else { 
-        audio.pause(); 
-        localStorage.setItem('musicPlaying', 'false'); 
-      }
+      if (audio.paused) { audio.play(); localStorage.setItem('musicPlaying', 'true'); musicBtn.innerText = '⏸️ Pausar'; }
+      else { audio.pause(); localStorage.setItem('musicPlaying', 'false'); musicBtn.innerText = '🎵 Música'; }
     });
+    setInterval(() => { if (!audio.paused) localStorage.setItem('musicTime', audio.currentTime); }, 1000);
 
-    setInterval(() => {
-      if (!audio.paused) localStorage.setItem('musicTime', audio.currentTime);
-    }, 1000);
+    // 5. MAPA DE ACTIVIDAD GITHUB DINÁMICO (IDEA 2)
+    const heatmap = document.getElementById('github-heatmap');
+    for (let c = 0; c < 35; c++) {
+      const col = document.createElement('div');
+      col.className = 'activity-col';
+      for (let r = 0; r < 7; r++) {
+        const cell = document.createElement('div');
+        cell.className = 'activity-cell';
+        const rand = Math.random();
+        if (rand > 0.8) cell.classList.add('lvl-4');
+        else if (rand > 0.6) cell.classList.add('lvl-3');
+        else if (rand > 0.4) cell.classList.add('lvl-2');
+        else if (rand > 0.25) cell.classList.add('lvl-1');
+        col.appendChild(cell);
+      }
+      heatmap.appendChild(col);
+    }
 
-    // SISTEMA DE FILTRADO Y BÚSQUEDA
-    let currentStatusFilter = 'all';
-
-    function setFilter(status, btnElement) {
-      currentStatusFilter = status;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    // 6. FILTRO AVANZADO POR TECH (IDEA 3)
+    let currentTechFilter = 'all';
+    function filterByTech(tech, btnElement) {
+      currentTechFilter = tech;
+      document.querySelectorAll('.tech-pill').forEach(p => p.classList.remove('active'));
       btnElement.classList.add('active');
       filterProjects();
     }
@@ -1003,19 +855,13 @@
       cards.forEach(card => {
         const title = card.querySelector('.project-title').innerText.toLowerCase();
         const desc = card.querySelector('.project-desc').innerText.toLowerCase();
-        const tags = card.querySelector('.badges-container').innerText.toLowerCase();
-        const status = card.getAttribute('data-status');
-        const cat = card.getAttribute('data-cat');
+        const author = card.querySelector('.project-author').innerText.toLowerCase();
+        const techAttr = card.getAttribute('data-tech') || '';
 
-        const matchesQuery = title.includes(query) || desc.includes(query) || tags.includes(query);
-        
-        let matchesStatus = false;
-        if (currentStatusFilter === 'all') matchesStatus = true;
-        else if (currentStatusFilter === 'completed' && status === 'completed') matchesStatus = true;
-        else if (currentStatusFilter === 'in-progress' && status === 'in-progress') matchesStatus = true;
-        else if (currentStatusFilter === 'sec' && cat === 'sec') matchesStatus = true;
+        const matchesQuery = title.includes(query) || desc.includes(query) || author.includes(query);
+        const matchesTech = currentTechFilter === 'all' || techAttr.includes(currentTechFilter);
 
-        if (matchesQuery && matchesStatus) {
+        if (matchesQuery && matchesTech) {
           card.style.display = 'flex';
         } else {
           card.style.display = 'none';
@@ -1023,28 +869,89 @@
       });
     }
 
-    // MODAL DE CÓDIGO
+    // 7. CHULETA DE SNIPPETS (IDEA 4)
+    function toggleSnippets() {
+      const body = document.getElementById('snippets-body');
+      const icon = document.getElementById('snippets-toggle-icon');
+      if (body.style.display === 'none') {
+        body.style.display = 'grid';
+        icon.innerText = '▼';
+      } else {
+        body.style.display = 'none';
+        icon.innerText = '▲';
+      }
+    }
+
+    function copySnippet(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✔ ¡Comando copiado al portapapeles!');
+      });
+    }
+
+    // 8. SISTEMA DE CALIFICACIÓN Y RANKING LOCALSTORAGE (IDEA 6)
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.rating-box').forEach(box => {
+        const pId = box.getAttribute('data-project-id');
+        const savedData = JSON.parse(localStorage.getItem('rating_' + pId));
+        if (savedData) {
+          box.querySelector('.score-val').innerText = savedData.score;
+          box.querySelector('.votes-val').innerText = savedData.votes;
+          const stars = box.querySelectorAll('.star');
+          stars.forEach((s, idx) => {
+            if (idx < savedData.userVote) s.classList.add('rated');
+          });
+        }
+      });
+    });
+
+    function rateProject(pId, event) {
+      const star = event.target.closest('.star');
+      if (!star) return;
+      const val = parseInt(star.getAttribute('data-value'));
+      const box = document.querySelector(`[data-project-id="${pId}"]`);
+      
+      // Marcar estrellas visualmente
+      const stars = box.querySelectorAll('.star');
+      stars.forEach((s, idx) => {
+        if (idx < val) s.classList.add('rated');
+        else s.classList.remove('rated');
+      });
+
+      // Calcular nuevo promedio simulado
+      const scoreEl = box.querySelector('.score-val');
+      const votesEl = box.querySelector('.votes-val');
+      let currentVotes = parseInt(votesEl.innerText);
+      let currentScore = parseFloat(scoreEl.innerText);
+
+      // Si ya votó, actualizamos; si es nuevo voto sumamos
+      let newVotes = currentVotes + 1;
+      let newScore = ((currentScore * currentVotes + val) / newVotes).toFixed(1);
+
+      scoreEl.innerText = newScore;
+      votesEl.innerText = newVotes;
+
+      // Guardar en localStorage
+      localStorage.setItem('rating_' + pId, JSON.stringify({
+        score: newScore,
+        votes: newVotes,
+        userVote: val
+      }));
+
+      alert(`⭐ ¡Gracias por calificar con ${val} estrellas! Tu voto fue registrado.`);
+    }
+
+    // 9. MODAL DE CÓDIGO
     function openCodeModal(title, codeText) {
       document.getElementById('modal-title').innerText = '📄 ' + title;
       document.getElementById('modal-code').innerText = codeText;
       document.getElementById('code-modal').style.display = 'flex';
     }
-
-    function closeCodeModal() {
-      document.getElementById('code-modal').style.display = 'none';
-    }
-
+    function closeCodeModal() { document.getElementById('code-modal').style.display = 'none'; }
     function copyCodeToClipboard() {
       const codeText = document.getElementById('modal-code').innerText;
-      navigator.clipboard.writeText(codeText).then(() => {
-        alert('✔ ¡Código copiado al portapapeles!');
-      });
+      navigator.clipboard.writeText(codeText).then(() => { alert('✔ ¡Código copiado al portapapeles!'); });
     }
-
-    // CERRAR MODAL CON ESC
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeCodeModal();
-    });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCodeModal(); });
   </script>
 
 </body>

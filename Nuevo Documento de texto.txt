@@ -1,0 +1,44 @@
+// ==========================================
+// BASE DE DATOS CENTRALIZADA - SISTEMAS CETAL 2026
+// ==========================================
+
+const CETAL_DB = {
+  // Información de la promoción y fechas clave
+  config: {
+    startDate: "2026-02-18", // Fecha de inicio de clases (18 de febrero de 2026)
+    totalSurvivors: 35,      // Estudiantes activos
+    casualties: [
+      { name: "Luis", status: "Baja registrada / Retirado oficial" }
+    ]
+  },
+
+  // Listado oficial de Cumpleañeros (Mes: 0 = Enero, 1 = Febrero, ..., 8 = Septiembre)
+  birthdays: [
+    { name: "Carlos", month: 8, day: 14 },
+    { name: "Alejandra", month: 8, day: 22 },
+    { name: "Wicle", month: 8, day: 5 },
+    { name: "Sebastian", month: 8, day: 10 },
+    { name: "Diego", month: 8, day: 18 },
+    { name: "Jordan", month: 8, day: 28 }
+    // Puedes agregar más compañeros aquí en el futuro
+  ],
+
+  // Proyectos recientes (para la terminal de la página de inicio)
+  projects: [
+    {
+      title: "Universal Backup System",
+      description: "Sincronización segura Rclone y cifrado AES a la nube (Por Ivan).",
+      status: "En Proceso (75%)"
+    },
+    {
+      title: "Antivirus ClamAV CLI Portable",
+      description: "Motor de seguridad de consola para unidades portables USB (Por Ivan).",
+      status: "Completado ✔"
+    },
+    {
+      title: "Plataforma Web Promoción CETAL",
+      description: "Portal web institucional con estética Cyber y terminal interactiva.",
+      status: "Operativo ✔"
+    }
+  ]
+};
