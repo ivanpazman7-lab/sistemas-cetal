@@ -380,10 +380,12 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Corrección robusta para móviles: Ocultar barra lateral en pantallas menores a 768px de forma inmediata tras cargar
+      // En celulares: Mostrar la barra abierta al cargar por 2 segundos para que se vea, y luego ocultarla suavemente
       if (window.innerWidth <= 768) {
-        sidebar.classList.add('collapsed');
-        document.body.classList.add('menu-hidden');
+        setTimeout(() => {
+          sidebar.classList.add('collapsed');
+          document.body.classList.add('menu-hidden');
+        }, 2000);
       }
 
       // 1. Proyectos en Terminal CRT
