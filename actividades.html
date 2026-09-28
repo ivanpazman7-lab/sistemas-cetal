@@ -2,7 +2,7 @@
 <html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Bitácora de Actividades | Sistemas CETAL</title>
   <style>
     :root {
@@ -39,7 +39,7 @@
       --shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     
     html, body { 
       background-color: var(--bg-main); 
@@ -62,7 +62,6 @@
     aside::-webkit-scrollbar { display: none; }
     aside.collapsed { width: 0px; transform: translateX(-280px); overflow: hidden; }
 
-    /* BOTÓN PALPITANTE PARA MOSTRAR/OCULTAR MENÚ */
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.6); transform: scale(1); }
       50% { box-shadow: 0 0 0 10px rgba(0, 242, 254, 0); transform: scale(1.08); }
@@ -119,7 +118,6 @@
     .topbar-left { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--accent-gold); margin-left: 35px; }
     .topbar-right-widgets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
-    /* FLIP CLOCK WIDGET */
     .flip-clock { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); }
     .flip-group { display: flex; align-items: center; gap: 2px; }
     .flip-card {
@@ -142,9 +140,18 @@
     }
     .music-btn:hover { opacity: 0.9; transform: scale(1.03); }
 
-    .container { max-width: 1000px; margin: 0 auto; padding: 24px; width: 100%; box-sizing: border-box; flex: 1; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px 16px; width: 100%; box-sizing: border-box; flex: 1; }
 
-    /* Filtros de orden */
+    /* WIDGET DE RANKING DE POPULARIDAD GLOBAL */
+    .ranking-banner {
+      background: var(--card-bg); border: 1px solid var(--accent-gold); border-radius: 12px;
+      padding: 15px 20px; margin-bottom: 25px; box-shadow: 0 0 20px rgba(255,183,0,0.15);
+    }
+    .ranking-title { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-gold); font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .ranking-list { display: flex; flex-direction: column; gap: 6px; }
+    .ranking-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); }
+    .ranking-item span strong { color: var(--text-main); }
+
     .filter-container {
       text-align: center; margin: 15px 0 25px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
     }
@@ -154,7 +161,7 @@
     }
     .filter-btn.active, .filter-btn:hover { background: var(--card-hover); color: var(--accent-gold); border-color: var(--accent-gold); }
 
-    /* Línea de Tiempo */
+    /* Línea de Tiempo optimizada */
     .timeline-wrapper {
       position: relative; max-width: 900px; margin: 0 auto; padding: 10px 0; display: flex; flex-direction: column;
     }
@@ -163,7 +170,7 @@
       box-shadow: 0 0 12px rgba(255,183,0,0.5); top: 0; bottom: 0; left: 50%; margin-left: -2px;
     }
 
-    .timeline-item { padding: 10px 40px; position: relative; background-color: inherit; width: 50%; box-sizing: border-box; }
+    .timeline-item { padding: 10px 30px; position: relative; background-color: inherit; width: 50%; box-sizing: border-box; }
     .timeline-item::after {
       content: ''; position: absolute; width: 16px; height: 16px; right: -8px; background-color: var(--card-bg);
       border: 3px solid var(--accent-gold); top: 25px; border-radius: 50%; z-index: 1; box-shadow: 0 0 10px var(--accent-gold);
@@ -182,17 +189,85 @@
     .event-title { color: var(--text-main); margin-bottom: 10px; font-size: 1.15rem; font-weight: 800; }
     .event-description { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 12px; font-weight: 600; }
 
+    /* Tarjetas multimedia con panel de reacciones independiente */
     .photo-card {
-      background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; text-align: center; margin-top: 10px;
+      background: var(--bg-main); 
+      border: 1px solid rgba(0, 242, 254, 0.25); 
+      border-radius: 10px; 
+      padding: 10px; 
+      text-align: center; 
+      margin-top: 12px;
+      position: relative; 
+      overflow: hidden;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.08);
+      transition: all 0.3s ease;
     }
-    .photo-card img { width: 100%; height: auto; max-height: 220px; object-fit: cover; border-radius: 6px; }
-    .photo-caption { font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 5px; font-family: var(--font-mono); font-weight: 700; }
+    .photo-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 18px rgba(0, 242, 254, 0.25);
+    }
+    .media-inner {
+      cursor: pointer;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .photo-card img, .photo-card video { 
+      width: 100%; height: auto; max-height: 220px; object-fit: cover; border-radius: 8px; 
+      transition: transform 0.3s ease;
+    }
+    .photo-card img:hover, .photo-card video:hover { transform: scale(1.02); }
+    .photo-caption { font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 6px; font-family: var(--font-mono); font-weight: 700; }
+
+    /* PANEL DE REACCIONES INDEPENDIENTE POR CADA FOTO/VIDEO */
+    .reaction-panel {
+      margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-color);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .reaction-buttons {
+      display: flex; gap: 8px; align-items: center; justify-content: center;
+    }
+    .react-btn {
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px;
+      padding: 4px 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      transition: all 0.2s; color: var(--text-main); font-family: var(--font-mono);
+    }
+    .react-btn:hover { transform: scale(1.05); background: var(--card-hover); }
+    .react-btn.heart:hover, .react-btn.heart.voted { border-color: #ff3366; color: #ff3366; background: rgba(255,51,102,0.1); }
+    .react-btn.like:hover, .react-btn.like.voted { border-color: var(--primary); color: var(--primary); background: rgba(0,242,254,0.1); }
+
+    .score-container {
+      display: flex; flex-direction: column; gap: 3px; font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);
+    }
+    .score-bar-bg {
+      width: 100%; height: 5px; background: var(--border-color); border-radius: 3px; overflow: hidden; position: relative;
+    }
+    .score-bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent-gold)); width: 0%; transition: width 0.4s ease;
+    }
+    .score-info-row { display: flex; justify-content: space-between; font-weight: 700; }
+
+    /* LIGHTBOX / MODAL PANTALLA COMPLETA */
+    .lightbox-modal {
+      display: none; position: fixed; z-index: 99999; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(3, 7, 18, 0.96); align-items: center; justify-content: center; padding: 15px;
+    }
+    .lightbox-modal.active { display: flex; }
+    .lightbox-content {
+      max-width: 96%; max-height: 92vh; border-radius: 10px; object-fit: contain;
+      border: 2px solid var(--primary); box-shadow: 0 0 40px rgba(0,242,254,0.4);
+    }
+    .lightbox-close {
+      position: absolute; top: 15px; right: 20px; color: var(--accent-gold); font-size: 2.5rem;
+      font-weight: bold; cursor: pointer; background: none; border: none; font-family: var(--font-mono);
+      z-index: 100000;
+    }
 
     @media screen and (max-width: 768px) {
       .timeline-wrapper::after { left: 20px; }
-      .timeline-item { width: 100%; padding-left: 50px; padding-right: 15px; }
+      .timeline-item { width: 100%; padding-left: 45px; padding-right: 10px; }
       .timeline-item::after { left: 12px; }
       .right { left: 0%; }
+      .container { padding: 12px 8px; }
     }
 
     footer {
@@ -240,7 +315,6 @@
         <span>// BITACORA_ACTIVIDADES_2026</span>
       </div>
       <div class="topbar-right-widgets">
-        <!-- Reloj Digital con efecto Flip integrado -->
         <div class="flip-clock">
           <div class="flip-group"><div class="flip-card" id="f-h1">0</div><div class="flip-card" id="f-h2">0</div></div>
           <span class="flip-colon">:</span>
@@ -257,12 +331,19 @@
 
     <div class="container">
       
-      <div style="margin-bottom: 25px; text-align: center;">
+      <div style="margin-bottom: 20px; text-align: center;">
         <h1 style="font-size: 24px; margin: 0 0 4px 0; color: var(--text-main); font-weight: 800;">Bitácora de Actividades y Eventos</h1>
         <p style="font-size: 13.5px; color: var(--text-muted); margin: 0; font-weight: 700;">Línea de Tiempo Histórica - Carrera de Sistemas Informáticos CETAL</p>
       </div>
 
-      <!-- Botones para alternar el orden -->
+      <!-- BANNER / WIDGET DE LAS FOTOS / RECUERDOS MÁS POPULARES -->
+      <div class="ranking-banner">
+        <div class="ranking-title">🏆 Top Multimedia (Recuerdos Más Votados)</div>
+        <div class="ranking-list" id="ranking-list-content">
+          <!-- Dinámico por JS -->
+        </div>
+      </div>
+
       <div class="filter-container">
         <button class="filter-btn active" id="btn-asc" onclick="sortTimeline('asc')">⬇️ Cronológico (Antiguo a Reciente)</button>
         <button class="filter-btn" id="btn-desc" onclick="sortTimeline('desc')">⬆️ Inverso (Reciente a Antiguo)</button>
@@ -278,10 +359,28 @@
             <p class="event-description">
               Apertura oficial de la gestión académica para la carrera de Sistemas Informáticos en el Turno Noche del Centro CETAL.
             </p>
+            
+            <!-- Foto 1 con su propio panel independiente -->
             <div class="photo-card">
-              <img src="assets/bitacora/2026-02-inicio_clases.jpg" alt="Inicio de Clases CETAL 2026" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=InicioClases2026'">
-              <span class="photo-caption">Primer día de clases y bienvenida a los estudiantes</span>
+              <div class="media-inner" onclick="openLightbox('assets/bitacora/2026-02-inicio_clases.jpg')">
+                <img src="assets/bitacora/2026-02-inicio_clases.jpg" alt="Inicio de Clases CETAL 2026" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=InicioClases2026'">
+                <span class="photo-caption">🔍 Primer día de clases y bienvenida (Clic para ampliar)</span>
+              </div>
+              <div class="reaction-panel" data-media-id="med-1" data-title="Inicio de Clases (Bienvenida)">
+                <div class="reaction-buttons">
+                  <button class="reaction-btn react-btn heart" onclick="reactMedia('med-1', 'heart')">❤️ Me Encanta (<span class="count-heart">0</span>)</button>
+                  <button class="reaction-btn react-btn like" onclick="reactMedia('med-1', 'like')">👍 Me Gusta (<span class="count-like">0</span>)</button>
+                </div>
+                <div class="score-container">
+                  <div class="score-info-row">
+                    <span>Votos del Recuerdo</span>
+                    <span class="score-pct">0%</span>
+                  </div>
+                  <div class="score-bar-bg"><div class="score-bar-fill"></div></div>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
@@ -293,14 +392,49 @@
             <p class="event-description">
               Participación de la delegación del Turno Noche. Encabezando la marcha estuvo el bloque especial de Sistemas Informáticos junto al plantel docente.
             </p>
+            
+            <!-- Foto 2 con su propio panel independiente -->
             <div class="photo-card">
-              <img src="assets/bitacora/2026-08-desfile-01.jpg" alt="Desfile General CETAL" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=DesfileCETAL'">
-              <span class="photo-caption">Delegación del Turno Noche en marcha</span>
+              <div class="media-inner" onclick="openLightbox('assets/bitacora/2026-08-desfile-01.jpg')">
+                <img src="assets/bitacora/2026-08-desfile-01.jpg" alt="Desfile General CETAL" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=DesfileCETAL'">
+                <span class="photo-caption">🔍 Delegación del Turno Noche en marcha (Clic para ampliar)</span>
+              </div>
+              <div class="reaction-panel" data-media-id="med-2" data-title="Desfile Cívico - Delegación en Marcha">
+                <div class="reaction-buttons">
+                  <button class="reaction-btn react-btn heart" onclick="reactMedia('med-2', 'heart')">❤️ Me Encanta (<span class="count-heart">0</span>)</button>
+                  <button class="reaction-btn react-btn like" onclick="reactMedia('med-2', 'like')">👍 Me Gusta (<span class="count-like">0</span>)</button>
+                </div>
+                <div class="score-container">
+                  <div class="score-info-row">
+                    <span>Votos del Recuerdo</span>
+                    <span class="score-pct">0%</span>
+                  </div>
+                  <div class="score-bar-bg"><div class="score-bar-fill"></div></div>
+                </div>
+              </div>
             </div>
-            <div class="photo-card" style="margin-top: 8px;">
-              <img src="assets/bitacora/2026-08-desfile-estudiantes.jpg" alt="Bloque Sistemas" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=BloqueSistemas'">
-              <span class="photo-caption">Bloque de Sistemas Informáticos y Docentes</span>
+
+            <!-- Foto 3 con su propio panel independiente -->
+            <div class="photo-card" style="margin-top: 12px;">
+              <div class="media-inner" onclick="openLightbox('assets/bitacora/2026-08-desfile-estudiantes.jpg')">
+                <img src="assets/bitacora/2026-08-desfile-estudiantes.jpg" alt="Bloque Sistemas" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=BloqueSistemas'">
+                <span class="photo-caption">🔍 Bloque de Sistemas Informáticos y Docentes (Clic para ampliar)</span>
+              </div>
+              <div class="reaction-panel" data-media-id="med-3" data-title="Bloque de Sistemas Informáticos y Docentes">
+                <div class="reaction-buttons">
+                  <button class="reaction-btn react-btn heart" onclick="reactMedia('med-3', 'heart')">❤️ Me Encanta (<span class="count-heart">0</span>)</button>
+                  <button class="reaction-btn react-btn like" onclick="reactMedia('med-3', 'like')">👍 Me Gusta (<span class="count-like">0</span>)</button>
+                </div>
+                <div class="score-container">
+                  <div class="score-info-row">
+                    <span>Votos del Recuerdo</span>
+                    <span class="score-pct">0%</span>
+                  </div>
+                  <div class="score-bar-bg"><div class="score-bar-fill"></div></div>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
@@ -312,29 +446,120 @@
             <p class="event-description">
               Acto oficial de entrega de maletas equipadas por parte de la Alcaldía al Centro CETAL para su distribución a los estudiantes.
             </p>
+            
+            <!-- Foto 4 con su propio panel independiente -->
             <div class="photo-card">
-              <img src="assets/bitacora/2026-08-maletas-alcaldia.jpg" alt="Entrega de Maletas Alcaldia" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=MaletasAlcaldia'">
-              <span class="photo-caption">Entrega formal de maletas institucionales</span>
+              <div class="media-inner" onclick="openLightbox('assets/bitacora/2026-08-maletas-alcaldia.jpg')">
+                <img src="assets/bitacora/2026-08-maletas-alcaldia.jpg" alt="Entrega de Maletas Alcaldia" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=MaletasAlcaldia'">
+                <span class="photo-caption">🔍 Entrega formal de maletas institucionales (Clic para ampliar)</span>
+              </div>
+              <div class="reaction-panel" data-media-id="med-4" data-title="Entrega de Maletas de la Alcaldía">
+                <div class="reaction-buttons">
+                  <button class="reaction-btn react-btn heart" onclick="reactMedia('med-4', 'heart')">❤️ Me Encanta (<span class="count-heart">0</span>)</button>
+                  <button class="reaction-btn react-btn like" onclick="reactMedia('med-4', 'like')">👍 Me Gusta (<span class="count-like">0</span>)</button>
+                </div>
+                <div class="score-container">
+                  <div class="score-info-row">
+                    <span>Votos del Recuerdo</span>
+                    <span class="score-pct">0%</span>
+                  </div>
+                  <div class="score-bar-bg"><div class="score-bar-fill"></div></div>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
-        <!-- 4. EVENTO: 21 de Septiembre de 2026 -->
+        <!-- 4. EVENTO: Lunes 21 de Septiembre de 2026 -->
         <div class="timeline-item right" data-date="2026-09-21">
           <div class="timeline-content">
             <div class="event-date">📅 Lunes, 21 de Septiembre de 2026 | ⏰ Turno Noche</div>
-            <h3 class="event-title">Festejo del Día del Estudiante & Concurso de Baile</h3>
+            <h3 class="event-title">Festejo del Día del Estudiante</h3>
             <p class="event-description">
-              Gran compartimiento y fiesta organizada por los docentes para los estudiantes del turno noche. Hubo concurso de baile, confraternización, entrega de regalos y sorteo de canastones especiales.
+              Gran compartimiento y celebración organizada institucionalmente con motivo del Día del Estudiante. Un espacio de confraternización, alegría y entrega de canastones especiales para el turno noche.
             </p>
+            
+            <!-- Foto 5 con su propio panel independiente -->
             <div class="photo-card">
-              <img src="assets/bitacora/2026-09-festejo-baile.jpg" alt="Concurso de Baile 21 de Septiembre" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=BaileSeptiembre21'">
-              <span class="photo-caption">Concurso de baile y participación de estudiantes</span>
+              <div class="media-inner" onclick="openLightbox('assets/bitacora/2026-09-festejo-canastones.jpg')">
+                <img src="assets/bitacora/2026-09-festejo-canastones.jpg" alt="Entrega de Canastones" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=CanastonesCETAL'">
+                <span class="photo-caption">🔍 Entrega de regalos y canastones institucionales (Clic para ampliar)</span>
+              </div>
+              <div class="reaction-panel" data-media-id="med-5" data-title="Entrega de Regalos y Canastones">
+                <div class="reaction-buttons">
+                  <button class="reaction-btn react-btn heart" onclick="reactMedia('med-5', 'heart')">❤️ Me Encanta (<span class="count-heart">0</span>)</button>
+                  <button class="reaction-btn react-btn like" onclick="reactMedia('med-5', 'like')">👍 Me Gusta (<span class="count-like">0</span>)</button>
+                </div>
+                <div class="score-container">
+                  <div class="score-info-row">
+                    <span>Votos del Recuerdo</span>
+                    <span class="score-pct">0%</span>
+                  </div>
+                  <div class="score-bar-bg"><div class="score-bar-fill"></div></div>
+                </div>
+              </div>
             </div>
-            <div class="photo-card" style="margin-top: 8px;">
-              <img src="assets/bitacora/2026-09-festejo-canastones.jpg" alt="Entrega de Canastones" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=CanastonesCETAL'">
-              <span class="photo-caption">Entrega de regalos y canastones organizados por los docentes</span>
+
+            <!-- Foto 6 con su propio panel independiente -->
+            <div class="photo-card" style="margin-top: 12px;">
+              <div class="media-inner" onclick="openLightbox('assets/bitacora/2026-09-festejo-baile.jpg')">
+                <img src="assets/bitacora/2026-09-festejo-baile.jpg" alt="Concurso de Baile y Festejo" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=BaileInstitucional21'">
+                <span class="photo-caption">🔍 Concurso de baile y momentos institucionales (Clic para ampliar)</span>
+              </div>
+              <div class="reaction-panel" data-media-id="med-6" data-title="Concurso de Baile Institucional">
+                <div class="reaction-buttons">
+                  <button class="reaction-btn react-btn heart" onclick="reactMedia('med-6', 'heart')">❤️ Me Encanta (<span class="count-heart">0</span>)</button>
+                  <button class="reaction-btn react-btn like" onclick="reactMedia('med-6', 'like')">👍 Me Gusta (<span class="count-like">0</span>)</button>
+                </div>
+                <div class="score-container">
+                  <div class="score-info-row">
+                    <span>Votos del Recuerdo</span>
+                    <span class="score-pct">0%</span>
+                  </div>
+                  <div class="score-bar-bg"><div class="score-bar-fill"></div></div>
+                </div>
+              </div>
             </div>
+
+          </div>
+        </div>
+
+        <!-- 5. EVENTO: Viernes 25 (Video desde Google Drive) -->
+        <div class="timeline-item left" data-date="2026-09-25">
+          <div class="timeline-content">
+            <div class="event-date">📅 Viernes 25 de Septiembre de 2026 | ⏰ Turno Noche</div>
+            <h3 class="event-title">Confraternización de Curso: Apthapi y Reconocimientos</h3>
+            <p class="event-description">
+              Memorable celebración organizada por nuestro curso. Disfrutamos de un excelente "apthapi de chucherías" para compartir en unión, acompañado de la emotiva entrega de certificados de bolsillo con su debido reconocimiento al esfuerzo de cada compañero.
+            </p>
+            
+            <!-- Video embebido desde Google Drive optimizado para GitHub -->
+            <div class="photo-card">
+              <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; border-radius: 8px; overflow: hidden;">
+                <iframe src="https://drive.google.com/file/d/1Vnco3kMCJSGQ3c7Tf97sI72UX_hTFRyc/preview" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+                        allow="autoplay" 
+                        allowfullscreen>
+                </iframe>
+              </div>
+              <span class="photo-caption" style="margin-top: 10px; display: block;">🎬 Video oficial del evento (Alojado en la nube)</span>
+
+              <div class="reaction-panel" data-media-id="med-7" data-title="Video Resumen: Apthapi y Reconocimientos">
+                <div class="reaction-buttons">
+                  <button class="reaction-btn react-btn heart" onclick="reactMedia('med-7', 'heart')">❤️ Me Encanta (<span class="count-heart">0</span>)</button>
+                  <button class="reaction-btn react-btn like" onclick="reactMedia('med-7', 'like')">👍 Me Gusta (<span class="count-like">0</span>)</button>
+                </div>
+                <div class="score-container">
+                  <div class="score-info-row">
+                    <span>Votos del Recuerdo</span>
+                    <span class="score-pct">0%</span>
+                  </div>
+                  <div class="score-bar-bg"><div class="score-bar-fill"></div></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -343,12 +568,17 @@
     </div>
 
     <footer>
-      <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL. [Secure Terminal v4.4 Sync]</p>
+      <p>&copy; 2026 - 2027 Carrera de Sistemas Informáticos CETAL. [Secure Terminal v4.7 Sync]</p>
     </footer>
   </main>
 
+  <!-- VENTANA EMERGENTE (LIGHTBOX) PARA PANTALLA COMPLETA -->
+  <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img class="lightbox-content" id="lightboxImg" alt="Ampliar imagen">
+  </div>
+
   <script>
-    /* Control de Sidebar */
     const sidebar = document.getElementById('sidebar');
     const toggleMenuBtn = document.getElementById('toggleMenuBtn');
     
@@ -357,18 +587,16 @@
       document.body.classList.toggle('menu-hidden');
     });
 
-    /* Mostrar menú al cargar 1 segundo y luego ocultarlo automáticamente para ganar espacio */
     window.addEventListener('DOMContentLoaded', () => {
-      // Inicia abierto por defecto en HTML para que se vea 1 segundo, luego se oculta:
       setTimeout(() => {
         if (sidebar && !sidebar.classList.contains('collapsed')) {
           sidebar.classList.add('collapsed');
           document.body.classList.add('menu-hidden');
         }
-      }, 1000); // 1000 milisegundos = 1 segundo exacto
+      }, 1000);
+      loadReactions();
     });
 
-    /* Control de Tema Día / Noche */
     const themeBtn = document.getElementById('themeToggleBtn');
     const htmlElement = document.documentElement;
 
@@ -389,7 +617,6 @@
       }
     });
 
-    /* Sistema de Reloj Digital en Tiempo Real */
     function updateClockSystem() {
       const now = new Date();
       const h = String(now.getHours()).padStart(2, '0');
@@ -408,7 +635,6 @@
     setInterval(updateClockSystem, 1000);
     updateClockSystem();
 
-    /* Función para ordenar la línea de tiempo */
     function sortTimeline(order) {
       const wrapper = document.getElementById('timeline-wrapper');
       const items = Array.from(wrapper.getElementsByClassName('timeline-item'));
@@ -433,7 +659,97 @@
       });
     }
 
-    /* Control de Audio */
+    function openLightbox(imgSrc) {
+      const modal = document.getElementById('lightboxModal');
+      const modalImg = document.getElementById('lightboxImg');
+      modalImg.src = imgSrc;
+      modal.classList.add('active');
+    }
+
+    function closeLightbox() {
+      const modal = document.getElementById('lightboxModal');
+      modal.classList.remove('active');
+    }
+
+    // TÍTULOS DE CADA MULTIMEDIA PARA EL RANKING
+    const mediaTitles = {
+      'med-1': 'Inicio de Clases (Bienvenida)',
+      'med-2': 'Desfile Cívico - Delegación',
+      'med-3': 'Bloque de Sistemas y Docentes',
+      'med-4': 'Entrega de Maletas Alcaldía',
+      'med-5': 'Entrega de Regalos y Canastones',
+      'med-6': 'Concurso de Baile Institucional',
+      'med-7': 'Video: Apthapi y Reconocimientos'
+    };
+
+    function getStorageData() {
+      let data = localStorage.getItem('cetal_media_reactions');
+      if (!data) {
+        data = {
+          'med-1': { heart: 0, like: 0 },
+          'med-2': { heart: 0, like: 0 },
+          'med-3': { heart: 0, like: 0 },
+          'med-4': { heart: 0, like: 0 },
+          'med-5': { heart: 0, like: 0 },
+          'med-6': { heart: 0, like: 0 },
+          'med-7': { heart: 0, like: 0 }
+        };
+      } else {
+        data = JSON.parse(data);
+      }
+      return data;
+    }
+
+    function reactMedia(mediaId, type) {
+      let data = getStorageData();
+      data[mediaId][type] = (data[mediaId][type] || 0) + 1;
+      localStorage.setItem('cetal_media_reactions', JSON.stringify(data));
+      updateUIForMedia(mediaId, data[mediaId]);
+      updateRanking(data);
+    }
+
+    function updateUIForMedia(mediaId, stats) {
+      const panel = document.querySelector(`.reaction-panel[data-media-id="${mediaId}"]`);
+      if (!panel) return;
+
+      panel.querySelector('.count-heart').innerText = stats.heart;
+      panel.querySelector('.count-like').innerText = stats.like;
+
+      const total = stats.heart + stats.like;
+      let pct = Math.min(100, Math.round((total / 12) * 100));
+      
+      panel.querySelector('.score-pct').innerText = pct + '%';
+      panel.querySelector('.score-bar-fill').style.width = pct + '%';
+    }
+
+    function loadReactions() {
+      let data = getStorageData();
+      for (let id in data) {
+        updateUIForMedia(id, data[id]);
+      }
+      updateRanking(data);
+    }
+
+    function updateRanking(data) {
+      const listContainer = document.getElementById('ranking-list-content');
+      if (!listContainer) return;
+
+      let ranked = Object.keys(data).map(id => {
+        let total = (data[id].heart || 0) + (data[id].like || 0);
+        return { id: id, title: mediaTitles[id] || 'Recuerdo', total: total };
+      });
+
+      ranked.sort((a, b) => b.total - a.total);
+
+      let html = '';
+      ranked.slice(0, 3).forEach((item, idx) => {
+        let medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+        html += `<div class="ranking-item"><span>${medal} <strong>${item.title}</strong></span> <span>${item.total} votos</span></div>`;
+      });
+
+      listContainer.innerHTML = html;
+    }
+
     const audio = document.getElementById('bg-music');
     const musicBtn = document.getElementById('btn-toggle-music');
     
