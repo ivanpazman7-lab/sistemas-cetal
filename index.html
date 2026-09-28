@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
@@ -51,11 +51,12 @@
     aside::-webkit-scrollbar { display: none; }
     aside.collapsed { width: 0px; transform: translateX(-280px); overflow: hidden; }
 
+    /* Botón flotante idéntico al de las demás pestañas */
     .toggle-sidebar-btn {
       position: fixed; left: 260px; top: 15px; z-index: 1000;
       background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
-      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.3); transition: left 0.3s ease, transform 0.2s;
+      width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 0 12px rgba(255,183,0,0.3); transition: left 0.3s ease, transform 0.2s;
     }
     .toggle-sidebar-btn:hover { transform: scale(1.1); background: var(--card-hover); }
     body.menu-hidden .toggle-sidebar-btn { left: 15px; }
@@ -65,7 +66,7 @@
     .user-info .name { font-size: 0.9rem; font-weight: bold; color: var(--text-main); font-family: var(--font-mono); }
     .user-info .role { font-size: 0.72rem; color: var(--accent); font-family: var(--font-mono); }
 
-    .nav-group { padding: 14px 16px; border-bottom: 1px solid rgba(30,41,59,0.5); }
+    .nav-group { padding: 14px 16px; border-bottom: 1px solid var(--border-color); }
     .nav-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--font-mono); }
     .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 6px; transition: all 0.2s; cursor: pointer; }
     .nav-item:hover { background-color: var(--card-hover); color: var(--text-main); }
@@ -85,17 +86,17 @@
       background-color: var(--bg-sidebar); border-bottom: 1px solid var(--border-color); padding: 10px 24px;
       display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 10px;
     }
-    .topbar-left { font-family: var(--font-mono); font-size: 0.8rem; color: var(--primary); margin-left: 35px; }
+    .topbar-left { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-gold); margin-left: 42px; }
     .topbar-right-widgets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
     .flip-clock { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); }
     .flip-group { display: flex; align-items: center; gap: 2px; }
     .flip-card {
-      background: var(--card-bg); border: 1px solid var(--primary); border-radius: 4px; width: 24px; height: 30px;
+      background: var(--card-bg); border: 1px solid var(--accent-gold); border-radius: 4px; width: 24px; height: 30px;
       display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: var(--text-main);
-      box-shadow: 0 0 6px rgba(0,242,254,0.3);
+      box-shadow: 0 0 6px rgba(255,183,0,0.3);
     }
-    .flip-colon { color: var(--primary); font-weight: bold; font-size: 0.85rem; }
+    .flip-colon { color: var(--accent-gold); font-weight: bold; font-size: 0.85rem; }
 
     .theme-toggle-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
     .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.05); }
@@ -104,8 +105,8 @@
     .container { max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; box-sizing: border-box; }
 
     .music-btn {
-      background: var(--primary); color: #030712; border: none; padding: 7px 16px; font-weight: bold; border-radius: 20px;
-      cursor: pointer; font-size: 0.8rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(0,242,254,0.3);
+      background: var(--accent-gold); color: #030712; border: none; padding: 7px 16px; font-weight: bold; border-radius: 20px;
+      cursor: pointer; font-size: 0.8rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(255,183,0,0.3);
     }
     .music-btn:hover { opacity: 0.9; transform: scale(1.03); }
 
@@ -113,7 +114,15 @@
       background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 26px;
       margin-bottom: 20px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden;
     }
-    .swiss-weather-bg { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 5rem; opacity: 0.15; pointer-events: none; }
+    
+    @keyframes slowFloat {
+      0%, 100% { transform: translateY(-50%) translateY(0); }
+      50% { transform: translateY(-50%) translateY(-8px); }
+    }
+    .swiss-weather-bg {
+      position: absolute; right: 20px; top: 50%; font-size: 5rem; opacity: 0.2; pointer-events: none;
+      animation: slowFloat 6s ease-in-out infinite;
+    }
     .banner-date-title { font-family: var(--font-sans); color: var(--text-main); font-size: 1.8rem; font-weight: 800; margin-top: 10px; }
     .center-flip-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
     .flip-box-group { display: flex; align-items: center; gap: 3px; }
@@ -121,22 +130,21 @@
     .flip-label-sm { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase; margin-right: 4px; }
     .day-message { font-size: 0.9rem; margin-top: 10px; color: var(--accent-gold); font-weight: 600; font-style: italic; }
 
-    /* MONITOR CRT */
     .crt-monitor {
-      background: #020617; border: 3px solid #1e293b; border-radius: 12px;
-      box-shadow: inset 0 0 30px rgba(0,242,254,0.15), 0 10px 25px rgba(0,0,0,0.8);
+      background: var(--card-bg); border: 3px solid var(--border-color); border-radius: 12px;
+      box-shadow: inset 0 0 30px rgba(255,183,0,0.05), 0 10px 25px rgba(0,0,0,0.5);
       position: relative; overflow: hidden; font-family: var(--font-mono); margin-bottom: 20px;
     }
     .crt-monitor::before {
       content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
       z-index: 10; background-size: 100% 3px, 3px 100%; pointer-events: none;
     }
     .crt-header {
-      background: #09101d; border-bottom: 1px solid #1e293b; padding: 10px 15px;
-      display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--primary);
+      background: var(--card-hover); border-bottom: 1px solid var(--border-color); padding: 10px 15px;
+      display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--accent-gold);
     }
-    .crt-led { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent); display: inline-block; margin-right: 6px; }
+    .crt-led { width: 8px; height: 8px; background: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); display: inline-block; margin-right: 6px; }
 
     .crt-body-scroll { height: 180px; overflow: hidden; position: relative; padding: 15px; }
     .credits-container { position: absolute; width: 100%; left: 0; animation: starWarsScroll 22s linear infinite; }
@@ -153,19 +161,18 @@
     .credit-desc { color: var(--text-main); font-size: 0.80rem; opacity: 0.9; }
     .credit-time { color: var(--text-muted); font-size: 0.7rem; margin-top: 2px; }
 
-    /* Ticker Lento Bitácora */
     .tv-ticker {
-      background: #000; border-top: 1px solid #1e293b; padding: 8px 12px;
+      background: var(--card-hover); border-top: 1px solid var(--border-color); padding: 8px 12px;
       display: flex; align-items: center; overflow: hidden; white-space: nowrap; font-size: 0.8rem;
     }
     .ticker-label {
-      background: var(--accent-orange); color: #000; font-weight: bold; padding: 2px 8px;
+      background: var(--accent-gold); color: #030712; font-weight: bold; padding: 2px 8px;
       border-radius: 4px; margin-right: 12px; flex-shrink: 0; font-size: 0.75rem;
     }
     .ticker-content {
       display: inline-block;
       animation: tickerMoveRightToLeft 65s linear infinite;
-      color: var(--accent);
+      color: var(--accent-gold);
     }
     .tv-ticker:hover .ticker-content { animation-play-state: paused; }
     @keyframes tickerMoveRightToLeft {
@@ -174,20 +181,18 @@
     }
     .ticker-item { margin-right: 60px; display: inline-block; }
 
-    /* WIDGETS TACÓMETRO */
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .gauge-widget {
-      background: #020617; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;
-      text-align: center; font-family: var(--font-mono); box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;
+      text-align: center; font-family: var(--font-mono); box-shadow: var(--shadow);
       position: relative; overflow: hidden;
     }
     .gauge-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .gauge-number {
-      font-size: 2.5rem; font-weight: bold; color: var(--primary); margin: 6px 0;
-      text-shadow: 0 0 10px rgba(0,242,254,0.4);
+      font-size: 2.5rem; font-weight: bold; color: var(--accent-gold); margin: 6px 0;
+      text-shadow: 0 0 10px rgba(255,183,0,0.3);
     }
-    .gauge-number.gold { color: var(--accent-gold); text-shadow: 0 0 10px rgba(255,183,0,0.4); }
-    .gauge-number.danger { color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.4); }
+    .gauge-number.danger { color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.3); }
     .gauge-subtext { font-size: 0.78rem; color: var(--text-main); margin-top: 4px; }
     .birthday-names-box {
       margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(255,183,0,0.3);
@@ -217,7 +222,7 @@
     
     <div class="nav-group">
       <div class="nav-title">Navegacion Oficial</div>
-      <a href="index.html" class="nav-item c-cyan active">⚡ Inicio</a>
+      <a href="index.html" class="nav-item c-yellow active">⚡ Inicio</a>
       <a href="anuario.html" class="nav-item c-green">👥 Anuario</a>
       <a href="actividades.html" class="nav-item c-yellow">📋 Bitacora</a>
       <a href="proyectos.html" class="nav-item c-purple">🚀 Proyectos</a>
@@ -272,8 +277,8 @@
       <!-- BANNER CENTRAL CON CLIMA Y DÍA -->
       <div class="status-banner">
         <div class="swiss-weather-bg" id="swiss-icon">☀️</div>
-        <div style="font-family: var(--font-mono); color: var(--accent); font-weight: bold; font-size: 0.85rem; letter-spacing: 1.5px;">
-          [SECURITY_STATE: <span style="color: var(--primary);">OPTIMIZED</span>] &bull; TURNO NOCHE
+        <div style="font-family: var(--font-mono); color: var(--accent-gold); font-weight: bold; font-size: 0.85rem; letter-spacing: 1.5px;">
+          [SECURITY_STATE: <span style="color: var(--accent-gold);">OPTIMIZED</span>] &bull; TURNO NOCHE
         </div>
         <div class="banner-date-title" id="center-day-name">CARGANDO...</div>
         <div class="center-flip-container">
@@ -323,7 +328,7 @@
           <div class="gauge-label">⏱️ Ciclo Académico Turno Noche</div>
           <div class="gauge-number" id="counter-days">0</div>
           <div class="gauge-subtext">Días de Clases (Lunes a Jueves)</div>
-          <div style="margin-top: 12px; font-size: 0.8rem; color: var(--accent);">
+          <div style="margin-top: 12px; font-size: 0.8rem; color: var(--accent-gold);">
             👥 <strong id="survivors-num">35</strong> Sobrevivientes Activos
           </div>
         </div>
@@ -358,7 +363,9 @@
   <script src="data.js"></script>
 
   <script>
-    // Lógica para poblar index.html usando CETAL_DB
+    const sidebar = document.getElementById('sidebar');
+    const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+
     function calculateBusinessDays(startDateStr) {
       let startDate = new Date(startDateStr);
       let today = new Date();
@@ -366,13 +373,19 @@
       let curDate = new Date(startDate.getTime());
       while (curDate <= today) {
         let dayOfWeek = curDate.getDay();
-        if (dayOfWeek >= 1 && dayOfWeek <= 4) count++; // Lunes a Jueves
+        if (dayOfWeek >= 1 && dayOfWeek <= 4) count++;
         curDate.setDate(curDate.getDate() + 1);
       }
       return count;
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Corrección robusta para móviles: Ocultar barra lateral en pantallas menores a 768px de forma inmediata tras cargar
+      if (window.innerWidth <= 768) {
+        sidebar.classList.add('collapsed');
+        document.body.classList.add('menu-hidden');
+      }
+
       // 1. Proyectos en Terminal CRT
       const projBox = document.getElementById('index-projects-box');
       if(projBox && CETAL_DB.projects) {
@@ -402,9 +415,9 @@
         document.getElementById('casualty-box').innerText = `Retirado oficial: ${CETAL_DB.config.casualties[0].name}`;
       }
 
-      // 4. Cumpleañeros del mes actual (Sincronizado exactamente con CETAL_DB.students)
+      // 4. Cumpleañeros del mes actual
       const now = new Date();
-      const currentMonth = now.getMonth() + 1; // 1 a 12 (Septiembre = 9)
+      const currentMonth = now.getMonth() + 1;
       const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       
       document.getElementById('month-label').innerText = `🎂 Cumpleañeros de ${monthNames[currentMonth - 1]}`;
@@ -432,11 +445,18 @@
       }
     });
 
-    // Scripts visuales de la interfaz
-    const sidebar = document.getElementById('sidebar');
-    document.getElementById('toggleMenuBtn').addEventListener('click', () => {
+    toggleMenuBtn.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
       document.body.classList.toggle('menu-hidden');
+    });
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add('collapsed');
+          document.body.classList.add('menu-hidden');
+        }
+      });
     });
 
     const themeBtn = document.getElementById('themeToggleBtn');
@@ -451,15 +471,39 @@
 
     function updateClock() {
       const now = new Date();
+      
+      // Reloj superior
       document.getElementById('f-h1').innerText = String(now.getHours()).padStart(2,'0')[0];
       document.getElementById('f-h2').innerText = String(now.getHours()).padStart(2,'0')[1];
       document.getElementById('f-m1').innerText = String(now.getMinutes()).padStart(2,'0')[0];
       document.getElementById('f-m2').innerText = String(now.getMinutes()).padStart(2,'0')[1];
       document.getElementById('f-s1').innerText = String(now.getSeconds()).padStart(2,'0')[0];
       document.getElementById('f-s2').innerText = String(now.getSeconds()).padStart(2,'0')[1];
+      
+      // Día de la semana en el banner
       document.getElementById('center-day-name').innerText = now.toLocaleDateString('es-ES', { weekday: 'long' }).toUpperCase();
+
+      // Rellenar fecha actual (Día y Mes en formato de 2 dígitos)
+      const dayStr = String(now.getDate()).padStart(2, '0');
+      document.getElementById('cf-d1').innerText = dayStr[0];
+      document.getElementById('cf-d2').innerText = dayStr[1];
+
+      const monthStr = String(now.getMonth() + 1).padStart(2, '0');
+      document.getElementById('cf-m1').innerText = monthStr[0];
+      document.getElementById('cf-m2').innerText = monthStr[1];
+
+      // Icono de sol/luna según la hora
+      const hour = now.getHours();
+      const swissIcon = document.getElementById('swiss-icon');
+      if (hour >= 6 && hour < 18) {
+        swissIcon.innerText = '☀️';
+      } else {
+        swissIcon.innerText = '🌙';
+      }
     }
-    setInterval(updateClock, 1000); updateClock();
+    
+    setInterval(updateClock, 1000); 
+    updateClock();
   </script>
 </body>
 </html>
