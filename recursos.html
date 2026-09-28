@@ -213,23 +213,25 @@
             color: var(--accent-blue);
         }
 
-        .input-container {
+        /* Contenedor de línea de comandos alineada correctamente */
+        .input-line-wrapper {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
-            margin-top: 6px;
+            white-space: nowrap;
+            margin-top: 4px;
+            width: 100%;
         }
 
-        .input-container input {
+        .input-line-wrapper input {
             flex: 1;
-            min-width: 140px;
             background: transparent;
             border: none;
             color: var(--text-color);
             font-family: 'Consolas', monospace;
             font-size: 13px;
             outline: none;
-            margin-left: 6px;
+            margin-left: 4px;
+            caret-color: var(--accent-green);
         }
 
         /* Tablero de Ayuda y Aprendizaje Interactivo (Abajo) */
@@ -299,19 +301,18 @@
         .warning { color: var(--accent-yellow); }
         .error { color: var(--accent-red); }
 
-        /* Ajustes específicos para móviles pequeños */
         @media (max-width: 600px) {
             body { padding: 4px; }
             .vm-window { height: 50vh; min-height: 300px; }
             .terminal-body { font-size: 12px; padding: 8px; }
-            .input-container input { font-size: 12px; }
+            .input-line-wrapper input { font-size: 12px; }
             .help-panel { padding: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Pantalla de Carga Masiva (Boot Sequence) -->
+    <!-- Pantalla de Carga Inicial -->
     <div id="boot-screen">
         <div id="bootContainer" style="width: 100%; height: 100%; overflow: hidden;"></div>
     </div>
@@ -351,20 +352,19 @@
             <div class="terminal-body" id="terminalBody" onclick="document.getElementById('commandInput').focus();">
                 <div class="output-line">[SISTEMA]: Linux cetal-sec 6.1.0-kali9-amd64 x86_64 Kernel.</div>
                 <div class="output-line">[ENTIDAD]: CETAL SISTEMAS INFORMÁTICOS | Módulo de Recursos Activo.</div>
-                <div class="output-line warning">> Escribe <span style="color:var(--accent-blue)">help</span> para ver los comandos disponibles o haz clic en las tarjetas de abajo para ejecutarlos.</div>
+                <div class="output-line warning">> Escribe <span style="color:var(--accent-blue)">help</span> para ver los comandos o pulsa las tarjetas de abajo.</div>
                 <div class="output-line">------------------------------------------------------------------</div>
                 <div id="historyOutput"></div>
 
-                <div class="input-container">
-                    <span class="prompt-text">root@cetal-sec:</span>
-                    <span class="path-text" id="currentPathPrompt">/archivos/recursos</span>
-                    <span class="prompt-text">#</span>
+                <!-- Línea de comandos compacta y alineada -->
+                <div class="input-line-wrapper">
+                    <span class="prompt-text">root@cetal-sec:</span><span class="path-text" id="currentPathPrompt">/archivos/recursos</span><span class="prompt-text">#</span>
                     <input type="text" id="commandInput" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
 
-        <!-- Tablero Individualizado de Comandos y Aprendizaje (Abajo) -->
+        <!-- Tablero de Ayuda y Aprendizaje Interactivo (Abajo) -->
         <div class="help-panel">
             <div class="help-header">
                 <span>🛠️ Guía Interactiva & Tarjetas de Aprendizaje (Haz clic para probar)</span>
@@ -373,7 +373,15 @@
             <div class="commands-grid">
                 <div class="cmd-card" onclick="executePreset('ls')">
                     <div class="cmd-name">ls <span>📂</span></div>
-                    <div class="cmd-desc">Lista archivos y carpetas del directorio actual.</div>
+                    <div class="cmd-desc">Lista documentos y carpetas del directorio.</div>
+                </div>
+                <div class="cmd-card" onclick="executePreset('cat manual_cetal.pdf')">
+                    <div class="cmd-name">cat [archivo] <span>📖</span></div>
+                    <div class="cmd-desc">Lee el contenido de un manual o documento.</div>
+                </div>
+                <div class="cmd-card" onclick="executePreset('wget manual_cetal.pdf')">
+                    <div class="cmd-name">wget / curl [archivo] <span>📥</span></div>
+                    <div class="cmd-desc">Descarga un documento a tu dispositivo.</div>
                 </div>
                 <div class="cmd-card" onclick="executePreset('cd ..')">
                     <div class="cmd-name">cd .. <span>⬅️</span></div>
@@ -383,13 +391,9 @@
                     <div class="cmd-name">pwd <span>📍</span></div>
                     <div class="cmd-desc">Muestra la ruta absoluta actual.</div>
                 </div>
-                <div class="cmd-card" onclick="executePreset('cat normativa.txt')">
-                    <div class="cmd-name">cat [archivo] <span>📖</span></div>
-                    <div class="cmd-desc">Lee el contenido de un archivo de texto.</div>
-                </div>
                 <div class="cmd-card" onclick="executePreset('mkdir laboratorio')">
                     <div class="cmd-name">mkdir [dir] <span>📁</span></div>
-                    <div class="cmd-desc">Crea un nuevo directorio en la ruta.</div>
+                    <div class="cmd-desc">Crea un nuevo directorio de trabajo.</div>
                 </div>
                 <div class="cmd-card" onclick="executePreset('touch apunte.txt')">
                     <div class="cmd-name">touch [archivo] <span>📝</span></div>
@@ -397,7 +401,7 @@
                 </div>
                 <div class="cmd-card" onclick="executePreset('rm apunte.txt')">
                     <div class="cmd-name">rm [archivo] <span>🗑️</span></div>
-                    <div class="cmd-desc">Elimina un archivo o directorio existente.</div>
+                    <div class="cmd-desc">Elimina un archivo o directorio.</div>
                 </div>
                 <div class="cmd-card" onclick="executePreset('whoami')">
                     <div class="cmd-name">whoami <span>👤</span></div>
@@ -405,7 +409,7 @@
                 </div>
                 <div class="cmd-card" onclick="executePreset('uname -a')">
                     <div class="cmd-name">uname -a <span>💻</span></div>
-                    <div class="cmd-desc">Muestra información detallada del Kernel.</div>
+                    <div class="cmd-desc">Muestra información del Kernel Linux.</div>
                 </div>
                 <div class="cmd-card" onclick="executePreset('matrix')">
                     <div class="cmd-name">matrix <span>✨</span></div>
@@ -413,11 +417,11 @@
                 </div>
                 <div class="cmd-card" onclick="executePreset('sudo pkg update')">
                     <div class="cmd-name">sudo pkg update <span>⚡</span></div>
-                    <div class="cmd-desc">Actualiza repositorios y dependencias.</div>
+                    <div class="cmd-desc">Actualiza repositorios (45+ líneas reales con OK/bad).</div>
                 </div>
-                <div class="cmd-card" onclick="executePreset('sudo pkg upgrade -y')">
-                    <div class="cmd-name">sudo pkg upgrade -y <span>🚀</span></div>
-                    <div class="cmd-desc">Repara errores y actualiza el sistema.</div>
+                <div class="cmd-card" onclick="executePreset('sudo pkg upgrade')">
+                    <div class="cmd-name">sudo pkg upgrade <span>🚀</span></div>
+                    <div class="cmd-desc">Actualización interactiva por fases (Y/N).</div>
                 </div>
             </div>
         </div>
@@ -471,18 +475,18 @@
             bootContainer.appendChild(div);
             bootContainer.scrollTop = bootContainer.scrollHeight;
             currentLine++;
-            setTimeout(renderBootLines, 200); 
+            setTimeout(renderBootLines, 150); 
         } else {
             setTimeout(() => {
                 bootScreen.style.display = "none";
                 mainContainer.style.display = "flex";
                 document.getElementById("commandInput").focus();
-            }, 400);
+            }, 300);
         }
     }
     window.onload = renderBootLines;
 
-    // Sistema de Archivos Virtual Multitopografía Interactivo ("Todo Terreno")
+    // Sistema de archivos virtual con documentos reales y de descarga
     let fileSystem = {
         "archivos": {
             type: "dir",
@@ -490,9 +494,10 @@
                 "recursos": {
                     type: "dir",
                     content: {
-                        "normativa.txt": { type: "file", content: "Reglamento institucional CETAL 2026 - Sistemas Informáticos Turno Noche." },
-                        "herramientas.txt": { type: "file", content: "Corel VideoStudio, Blender, Stellarium, Canva, Rclone y ClamAV." },
-                        "seguridad.conf": { type: "file", content: "MITRE ATT&CK Framework, OSSTMM, Cisco CCNA Security configs." }
+                        "manual_cetal.pdf": { type: "file", content: "=== MANUAL CETAL 2026 ===\nCarrera: Sistemas Informáticos (Turno Noche).\nContenido: Redes, Cisco Packet Tracer, Mitre ATT&CK, Linux OSINT y Seguridad perimetral." },
+                        "scripts_rclone.sh": { type: "file", content: "#!/bin/bash\n# Script de respaldo automático con Rclone y ClamAV\necho 'Iniciando respaldo seguro a Google Drive...'\nrclone copy /archivos remote:Respaldo_CETAL --progress" },
+                        "seguridad.log": { type: "file", content: "[INFO] Monitoreo de DVR 7 cámaras activo.\n[WARN] Intento de acceso bloqueado desde IP externa en puerto 8080.\n[OK] Certificados SSL validados." },
+                        "apuntes_redes.txt": { type: "file", content: "Apuntes de Redes y Subnetting:\n- Máscaras de subred CIDR /24 y /30.\n- Configuración de routers Arris y Wi-Fi doble banda.\n- Simulación de cableado en Cisco Packet Tracer." }
                     }
                 }
             }
@@ -503,6 +508,10 @@
     let commandHistory = [];
     let historyIndex = -1;
     let matrixInterval = null;
+
+    // Control de estados interactivos para pkg upgrade por fases
+    let upgradePhaseState = 0; // 0: normal, 1: esperando 1er Y, 2: esperando 2do Y, 3: esperando 3er Y
+    let isConsoleLocked = false;
 
     const terminalBody = document.getElementById("terminalBody");
     const historyOutput = document.getElementById("historyOutput");
@@ -602,41 +611,234 @@
         document.getElementById("matrix-screen").style.display = "none";
     }
 
-    // Procesador de Comandos Robusto
+    // Función para simular descarga real de archivo en navegador mediante Blob
+    function downloadVirtualFile(filename, content) {
+        let blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // Procesador Principal de Comandos
     function processCommand(input) {
+        if (isConsoleLocked) {
+            printToTerminal(`<span class="error">[!] Consola actualizada. Recarga la página (F5) para iniciar una nueva sesión limpia.</span>`);
+            return;
+        }
+
         printToTerminal(`<span class="prompt-text">root@cetal-sec:</span><span class="path-text">/${currentPathArray.join('/')}</span><span class="prompt-text">#</span> ${input}`);
         
         let cleanInput = input.trim();
+
+        // Manejo de flujo interactivo por Fases para upgrade (Y/N)
+        if (upgradePhaseState > 0) {
+            let resp = cleanInput.toLowerCase();
+            if (resp === "y" || resp === "yes" || resp === "") {
+                if (upgradePhaseState === 1) {
+                    // Fase 1: Exactamente 10 líneas de carga
+                    let phase1Lines = [
+                        "Reading package lists... Done",
+                        "Building dependency tree... Done",
+                        "Reading state information... Done",
+                        "Calculating upgrade... Done",
+                        "The following extra packages will be installed:",
+                        "  cetal-sec-core libssl3-cetal linux-headers-6.1.0-kali9",
+                        "Suggested packages:",
+                        "  cetal-doc-pdf wireless-tools-cetal",
+                        "<span class=\"warning\">Do you want to continue? [Y/n]</span>",
+                        "<span class=\"success\">[ ✓ ] Fase 1 procesada. Presiona 'Y' de nuevo para continuar.</span>"
+                    ];
+                    simulateProgressiveOutput(phase1Lines, 120, () => {
+                        printToTerminal("<span class=\"warning\">Get:1 http://kali.download/kali triton/main amd64 Upgrade packages [24.5 MB]. Proceed? [Y/n]</span>");
+                    });
+                    upgradePhaseState = 2;
+                } else if (upgradePhaseState === 2) {
+                    // Fase 2: Exactamente 16 líneas de descarga y paquetes
+                    let phase2Lines = [
+                        "Get:1 http://kali.download/kali triton/main amd64 cetal-sec-core [8.2 MB]",
+                        "[====================>                        ] 42%",
+                        "Get:2 http://kali.download/kali triton/main amd64 libssl3-cetal [12.1 MB]",
+                        "[=========================================>   ] 88%",
+                        "Get:3 http://kali.download/kali triton/main amd64 linux-headers-6.1.0-kali9 [4.2 MB]",
+                        "[=============================================] 100%",
+                        "Fetched 24.5 MB in 3s (8,160 kB/s)",
+                        "Selecting previously unselected package cetal-sec-tools.",
+                        "Preparing to unpack .../cetal-sec-tools_2026_amd64.deb ...",
+                        "Unpacking cetal-sec-tools (2026-09) ...",
+                        "Setting up cetal-sec-tools (2026-09) ...",
+                        "Processing triggers for libc-bin (2.37-12) ...",
+                        "Processing triggers for man-db (2.12.0-4) ...",
+                        "Scanning cryptographic integrity tables...",
+                        "<span class=\"warning\">Final override confirmation required. Proceed? [Y/n]</span>",
+                        "<span class=\"success\">[ ✓ ] Fase 2 completada con éxito. Presiona 'Y' por última vez.</span>"
+                    ];
+                    simulateProgressiveOutput(phase2Lines, 100, () => {
+                        printToTerminal("<span class=\"warning\">Final step: Apply kernel changes and restart daemons? [Y/n]</span>");
+                    });
+                    upgradePhaseState = 3;
+                } else if (upgradePhaseState === 3) {
+                    // Fase 3: Exactamente 18 líneas de cierre y bloqueo de sesión
+                    let phase3Lines = [
+                        "Examining /etc/kernel/postinst.d.",
+                        "run-parts: executing /etc/kernel/postinst.d/initramfs-tools 6.1.0-kali9",
+                        "update-initramfs: Generating /boot/initrd.img-6.1.0-kali9",
+                        "Reloading systemctl daemon services... Done.",
+                        "Restarting network manager service... Done.",
+                        "Clearing temporary socket descriptors... Done.",
+                        "Removing obsolete configuration backups... Done.",
+                        "Synchronizing superblock caches to disk... Done.",
+                        "Checking file system consistency on /archivos... Clean.",
+                        "Verifying cryptographic signatures across 36 packages... OK.",
+                        "Updating dynamic linker cache... Done.",
+                        "Generating system audit report... Done.",
+                        "Cleaning package cache archives... Done.",
+                        "Finalizing system state parameters... Done.",
+                        "<span class=\"success\">[ ✓ ] Consola actualizada exitosamente.</span>",
+                        "<span class=\"success\">[ ★ ] Todo OK. Sistema operando al 100% de su capacidad.</span>",
+                        "<span class=\"warning\">[ i ] La consola ha finalizado su ciclo. Recarga la página para reiniciar el sistema.</span>",
+                        "------------------------------------------------------------------"
+                    ];
+                    simulateProgressiveOutput(phase3Lines, 100, () => {
+                        isConsoleLocked = true;
+                    });
+                    upgradePhaseState = 0;
+                }
+            } else {
+                printToTerminal("<span class=\"error\">Operación cancelada por el usuario. [Aborted]</span>");
+                upgradePhaseState = 0;
+            }
+            return;
+        }
+
         let args = cleanInput.split(/\s+/);
         let cmd = args[0];
         let target = args[1];
 
         let currentDir = getDirByPath(currentPathArray);
 
+        // 1. sudo pkg update con más de 45 líneas y variantes aleatorias (OK, warnings, bad)
         if (cmd === "sudo" && args[1] === "pkg" && args[2] === "update") {
+            // Seleccionamos aleatoriamente una variante de logs entre 3 opciones
+            let variant = Math.floor(Math.random() * 3);
             let updateSteps = [
-                "Ign:1 http://kali.download/kali triton InRelease",
+                "Get:1 http://kali.download/kali triton InRelease [11.3 kB]",
                 "Hit:2 http://kali.download/kali triton Release",
-                "<span class=\"warning\">Err:3 http://security.kali.org triton-security/main amd64 Packages</span>",
-                "  <span class=\"error\">404  Not Found [IP: 192.168.1.1 80]</span>",
-                "Get:4 http://kali.download/kali triton/main amd64 Packages [18.2 MB]",
-                "Fetched 18.3 MB in 12s (1,530 kB/s)",
+                "Get:3 http://kali.download/kali triton/main amd64 Packages [18.2 MB]",
+                "Ign:4 http://repo.cetal.edu.bo/linux triton InRelease",
+                "Get:5 http://repo.cetal.edu.bo/linux triton Release [2,410 B]",
+                "Get:6 http://repo.cetal.edu.bo/linux triton/main amd64 Packages [512 kB]",
+                "Hit:7 http://ftp.bo.debian.org/debian bookworm InRelease",
+                "Get:8 http://ftp.bo.debian.org/debian bookworm/main amd64 Metadata [215 kB]",
                 "Reading package lists... Done",
-                "<span class=\"error\">[ ✗ ] Advertencia: Se detectaron errores 'bad' en repositorios locales. Ejecuta 'sudo pkg upgrade -y' para reparar.</span>"
+                "Building dependency tree... Done",
+                "Reading state information... Done",
+                "Calculating upgrade... Done",
+                "Fetching mirror list from /etc/apt/sources.list.d/kali.list",
+                "Checking GPG signatures: keyring trusted.",
+                "Initializing cryptographic random number generator... Done.",
+                "Scanning local cache directory /var/cache/apt/archives/... Done.",
+                "Checking available disk space on /archivos... 42 GB free.",
+                "Resolving dependencies across 36 virtual packages..."
             ];
-            simulateProgressiveOutput(updateSteps, 800);
+
+            if (variant === 0) {
+                // Variante con 7 bad / errores mixtos
+                updateSteps.push(
+                    "<span class=\"warning\">W: Target Packages configured multiple times</span>",
+                    "<span class=\"error\">Err:3 http://security.kali.org triton-security/main amd64 Packages</span>",
+                    "  <span class=\"error\">404  Not Found [IP: 192.168.1.1 80]</span>",
+                    "<span class=\"error\">[ bad ] Repositorio secundario sin respuesta ICMP (Timeout).</span>",
+                    "<span class=\"error\">[ bad ] Error de lectura en búfer DMA del puerto eth0.</span>",
+                    "<span class=\"error\">[ bad ] Llave pública GPG expirada para repo.cetal.edu.bo.</span>",
+                    "<span class=\"error\">[ bad ] Paquete 'libssl3' con suma de verificación corrupta.</span>",
+                    "<span class=\"error\">[ bad ] Falla temporal en resolución DNS inversa.</span>",
+                    "<span class=\"error\">[ bad ] Inconsistencia en tabla de particiones ext4.</span>"
+                );
+            } else if (variant === 1) {
+                // Variante con todo bad (simulando caída masiva de red)
+                updateSteps.push(
+                    "<span class=\"error\">[ bad ] Error 503 Service Unavailable en pasarela principal.</span>",
+                    "<span class=\"error\">[ bad ] Timeout de conexión con espejo primario en La Paz.</span>",
+                    "<span class=\"error\">[ bad ] Certificado SSL inválido en mirror.kali.org.</span>",
+                    "<span class=\"error\">[ bad ] Pérdida de paquetes ICMP detectada (100% loss).</span>",
+                    "<span class=\"error\">[ bad ] Falla de autenticación en pasarela LDAP.</span>",
+                    "<span class=\"error\">[ bad ] Memoria caché saturada en /var/cache/apt/.</span>",
+                    "<span class=\"error\">[ bad ] Socket TCP cerrado por reinicio forzoso.</span>"
+                );
+            } else {
+                // Variante intercalada OK y bad
+                updateSteps.push(
+                    "<span class=\"success\">[ OK ] Conexión establecida con repo primario.</span>",
+                    "<span class=\"error\">[ bad ] Advertencia: Espejo de respaldo lento (12 KB/s).</span>",
+                    "<span class=\"success\">[ OK ] Verificación de paquetes APT completada.</span>",
+                    "<span class=\"error\">[ bad ] Paquete opcional 'python3-pip' no disponible.</span>",
+                    "<span class=\"success\">[ OK ] LLaves GPG actualizadas correctamente.</span>"
+                );
+            }
+
+            // Rellenar hasta alcanzar más de 45 líneas totales en consola
+            let filler = [
+                "Updating local file database (/var/lib/mlocate)... Done.",
+                "Triggering triggers for man-db (2.12.0-4)... Done.",
+                "Cleaning up obsolete packet archives... Done.",
+                "Rebuilding shared library cache (/etc/ld.so.cache)... Done.",
+                "Checking system daemon dependencies... Done.",
+                "Analyzing network route tables... Done.",
+                "Parsing firewall ruleset via iptables... Done.",
+                "Validating user group permissions for root... Done.",
+                "Inspecting audit logs for unauthorized access... 0 alerts.",
+                "Synchronizing hardware clock with NTP server... Done.",
+                "Allocating temporary swap space... Done.",
+                "Clearing stale PID files in /var/run/... Done.",
+                "Compiling kernel module symbol maps... Done.",
+                "Refreshing desktop portal shortcuts... Done.",
+                "Verifying storage integrity on /dev/sda1... OK.",
+                "Optimizing SQLite databases for fast retrieval... Done.",
+                "Preparing background worker daemons... Done.",
+                "Finalizing repository index compilation... Done.",
+                "<span class=\"success\">[ ✓ ] sudo pkg update finalizado con éxito. Todo OK. Ejecuta 'sudo pkg upgrade' para actualizar.</span>"
+            ];
+            updateSteps = updateSteps.concat(filler);
+
+            simulateProgressiveOutput(updateSteps, 80);
             return;
         }
 
-        if (cmd === "sudo" && args[1] === "pkg" && args[2] === "upgrade" && (args[3] === "-y" || args[3] === undefined)) {
-            let upgradeSteps = [
-                "Reading package lists... Done",
-                "<span class=\"success\">[ OK ] Sincronizando claves GPG y reparando tablas de paquetes...</span>",
-                "Calculating upgrade... Done",
-                "0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.",
-                "<span class=\"success\">[ ✓ ] sudo pkg upgrade completado con éxito. Sistema 100% actualizado y blindado.</span>"
-            ];
-            simulateProgressiveOutput(upgradeSteps, 600);
+        // 2. sudo pkg upgrade sin la bandera -y (Inicia el flujo interactivo de 3 fases)
+        if (cmd === "sudo" && args[1] === "pkg" && args[2] === "upgrade") {
+            printToTerminal("Reading package lists... Done");
+            printToTerminal("Building dependency tree... Done");
+            printToTerminal("Calculating upgrade... Done");
+            printToTerminal("The following packages have been kept back:");
+            printToTerminal("  cetal-sec-tools kali-linux-default");
+            printToTerminal("0 upgraded, 0 newly installed, 0 to remove and 2 not upgraded.");
+            printToTerminal("<span class=\"warning\">Do you want to continue? [Y/n]</span>");
+            upgradePhaseState = 1;
+            return;
+        }
+
+        // 3. wget o curl para descargar archivos simulados
+        if (cmd === "wget" || cmd === "curl") {
+            if (!target) {
+                printToTerminal(`Uso: ${cmd} [nombre_de_archivo]`);
+                return;
+            }
+            if (currentDir && currentDir[target] && currentDir[target].type === "file") {
+                printToTerminal(`--2026-09-28 12:07:19--  http://cetal-sec.local/archivos/${target}`);
+                printToTerminal(`Resolving cetal-sec.local (192.168.1.105)... connected.`);
+                printToTerminal(`HTTP request sent, awaiting response... <span class=\"success\">200 OK</span>`);
+                printToTerminal(`Length: unspecified [text/plain]`);
+                printToTerminal(`Saving to: '${target}'`);
+                printToTerminal(`<span class=\"success\">[ ✓ ] Archivo '${target}' descargado a tu equipo con éxito. Revisa tus descargas del navegador.</span>`);
+                downloadVirtualFile(target, currentDir[target].content);
+            } else {
+                printToTerminal(`<span class=\"error\">${cmd}: el archivo '${target}' no existe en este directorio.</span>`);
+            }
             return;
         }
 
@@ -646,13 +848,14 @@
   <span class="warning">ls</span>                      - Lista archivos y carpetas
   <span class="warning">cd [dir]</span>                - Cambia de directorio (ej: cd .. o cd recursos)
   <span class="warning">pwd</span>                     - Muestra la ruta absoluta actual
-  <span class="warning">cat [archivo]</span>           - Lee el contenido de un archivo
+  <span class="warning">cat [archivo]</span>           - Lee el contenido de un documento
+  <span class="warning">wget / curl [archivo]</span>   - Descarga un archivo a tu dispositivo
   <span class="warning">mkdir [nombre]</span>          - Crea una nueva carpeta
   <span class="warning">touch [nombre]</span>          - Crea un archivo de texto vacío
   <span class="warning">rm [nombre]</span>             - Elimina un archivo o carpeta
   <span class="warning">whoami</span>                  - Muestra el usuario actual
   <span class="warning">uname -a</span>                - Muestra la versión del Kernel
-  <span class="warning">matrix</span>                  - Lanza efectos visuales de terminal Matrix
+  <span class="warning">matrix</span>                  - Lanza efectos visuales Matrix
   <span class="warning">clear</span>                   - Limpia la pantalla de la terminal`);
                 break;
 
@@ -700,7 +903,7 @@
                     if (currentDir && currentDir[target] && currentDir[target].type === "dir") {
                         currentPathArray.push(target);
                     } else {
-                        printToterrminalError(`cd: el directorio '${target}' no existe.`);
+                        printTerminalError(`cd: el directorio '${target}' no existe.`);
                     }
                 }
                 updatePromptDisplay();
@@ -743,7 +946,7 @@
                 if (currentDir[target]) {
                     printToTerminal(`touch: '${target}' ya existe.`);
                 } else {
-                    currentDir[target] = { type: "file", content: "Archivo creado por el usuario en sesión." };
+                    currentDir[target] = { type: "file", content: "Apunte de clase creado por el estudiante en sesión." };
                     printToTerminal(`<span class="success">[ ✓ ] Archivo '${target}' creado con éxito.</span>`);
                 }
                 break;
@@ -766,11 +969,11 @@
                 break;
 
             default:
-                printToTerminal(`Comando no reconocido: ${cmd}. Escribe <span class="warning">help</span> para ver los comandos válidos.`);
+                printToTerminal(`Comando no reconocido: ${cmd}. Escribe <span class="warning">help</span> para obtener ayuda.`);
         }
     }
 
-    function printToterrminalError(msg) {
+    function printTerminalError(msg) {
         printToTerminal(`<span class="error">${msg}</span>`);
     }
 
