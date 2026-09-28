@@ -62,13 +62,20 @@
     aside::-webkit-scrollbar { display: none; }
     aside.collapsed { width: 0px; transform: translateX(-280px); overflow: hidden; }
 
+    /* BOTÓN PALPITANTE PARA MOSTRAR/OCULTAR MENÚ */
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.6); transform: scale(1); }
+      50% { box-shadow: 0 0 0 10px rgba(0, 242, 254, 0); transform: scale(1.08); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); transform: scale(1); }
+    }
+
     .toggle-sidebar-btn {
       position: fixed; left: 250px; top: 12px; z-index: 1005;
-      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
-      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.2); transition: left 0.3s ease, transform 0.2s;
+      background: var(--card-bg); border: 1px solid var(--primary); color: var(--accent-gold);
+      width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; animation: pulseGlow 2s infinite ease-in-out; transition: left 0.3s ease, transform 0.2s;
     }
-    .toggle-sidebar-btn:hover { transform: scale(1.1); background: var(--card-hover); }
+    .toggle-sidebar-btn:hover { transform: scale(1.15); background: var(--card-hover); }
     body.menu-hidden .toggle-sidebar-btn { left: 15px; }
 
     .sidebar-user { padding: 20px 16px; border-bottom: 1px solid var(--border-color); background: rgba(255,183,0,0.02); display: flex; align-items: center; gap: 14px; }
@@ -111,6 +118,16 @@
     }
     .topbar-left { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--accent-gold); margin-left: 35px; }
     .topbar-right-widgets { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    /* FLIP CLOCK WIDGET */
+    .flip-clock { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); }
+    .flip-group { display: flex; align-items: center; gap: 2px; }
+    .flip-card {
+      background: var(--card-bg); border: 1px solid var(--primary); border-radius: 4px; width: 24px; height: 30px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 800; color: var(--text-main);
+      box-shadow: 0 0 6px rgba(0,242,254,0.2);
+    }
+    .flip-colon { color: var(--primary); font-weight: bold; font-size: 0.85rem; }
 
     .theme-toggle-btn {
       background: var(--card-bg); border: 1px solid var(--border-color); color: var(--accent-gold);
@@ -185,11 +202,11 @@
     }
   </style>
 </head>
-<body>
+<body class="menu-hidden">
 
   <button class="toggle-sidebar-btn" id="toggleMenuBtn" title="Ocultar / Mostrar Menú">≡</button>
 
-  <aside id="sidebar">
+  <aside id="sidebar" class="collapsed">
     <div class="sidebar-user">
       <img src="assets/logo.png" alt="Logo CETAL" class="user-avatar-img">
       <div class="user-info">
@@ -202,7 +219,7 @@
       <div class="nav-title">Navegación Oficial</div>
       <a href="index.html" class="nav-item c-cyan">⚡ Inicio</a>
       <a href="anuario.html" class="nav-item c-green">👥 Anuario</a>
-      <a href="actividades.html" class="nav-item c-yellow active">📋 Bitácora</a>
+      <a href="actividades_6.html" class="nav-item c-yellow active">📋 Bitácora</a>
       <a href="proyectos.html" class="nav-item c-purple">🚀 Proyectos</a>
       <a href="recursos.html" class="nav-item c-orange">🛠️ Recursos</a>
     </div>
@@ -223,6 +240,15 @@
         <span>// BITACORA_ACTIVIDADES_2026</span>
       </div>
       <div class="topbar-right-widgets">
+        <!-- Reloj Digital con efecto Flip integrado -->
+        <div class="flip-clock">
+          <div class="flip-group"><div class="flip-card" id="f-h1">0</div><div class="flip-card" id="f-h2">0</div></div>
+          <span class="flip-colon">:</span>
+          <div class="flip-group"><div class="flip-card" id="f-m1">0</div><div class="flip-card" id="f-m2">0</div></div>
+          <span class="flip-colon">:</span>
+          <div class="flip-group"><div class="flip-card" id="f-s1">0</div><div class="flip-card" id="f-s2">0</div></div>
+        </div>
+
         <button class="theme-toggle-btn" id="themeToggleBtn" title="Cambiar Tema Diurno / Nocturno">🌙</button>
         <button id="btn-toggle-music" class="music-btn">🎵 Música</button>
         <audio id="bg-music" loop preload="auto"><source src="assets/audio.mp3" type="audio/mpeg"></audio>
@@ -331,6 +357,17 @@
       document.body.classList.toggle('menu-hidden');
     });
 
+    /* Mostrar menú al cargar 1 segundo y luego ocultarlo automáticamente para ganar espacio */
+    window.addEventListener('DOMContentLoaded', () => {
+      // Inicia abierto por defecto en HTML para que se vea 1 segundo, luego se oculta:
+      setTimeout(() => {
+        if (sidebar && !sidebar.classList.contains('collapsed')) {
+          sidebar.classList.add('collapsed');
+          document.body.classList.add('menu-hidden');
+        }
+      }, 1000); // 1000 milisegundos = 1 segundo exacto
+    });
+
     /* Control de Tema Día / Noche */
     const themeBtn = document.getElementById('themeToggleBtn');
     const htmlElement = document.documentElement;
@@ -351,6 +388,25 @@
         themeBtn.textContent = '🌙';
       }
     });
+
+    /* Sistema de Reloj Digital en Tiempo Real */
+    function updateClockSystem() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+
+      if(document.getElementById('f-h1')) {
+        document.getElementById('f-h1').innerText = h[0];
+        document.getElementById('f-h2').innerText = h[1];
+        document.getElementById('f-m1').innerText = m[0];
+        document.getElementById('f-m2').innerText = m[1];
+        document.getElementById('f-s1').innerText = s[0];
+        document.getElementById('f-s2').innerText = s[1];
+      }
+    }
+    setInterval(updateClockSystem, 1000);
+    updateClockSystem();
 
     /* Función para ordenar la línea de tiempo */
     function sortTimeline(order) {
