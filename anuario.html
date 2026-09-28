@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
@@ -676,6 +676,14 @@
       sidebar.classList.toggle('collapsed');
       document.body.classList.toggle('menu-hidden');
     });
+
+    // Auto-ocultar menú en celulares tras 1 segundo
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        sidebar.classList.add('collapsed');
+        document.body.classList.add('menu-hidden');
+      }, 1000);
+    }
 
     const themeBtn = document.getElementById('themeToggleBtn');
     const htmlElement = document.documentElement;
