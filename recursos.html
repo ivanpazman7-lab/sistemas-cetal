@@ -2,34 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CETAL Linux OSINT - Recursos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CETAL Linux OSINT - Recursos & Terminal</title>
     <style>
         :root {
-            --bg-color: #0b0f15;
-            --term-bg: #0d1117;
-            --term-header: #161b22;
-            --text-color: #c9d1d9;
+            --bg-color: #030712;
+            --term-bg: #09101d;
+            --term-header: #0e172a;
+            --text-color: #f0f6fc;
             --accent-green: #3fb950;
-            --accent-blue: #58a6ff;
-            --accent-yellow: #d29922;
+            --accent-blue: #00f2fe;
+            --accent-yellow: #ffb700;
             --accent-red: #f85149;
-            --border-color: #30363d;
+            --border-color: #1e293b;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Consolas', 'Courier New', Courier, monospace;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
-            padding: 15px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Pantalla de Carga Masiva (10 Segundos) */
+        /* Pantalla de Carga Inicial */
         #boot-screen {
             position: fixed;
             top: 0;
@@ -37,26 +39,26 @@
             width: 100%;
             height: 100%;
             background-color: #030508;
-            color: #2ecc71;
+            color: #3fb950;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: flex-start;
             z-index: 9999;
-            padding: 25px;
-            box-sizing: border-box;
+            padding: 12px;
             font-size: 11px;
-            line-height: 1.25;
+            line-height: 1.3;
             overflow: hidden;
         }
 
         .boot-log-line {
             white-space: pre-wrap;
             margin: 1px 0;
+            word-break: break-all;
         }
 
         .boot-highlight {
-            color: #f1c40f;
+            color: var(--accent-yellow);
         }
 
         /* Efecto Matrix Pantalla Completa */
@@ -66,79 +68,109 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
+            background-color: rgba(3, 7, 18, 0.98);
             color: #00ff66;
             z-index: 9998;
             display: none;
             font-family: monospace;
-            font-size: 16px;
-            padding: 20px;
+            font-size: 13px;
+            padding: 10px;
             overflow: hidden;
             white-space: pre;
         }
 
-        .main-container {
-            width: 950px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            display: none;
+        .matrix-exit-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f85149;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10000;
         }
 
-        /* Barra de Navegación Superior con Enlaces Reales exactos a tu carpeta */
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            display: none;
+            padding-bottom: 20px;
+        }
+
+        /* Barra de Navegación Superior adaptable */
         .top-paths {
             background-color: var(--term-header);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
+            border-radius: 8px;
+            padding: 10px 14px;
             font-size: 12px;
             display: flex;
-            gap: 15px;
+            gap: 10px;
             overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
+
+        .top-paths::-webkit-scrollbar { height: 4px; }
+        .top-paths::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
 
         .top-paths a {
             color: var(--accent-blue);
             text-decoration: none;
-            padding: 2px 6px;
-            border-radius: 4px;
-            transition: background 0.2s, color 0.2s;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: bold;
         }
 
         .top-paths a:hover {
-            background-color: #30363d;
+            background-color: var(--border-color);
             color: var(--accent-green);
         }
 
         .top-paths a.active {
             color: var(--accent-green);
-            font-weight: bold;
-            background-color: #21262d;
+            background-color: #111c2e;
             border: 1px solid var(--border-color);
         }
 
+        /* Ventana de Consola Estilo Linux / Terminal */
         .vm-window {
             background-color: var(--term-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             display: flex;
             flex-direction: column;
-            height: 420px;
+            height: 55vh;
+            min-height: 350px;
+            max-height: 600px;
         }
 
         .vm-header {
             background-color: var(--term-header);
-            padding: 8px 15px;
+            padding: 8px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border-color);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
         }
 
         .vm-title {
-            font-size: 13px;
-            color: #8b949e;
+            font-size: 12px;
+            color: #94a3b8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .vm-buttons {
@@ -162,12 +194,14 @@
             padding: 12px;
             overflow-y: auto;
             font-size: 13px;
-            line-height: 1.4;
+            line-height: 1.5;
+            -webkit-overflow-scrolling: touch;
         }
 
         .output-line {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .prompt-text {
@@ -182,25 +216,29 @@
         .input-container {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            margin-top: 6px;
         }
 
         .input-container input {
             flex: 1;
+            min-width: 140px;
             background: transparent;
             border: none;
             color: var(--text-color);
             font-family: 'Consolas', monospace;
             font-size: 13px;
             outline: none;
-            margin-left: 5px;
+            margin-left: 6px;
         }
 
-        /* Tablero Individualizado de Comandos */
+        /* Tablero de Ayuda y Aprendizaje Interactivo (Abajo) */
         .help-panel {
             background-color: var(--term-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .help-header {
@@ -212,6 +250,7 @@
             margin-bottom: 12px;
             font-size: 13px;
             color: var(--accent-blue);
+            font-weight: bold;
         }
 
         .led-active {
@@ -221,55 +260,73 @@
 
         .commands-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
         }
 
         .cmd-card {
             background-color: var(--term-header);
             border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 6px 8px;
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cmd-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
         }
 
         .cmd-name {
             color: var(--accent-green);
             font-weight: bold;
-            font-size: 11px;
+            font-size: 12px;
             display: flex;
             justify-content: space-between;
         }
 
         .cmd-desc {
-            font-size: 10px;
-            color: #8b949e;
-            margin-top: 3px;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
         }
 
+        /* Colores auxiliares para salidas en consola */
         .dir { color: var(--accent-blue); font-weight: bold; }
         .file { color: var(--text-color); }
         .success { color: var(--accent-green); }
         .warning { color: var(--accent-yellow); }
         .error { color: var(--accent-red); }
+
+        /* Ajustes específicos para móviles pequeños */
+        @media (max-width: 600px) {
+            body { padding: 4px; }
+            .vm-window { height: 50vh; min-height: 300px; }
+            .terminal-body { font-size: 12px; padding: 8px; }
+            .input-container input { font-size: 12px; }
+            .help-panel { padding: 10px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Pantalla de Inicio Masiva (10 Segundos) -->
+    <!-- Pantalla de Carga Masiva (Boot Sequence) -->
     <div id="boot-screen">
         <div id="bootContainer" style="width: 100%; height: 100%; overflow: hidden;"></div>
     </div>
 
     <!-- Pantalla Matrix (Easter Egg) -->
     <div id="matrix-screen" onclick="stopMatrix();">
-        <div style="margin-bottom: 15px; color: #fff; background: #000; padding: 5px;">[ MODO MATRIX ACTIVO - Haz clic en cualquier parte para salir ]</div>
+        <button class="matrix-exit-btn" onclick="stopMatrix()">[ CERRAR MATRIX ]</button>
+        <div style="margin-bottom: 10px; color: #fff; background: #000; padding: 4px; font-size: 11px;">[ MODO MATRIX ACTIVO ]</div>
         <div id="matrixContent"></div>
     </div>
 
     <!-- Contenedor Principal -->
     <div class="main-container" id="mainContainer">
         
-        <!-- Barra de Enlaces Superiores conectados a tus nombres reales -->
+        <!-- Barra de Navegación -->
         <div class="top-paths">
             <a href="index.html">./inicio.sh</a>
             <a href="anuario.html">./anuario.py</a>
@@ -278,10 +335,11 @@
             <a href="recursos.html" class="active">./recursos.conf</a>
         </div>
 
+        <!-- Ventana de Terminal -->
         <div class="vm-window">
             <div class="vm-header">
                 <div class="vm-title">
-                    <span>root@cetal-sec:/archivos/recursos</span>
+                    <span id="headerPathPrompt">root@cetal-sec:/archivos/recursos</span>
                 </div>
                 <div class="vm-buttons">
                     <span class="vm-btn btn-close"></span>
@@ -293,7 +351,7 @@
             <div class="terminal-body" id="terminalBody" onclick="document.getElementById('commandInput').focus();">
                 <div class="output-line">[SISTEMA]: Linux cetal-sec 6.1.0-kali9-amd64 x86_64 Kernel.</div>
                 <div class="output-line">[ENTIDAD]: CETAL SISTEMAS INFORMÁTICOS | Módulo de Recursos Activo.</div>
-                <div class="output-line warning">> Haz clic arriba en las pestañas para salir de este entorno y abrir su respectiva página.</div>
+                <div class="output-line warning">> Escribe <span style="color:var(--accent-blue)">help</span> para ver los comandos disponibles o haz clic en las tarjetas de abajo para ejecutarlos.</div>
                 <div class="output-line">------------------------------------------------------------------</div>
                 <div id="historyOutput"></div>
 
@@ -301,65 +359,65 @@
                     <span class="prompt-text">root@cetal-sec:</span>
                     <span class="path-text" id="currentPathPrompt">/archivos/recursos</span>
                     <span class="prompt-text">#</span>
-                    <input type="text" id="commandInput" autofocus autocomplete="off" spellcheck="false">
+                    <input type="text" id="commandInput" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
 
-        <!-- Tablero Individualizado de Comandos -->
+        <!-- Tablero Individualizado de Comandos y Aprendizaje (Abajo) -->
         <div class="help-panel">
             <div class="help-header">
-                <span>🛠️ Guía Interactiva de Comandos CETAL OSINT</span>
+                <span>🛠️ Guía Interactiva & Tarjetas de Aprendizaje (Haz clic para probar)</span>
                 <span class="led-active">● Sistema en Línea</span>
             </div>
             <div class="commands-grid">
-                <div class="cmd-card">
-                    <div class="cmd-name">ls <span>🟢</span></div>
-                    <div class="cmd-desc">Lista archivos y carpetas.</div>
+                <div class="cmd-card" onclick="executePreset('ls')">
+                    <div class="cmd-name">ls <span>📂</span></div>
+                    <div class="cmd-desc">Lista archivos y carpetas del directorio actual.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">cd <span>🟢</span></div>
-                    <div class="cmd-desc">Cambia de directorio.</div>
+                <div class="cmd-card" onclick="executePreset('cd ..')">
+                    <div class="cmd-name">cd .. <span>⬅️</span></div>
+                    <div class="cmd-desc">Retrocede al directorio padre.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">pwd <span>🟢</span></div>
-                    <div class="cmd-desc">Muestra ruta actual.</div>
+                <div class="cmd-card" onclick="executePreset('pwd')">
+                    <div class="cmd-name">pwd <span>📍</span></div>
+                    <div class="cmd-desc">Muestra la ruta absoluta actual.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">cat <span>🟢</span></div>
-                    <div class="cmd-desc">Lee archivos de texto.</div>
+                <div class="cmd-card" onclick="executePreset('cat normativa.txt')">
+                    <div class="cmd-name">cat [archivo] <span>📖</span></div>
+                    <div class="cmd-desc">Lee el contenido de un archivo de texto.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">mkdir <span>🟢</span></div>
-                    <div class="cmd-desc">Crea un directorio.</div>
+                <div class="cmd-card" onclick="executePreset('mkdir laboratorio')">
+                    <div class="cmd-name">mkdir [dir] <span>📁</span></div>
+                    <div class="cmd-desc">Crea un nuevo directorio en la ruta.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">touch <span>🟢</span></div>
-                    <div class="cmd-desc">Crea un archivo nuevo.</div>
+                <div class="cmd-card" onclick="executePreset('touch apunte.txt')">
+                    <div class="cmd-name">touch [archivo] <span>📝</span></div>
+                    <div class="cmd-desc">Crea un archivo vacío instantáneo.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">rm <span>🟢</span></div>
-                    <div class="cmd-desc">Elimina elemento.</div>
+                <div class="cmd-card" onclick="executePreset('rm apunte.txt')">
+                    <div class="cmd-name">rm [archivo] <span>🗑️</span></div>
+                    <div class="cmd-desc">Elimina un archivo o directorio existente.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">whoami <span>🟢</span></div>
-                    <div class="cmd-desc">Muestra el usuario.</div>
+                <div class="cmd-card" onclick="executePreset('whoami')">
+                    <div class="cmd-name">whoami <span>👤</span></div>
+                    <div class="cmd-desc">Muestra el usuario activo en sesión.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">uname -a <span>🟢</span></div>
-                    <div class="cmd-desc">Versión del Kernel.</div>
+                <div class="cmd-card" onclick="executePreset('uname -a')">
+                    <div class="cmd-name">uname -a <span>💻</span></div>
+                    <div class="cmd-desc">Muestra información detallada del Kernel.</div>
                 </div>
-                <div class="cmd-card">
+                <div class="cmd-card" onclick="executePreset('matrix')">
                     <div class="cmd-name">matrix <span>✨</span></div>
-                    <div class="cmd-desc">Efecto visual hacker.</div>
+                    <div class="cmd-desc">Lanza efecto visual hacker Matrix.</div>
                 </div>
-                <div class="cmd-card">
+                <div class="cmd-card" onclick="executePreset('sudo pkg update')">
                     <div class="cmd-name">sudo pkg update <span>⚡</span></div>
-                    <div class="cmd-desc">Actualiza repos (20s [bad/ok]).</div>
+                    <div class="cmd-desc">Actualiza repositorios y dependencias.</div>
                 </div>
-                <div class="cmd-card">
-                    <div class="cmd-name">sudo pkg upgrade -y <span>⚡</span></div>
-                    <div class="cmd-desc">Corrige a [OK] y actualiza.</div>
+                <div class="cmd-card" onclick="executePreset('sudo pkg upgrade -y')">
+                    <div class="cmd-name">sudo pkg upgrade -y <span>🚀</span></div>
+                    <div class="cmd-desc">Repara errores y actualiza el sistema.</div>
                 </div>
             </div>
         </div>
@@ -376,7 +434,7 @@
         "Booting a Linux kernel on bare metal hardware...",
         "Linux version 6.1.0-kali9-amd64 (devel@kali.org) #1 SMP PREEMPT_DYNAMIC Kali",
         "Command line: BOOT_IMAGE=/boot/vmlinuz-6.1.0-kali9-amd64 root=UUID=cetal-sec-2026 ro quiet",
-        "BIOS-provided physical RAM map: [mem 0x0000000000000000-0x00000000ffffffff] usable",
+        "BIOS-provided physical RAM map: [mem 0x0000000000000000-0x0000000ffffffff] usable",
         "Initializing cgroups subsys cpuset",
         "Initializing cgroups subsys cpu",
         "CPU: Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz (12 cores)",
@@ -404,32 +462,39 @@
             let div = document.createElement("div");
             div.className = "boot-log-line";
             if (rawBootLines[currentLine].includes("[ OK ]")) {
-                div.innerHTML = `<span style="color: #2ecc71;">[ OK ]</span> ${rawBootLines[currentLine].replace('[ OK ]', '')}`;
+                div.innerHTML = `<span style="color: #3fb950;">[ OK ]</span> ${rawBootLines[currentLine].replace('[ OK ]', '')}`;
             } else if (rawBootLines[currentLine].includes("Linux version") || rawBootLines[currentLine].includes("Welcome")) {
                 div.innerHTML = `<span class="boot-highlight">${rawBootLines[currentLine]}</span>`;
             } else {
-                div.innerHTML = `[ <span style="color: #3498db;">0.${currentLine < 10 ? '0' + currentLine : currentLine}s</span> ] ${rawBootLines[currentLine]}`;
+                div.innerHTML = `[ <span style="color: #00f2fe;">0.${currentLine < 10 ? '0' + currentLine : currentLine}s</span> ] ${rawBootLines[currentLine]}`;
             }
             bootContainer.appendChild(div);
             bootContainer.scrollTop = bootContainer.scrollHeight;
             currentLine++;
-            setTimeout(renderBootLines, 330); 
+            setTimeout(renderBootLines, 200); 
         } else {
             setTimeout(() => {
                 bootScreen.style.display = "none";
                 mainContainer.style.display = "flex";
                 document.getElementById("commandInput").focus();
-            }, 600);
+            }, 400);
         }
     }
     window.onload = renderBootLines;
 
+    // Sistema de Archivos Virtual Multitopografía Interactivo ("Todo Terreno")
     let fileSystem = {
-        "recursos": {
+        "archivos": {
             type: "dir",
             content: {
-                "normativa": { type: "file", content: "Reglamento institucional CETAL 2026." },
-                "herramientas": { type: "file", content: "Corel VideoStudio, Blender, Stellarium y Canva." }
+                "recursos": {
+                    type: "dir",
+                    content: {
+                        "normativa.txt": { type: "file", content: "Reglamento institucional CETAL 2026 - Sistemas Informáticos Turno Noche." },
+                        "herramientas.txt": { type: "file", content: "Corel VideoStudio, Blender, Stellarium, Canva, Rclone y ClamAV." },
+                        "seguridad.conf": { type: "file", content: "MITRE ATT&CK Framework, OSSTMM, Cisco CCNA Security configs." }
+                    }
+                }
             }
         }
     };
@@ -443,6 +508,7 @@
     const historyOutput = document.getElementById("historyOutput");
     const commandInput = document.getElementById("commandInput");
     const currentPathPrompt = document.getElementById("currentPathPrompt");
+    const headerPathPrompt = document.getElementById("headerPathPrompt");
 
     function getDirByPath(pathArr) {
         let current = fileSystem;
@@ -457,7 +523,9 @@
     }
 
     function updatePromptDisplay() {
-        currentPathPrompt.textContent = "/" + currentPathArray.join("/");
+        let pathStr = "/" + currentPathArray.join("/");
+        currentPathPrompt.textContent = pathStr;
+        headerPathPrompt.textContent = "root@cetal-sec:" + pathStr;
     }
 
     commandInput.addEventListener("keydown", function(event) {
@@ -493,6 +561,13 @@
         terminalBody.scrollTop = terminalBody.scrollHeight;
     }
 
+    function executePreset(cmdStr) {
+        commandInput.value = cmdStr;
+        commandInput.focus();
+        processCommand(cmdStr);
+        commandInput.value = "";
+    }
+
     function simulateProgressiveOutput(lines, delayPerLine, onComplete) {
         let index = 0;
         function nextLine() {
@@ -511,15 +586,15 @@
         const matrixScreen = document.getElementById("matrix-screen");
         const matrixContent = document.getElementById("matrixContent");
         matrixScreen.style.display = "block";
-        let chars = "0101010101ABCDEF-CETAL-OSINT-SECURITY-ROOT-SYS";
+        let chars = "0101010101ABCDEF-CETAL-OSINT-SECURITY-ROOT-SYS-JAVASCRIPT-LINUX";
         matrixInterval = setInterval(() => {
             let text = "";
-            for (let i = 0; i < 400; i++) {
+            for (let i = 0; i < 350; i++) {
                 text += chars.charAt(Math.floor(Math.random() * chars.length));
-                if (i % 40 === 0) text += "\n";
+                if (i % 35 === 0) text += "\n";
             }
             matrixContent.textContent = text;
-        }, 60);
+        }, 50);
     }
 
     function stopMatrix() {
@@ -527,11 +602,12 @@
         document.getElementById("matrix-screen").style.display = "none";
     }
 
+    // Procesador de Comandos Robusto
     function processCommand(input) {
         printToTerminal(`<span class="prompt-text">root@cetal-sec:</span><span class="path-text">/${currentPathArray.join('/')}</span><span class="prompt-text">#</span> ${input}`);
         
         let cleanInput = input.trim();
-        let args = cleanInput.split(" ");
+        let args = cleanInput.split(/\s+/);
         let cmd = args[0];
         let target = args[1];
 
@@ -546,32 +622,38 @@
                 "Get:4 http://kali.download/kali triton/main amd64 Packages [18.2 MB]",
                 "Fetched 18.3 MB in 12s (1,530 kB/s)",
                 "Reading package lists... Done",
-                "<span class=\"error\">[ ✗ ] Advertencia: Se detectaron errores 'bad' en repositorios.</span>"
+                "<span class=\"error\">[ ✗ ] Advertencia: Se detectaron errores 'bad' en repositorios locales. Ejecuta 'sudo pkg upgrade -y' para reparar.</span>"
             ];
-            simulateProgressiveOutput(updateSteps, 1600);
+            simulateProgressiveOutput(updateSteps, 800);
             return;
         }
 
-        if (cmd === "sudo" && args[1] === "pkg" && args[2] === "upgrade" && args[3] === "-y") {
+        if (cmd === "sudo" && args[1] === "pkg" && args[2] === "upgrade" && (args[3] === "-y" || args[3] === undefined)) {
             let upgradeSteps = [
                 "Reading package lists... Done",
-                "<span class=\"success\">[ OK ] Sincronizando claves GPG y reparando repositorios...</span>",
+                "<span class=\"success\">[ OK ] Sincronizando claves GPG y reparando tablas de paquetes...</span>",
                 "Calculating upgrade... Done",
-                "<span class=\"success\">[ ✓ ] sudo pkg upgrade -y completado. Sistema 100% actualizado.</span>"
+                "0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.",
+                "<span class=\"success\">[ ✓ ] sudo pkg upgrade completado con éxito. Sistema 100% actualizado y blindado.</span>"
             ];
-            simulateProgressiveOutput(upgradeSteps, 1200);
+            simulateProgressiveOutput(upgradeSteps, 600);
             return;
         }
 
         switch(cmd) {
             case "help":
-                printToTerminal(`Comandos disponibles:
+                printToTerminal(`Comandos de Consola Disponibles:
   <span class="warning">ls</span>                      - Lista archivos y carpetas
-  <span class="warning">cd [dir]</span>                - Cambia de directorio
-  <span class="warning">pwd</span>                     - Muestra la ruta actual
-  <span class="warning">cat [arq]</span>               - Muestra contenido de archivo
-  <span class="warning">matrix</span>                  - Lanza efectos visuales hacker
-  <span class="warning">clear</span>                   - Limpia la pantalla`);
+  <span class="warning">cd [dir]</span>                - Cambia de directorio (ej: cd .. o cd recursos)
+  <span class="warning">pwd</span>                     - Muestra la ruta absoluta actual
+  <span class="warning">cat [archivo]</span>           - Lee el contenido de un archivo
+  <span class="warning">mkdir [nombre]</span>          - Crea una nueva carpeta
+  <span class="warning">touch [nombre]</span>          - Crea un archivo de texto vacío
+  <span class="warning">rm [nombre]</span>             - Elimina un archivo o carpeta
+  <span class="warning">whoami</span>                  - Muestra el usuario actual
+  <span class="warning">uname -a</span>                - Muestra la versión del Kernel
+  <span class="warning">matrix</span>                  - Lanza efectos visuales de terminal Matrix
+  <span class="warning">clear</span>                   - Limpia la pantalla de la terminal`);
                 break;
 
             case "pwd":
@@ -583,12 +665,12 @@
                 break;
 
             case "uname":
-                printToTerminal("Linux cetal-sec 6.1.0-kali9-amd64 #1 SMP PREEMPT_DYNAMIC Kali x86_64");
+                printToTerminal("Linux cetal-sec 6.1.0-kali9-amd64 #1 SMP PREEMPT_DYNAMIC Kali x86_64 GNU/Linux");
                 break;
 
             case "matrix":
                 startMatrix();
-                printToTerminal("<span class=\"success\">Modo Matrix lanzado en pantalla completa. Haz clic para salir.</span>");
+                printToTerminal("<span class=\"success\">Modo Matrix lanzado en pantalla completa. Toca el botón para salir.</span>");
                 break;
 
             case "ls":
@@ -607,13 +689,89 @@
                 printToTerminal(formattedKeys || "(Directorio vacío)");
                 break;
 
+            case "cd":
+                if (!target || target === "~") {
+                    currentPathArray = ["archivos", "recursos"];
+                } else if (target === "..") {
+                    if (currentPathArray.length > 1) {
+                        currentPathArray.pop();
+                    }
+                } else {
+                    if (currentDir && currentDir[target] && currentDir[target].type === "dir") {
+                        currentPathArray.push(target);
+                    } else {
+                        printToterrminalError(`cd: el directorio '${target}' no existe.`);
+                    }
+                }
+                updatePromptDisplay();
+                break;
+
+            case "cat":
+                if (!target) {
+                    printToTerminal("Uso: cat [nombre_de_archivo]");
+                    break;
+                }
+                if (currentDir && currentDir[target]) {
+                    if (currentDir[target].type === "file") {
+                        printToTerminal(currentDir[target].content);
+                    } else {
+                        printToTerminal(`cat: '${target}' es un directorio.`);
+                    }
+                } else {
+                    printToTerminal(`cat: '${target}' no existe en este directorio.`);
+                }
+                break;
+
+            case "mkdir":
+                if (!target) {
+                    printToTerminal("Uso: mkdir [nombre_directorio]");
+                    break;
+                }
+                if (currentDir[target]) {
+                    printToTerminal(`mkdir: el archivo o directorio '${target}' ya existe.`);
+                } else {
+                    currentDir[target] = { type: "dir", content: {} };
+                    printToTerminal(`<span class="success">[ ✓ ] Directorio '${target}' creado con éxito.</span>`);
+                }
+                break;
+
+            case "touch":
+                if (!target) {
+                    printToTerminal("Uso: touch [nombre_archivo]");
+                    break;
+                }
+                if (currentDir[target]) {
+                    printToTerminal(`touch: '${target}' ya existe.`);
+                } else {
+                    currentDir[target] = { type: "file", content: "Archivo creado por el usuario en sesión." };
+                    printToTerminal(`<span class="success">[ ✓ ] Archivo '${target}' creado con éxito.</span>`);
+                }
+                break;
+
+            case "rm":
+                if (!target) {
+                    printToTerminal("Uso: rm [nombre_archivo_o_directorio]");
+                    break;
+                }
+                if (currentDir[target]) {
+                    delete currentDir[target];
+                    printToTerminal(`<span class="success">[ ✓ ] Elemento '${target}' eliminado correctamente.</span>`);
+                } else {
+                    printToTerminal(`rm: no se pudo encontrar '${target}'.`);
+                }
+                break;
+
             case "clear":
                 historyOutput.innerHTML = "";
                 break;
 
             default:
-                printToTerminal(`Comando no reconocido: ${cmd}. Escribe <span class="warning">help</span> para obtener ayuda.`);
+                printToTerminal(`Comando no reconocido: ${cmd}. Escribe <span class="warning">help</span> para ver los comandos válidos.`);
         }
+    }
+
+    function printToterrminalError(msg) {
+        printToTerminal(`<span class="error">${msg}</span>`);
     }
 
     updatePromptDisplay();
